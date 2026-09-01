@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+.astro/
+coverage/
+.DS_Store
+*.log
+*-log.txt
+.env*
+!.env.example
+
+# Local Netlify folder
+.netlify
+
+# Ladle build output
+build-ladle/
+.commandcode/

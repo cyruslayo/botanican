@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Cart from '@/components/storefront/Cart';
+import MemberGate from '@/components/storefront/MemberGate';
+
+// Static shell; cart state lives client-side in nanostores.
+export const prerender = true;
+---
+
+<Layout pathname="/cart" title="Your Bag | Botanical Essence">
+  <MemberGate client:load>
+    <Cart client:load />
+  </MemberGate>
+</Layout>
+

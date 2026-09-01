@@ -1,0 +1,11 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import LandingView from '@/components/storefront/LandingView';
+
+export const prerender = true;
+---
+
+<Layout pathname="/" title="Botanica | Pure Botanical Essence & Private Apothecary">
+  <LandingView client:load />
+</Layout>
+

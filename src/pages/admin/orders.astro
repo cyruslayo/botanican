@@ -1,0 +1,14 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminGate from '@/components/admin/AdminGate';
+import AdminOrders from '@/components/admin/AdminOrders';
+
+// Static shell; admin data loads client-side.
+export const prerender = true;
+---
+
+<AdminLayout pathname="/admin/orders" title="Orders | Store Admin">
+  <AdminGate client:load>
+    <AdminOrders client:load />
+  </AdminGate>
+</AdminLayout>

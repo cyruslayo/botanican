@@ -1,0 +1,73 @@
+---
+import AdminBottomNav from '@/components/admin/AdminBottomNav';
+
+interface Props {
+  title?: string;
+  pathname: string;
+}
+
+const { title = 'Store Admin', pathname } = Astro.props;
+
+const navigation = [
+  { name: 'Overview', href: '/admin', icon: 'LayoutDashboard' },
+  { name: 'Products', href: '/admin/products', icon: 'Package' },
+  { name: 'Orders', href: '/admin/orders', icon: 'ShoppingCart' },
+  { name: 'Referrals', href: '/admin/referrals', icon: 'UserCheck' },
+  { name: 'Customers', href: '/admin/customers', icon: 'Users' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <title>{title}</title>
+    <meta name="description" content="Botanica store admin" />
+  </head>
+  <body class="bg-surface-container-low text-on-background antialiased">
+    <a href="#content" class="visually-hidden skip-link">Skip to content</a>
+    <div class="flex min-h-screen bg-surface-container-low pb-[calc(80px+env(safe-area-inset-bottom,0px))] md:pb-0">
+      <aside class="w-64 bg-surface border-r border-outline-variant flex-col hidden md:flex">
+        <div class="p-6 border-b border-outline-variant">
+          <h1 class="font-headline-sm text-headline-sm text-primary">Store Admin</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+            return (
+              <a
+                href={item.href}
+                class={`flex items-center gap-3 px-4 py-3 rounded-lg font-label-sm text-label-sm transition-colors ${
+                  isActive ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-high'
+                }`}
+              >
+                <span>{item.name}</span>
+              </a>
+            );
+          })}
+        </nav>
+        <div class="p-4 border-t border-outline-variant">
+          <button class="flex items-center gap-3 px-4 py-3 w-full rounded-lg font-label-sm text-label-sm text-error hover:bg-error/10 transition-colors">
+            Sign Out
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 flex flex-col min-h-screen max-w-full overflow-hidden">
+        <header class="h-16 bg-surface border-b border-outline-variant flex items-center px-8 md:hidden">
+          <h1 class="font-headline-sm text-headline-sm text-primary">Store Admin</h1>
+        </header>
+        <div id="content" tabindex="-1" class="flex-1 p-4 md:p-8 overflow-y-auto">
+          <slot />
+        </div>
+      </main>
+    </div>
+    <AdminBottomNav pathname={pathname} client:load />
+  </body>
+</html>

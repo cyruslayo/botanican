@@ -1,0 +1,30 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import ProductDetailIsland from '@/components/storefront/ProductDetailIsland';
+import MemberGate from '@/components/storefront/MemberGate';
+import { getProductBySlug } from '@/lib/products';
+import type { Product } from '@/lib/types';
+
+// Rendered on-demand so new products are available immediately.
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+let product: Product | null = null;
+try {
+  product = await getProductBySlug(String(slug));
+} catch (error) {
+  console.warn(`Falling back to placeholder for slug "${slug}":`, error);
+}
+
+if (!product) {
+  return Astro.redirect('/oils');
+}
+---
+
+<Layout pathname={`/product/${product.slug}`} title={`${product.name} | Botanical Essence`}>
+  <MemberGate client:load>
+    <ProductDetailIsland client:load product={product} />
+  </MemberGate>
+</Layout>
+
