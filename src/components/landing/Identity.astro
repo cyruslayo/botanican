@@ -1,0 +1,55 @@
+---
+/**
+ * P4.4 - Reframing functional wellness for modern professionals.
+ * P4.5 - Spotting weak product claims vs verifiable quality.
+ */
+import { X, Check } from 'lucide-react';
+
+const claims = [
+  { weak: 'Proprietary blend', strong: 'Named cannabinoids, in milligrams' },
+  { weak: 'Miracle results, guaranteed', strong: 'A stated onset window and dose math' },
+  { weak: 'Full-spectrum, with no report', strong: 'A batch-linked certificate of analysis' },
+  { weak: 'No lab named', strong: 'An independent, accredited third party' },
+];
+---
+
+<section id="identity" class="w-full bg-surface">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
+    <div class="max-w-2xl space-y-stack-md reveal">
+      <h2 class="font-headline-lg text-headline-lg text-primary">Wellness, without the stereotype</h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+        The modern botanical consumer reads certificates, tracks onset, and keeps a log. The stereotype was never about the plant; it was about not knowing what you were taking. You know now.
+      </p>
+    </div>
+
+    <div class="mt-12 reveal">
+      <div class="hidden sm:grid grid-cols-2 gap-8 px-6 pb-3">
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant/70 font-bold">Hear this</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">Demand this</span>
+      </div>
+      <div class="reveal-group">
+        {claims.map((claim) => (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-8 items-center py-5 sm:px-6 border-t border-outline-variant/40">
+            <div class="flex items-center gap-3">
+              <span class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0">
+                <X size={13} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <span class="font-body-md text-body-md text-on-surface-variant/70">{claim.weak}</span>
+            </div>
+            <div class="flex items-center gap-3 sm:pl-4">
+              <span class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+                <Check size={13} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <span class="font-body-md text-body-md text-primary font-bold">{claim.strong}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="border-t border-outline-variant/40 pt-6 mt-0">
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Every Botanica batch answers all four. Ask for the certificate before you ask for the code.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+/**
+ * P2.1 - The impatient redose trap.
+ * P2.2 - Golden rules for consistent titration.
+ */
+import { Hourglass, Scale, NotebookPen } from 'lucide-react';
+
+const rules = [
+  {
+    icon: Hourglass,
+    title: 'Hold the full window',
+    body: 'Give the slower route its complete 90 minutes before you judge anything.',
+  },
+  {
+    icon: Scale,
+    title: 'Keep the amount constant',
+    body: 'Same milligrams, same clock time, same seat, for three evenings in a row.',
+  },
+  {
+    icon: NotebookPen,
+    title: 'Change one thing at a time',
+    body: 'Adjust a single variable, log it, and read the result before touching anything else.',
+  },
+];
+---
+
+<section id="golden-hour" class="w-full bg-surface">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16 items-start">
+      <div class="md:col-span-6 space-y-stack-md reveal">
+        <h2 class="font-headline-lg text-headline-lg text-primary">It hasn't worked yet. Wait.</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+          Redosing at minute 25 stacks two amounts into the same hour. Sublingual arrives within half an hour, but a swallowed dose can take ninety minutes to finish landing. Top up before the first amount has finished arriving and both land together.
+        </p>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          The gentle evening you planned becomes a heavy one. The amount was fine. The patience was not.
+        </p>
+      </div>
+
+      <div class="md:col-span-6 md:pl-8 reveal">
+        <h3 class="font-headline-sm text-headline-sm text-primary mb-6">The golden rules</h3>
+        <div class="space-y-2">
+          {rules.map(({ icon: Icon, title, body }) => (
+            <div class="flex gap-4 py-4 border-t border-outline-variant/40 last:border-b">
+              <div class="w-10 h-10 rounded-full bg-secondary-container/60 text-on-secondary-container flex items-center justify-center shrink-0">
+                <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
+              </div>
+              <div>
+                <h4 class="font-headline-sm text-headline-sm text-primary">{title}</h4>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">{body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

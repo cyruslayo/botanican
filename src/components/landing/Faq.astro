@@ -1,0 +1,23 @@
+---
+/**
+ * FAQ - P2.3 bedtime timing, P2.4 morning grogginess, P2.6 repeatable routine,
+ * P3.6 tracking, redose patience, spectrum choice. JSON-LD rendered in index.astro.
+ */
+import FaqAccordion from './FaqAccordion';
+import { FAQ_ITEMS } from '@/data/landing';
+---
+
+<section id="faq" class="w-full bg-surface">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
+    <div class="max-w-2xl space-y-stack-md mb-12 reveal">
+      <h2 class="font-headline-lg text-headline-lg text-primary">Questions, answered plainly</h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+        The details first-time members ask about most, before the code is even applied for.
+      </p>
+    </div>
+
+    <div class="max-w-3xl reveal">
+      <FaqAccordion client:visible items={FAQ_ITEMS} />
+    </div>
+  </div>
+</section>

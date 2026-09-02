@@ -15,3 +15,7 @@ coverage/
 # Ladle build output
 build-ladle/
 .commandcode/
+
+# Local working artifacts
+.scratch/
+.zcode/

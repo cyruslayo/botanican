@@ -51,10 +51,14 @@
 
   --font-display-lg: 'Bodoni Moda', serif;
   --font-display-lg-mobile: 'Bodoni Moda', serif;
+  --font-display-md: 'Bodoni Moda', serif;
+  --font-display-sm: 'Bodoni Moda', serif;
+  --font-headline-lg: 'Bodoni Moda', serif;
   --font-headline-md: 'Bodoni Moda', serif;
   --font-headline-sm: 'Plus Jakarta Sans', sans-serif;
   --font-body-lg: 'Plus Jakarta Sans', sans-serif;
   --font-body-md: 'Plus Jakarta Sans', sans-serif;
+  --font-body-sm: 'Plus Jakarta Sans', sans-serif;
   --font-label-sm: 'Plus Jakarta Sans', sans-serif;
 
   --text-display-lg: clamp(2.5rem, 1.5rem + 3vw, 3rem);
@@ -63,6 +67,21 @@
 
   --text-display-lg-mobile: clamp(2rem, 1.25rem + 2vw, 2.5rem);
   --text-display-lg-mobile--line-height: 1.2;
+
+  --text-display-xl: clamp(2.625rem, 1.75rem + 3.5vw, 4.5rem);
+  --text-display-xl--line-height: 1.04;
+  --text-display-xl--letter-spacing: -0.02em;
+
+  --text-display-md: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.01em;
+
+  --text-display-sm: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-display-sm--line-height: 1.2;
+
+  --text-headline-lg: clamp(1.875rem, 1.5rem + 1.75vw, 2.625rem);
+  --text-headline-lg--line-height: 1.15;
+  --text-headline-lg--letter-spacing: -0.01em;
 
   --text-headline-md: clamp(1.75rem, 1.25rem + 1.5vw, 2rem);
   --text-headline-md--line-height: 1.2;
@@ -76,6 +95,9 @@
 
   --text-body-md: 1rem;
   --text-body-md--line-height: 1.6;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
 
   --text-label-sm: 12px;
   --text-label-sm--line-height: 1;
@@ -196,4 +218,43 @@ h4 {
   outline: none;
   box-shadow: none;
   border-bottom-color: var(--color-primary);
+}
+
+/* Entrance motion: one-shot load-in for above-the-fold, scroll-driven reveal below.
+   Falls back to fully visible static content when scroll timelines are unsupported. */
+@media (prefers-reduced-motion: no-preference) {
+  .load-in {
+    animation: reveal-enter 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-enter linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .reveal-group > * {
+      animation: reveal-enter linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+    .reveal-group > *:nth-child(2) { animation-range: entry 4% entry 64%; }
+    .reveal-group > *:nth-child(3) { animation-range: entry 8% entry 68%; }
+    .reveal-group > *:nth-child(4) { animation-range: entry 12% entry 72%; }
+    .reveal-group > *:nth-child(5) { animation-range: entry 16% entry 76%; }
+    .reveal-group > *:nth-child(6) { animation-range: entry 20% entry 80%; }
+  }
+}
+
+@keyframes reveal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
