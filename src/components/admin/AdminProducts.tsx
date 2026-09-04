@@ -29,6 +29,10 @@ export default function AdminProducts() {
     }
   }
 
+  const existingCategories = Array.from(
+    new Set(products.map((p) => p.category).filter(Boolean))
+  );
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -44,8 +48,8 @@ export default function AdminProducts() {
       console.error('Error fetching products: ', error);
       if (products.length === 0) {
         setProducts([
-          { id: '1', name: 'Serenity Blend', price: 85, inventory: 42, category: 'Oils', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-3s_o68S_zqMLDFeSVxP8yYFlOFrllegbfXu664mRsdOn0AiGXTZq1RS8C60jQFk6sxB7u-syYxpLtzgiAH9j_QjPdV2G8Edg719sJVbKwfCbqiqe49BFwaSIWGk3R4zEat0wAdVALra14ADiFwRpP7n5yLgUp93ixxEpkiGpnq6EPSGO5fmfZNJgtcSaIxGluQ_4B__B4xOvdBaiWLq5QdJUBxr8jWMuEjBKZ1f5pb5_KuXhsi7VpQ' },
-          { id: '2', name: 'Clarity Botanicals', price: 45, inventory: 15, category: 'Edibles', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBTtuuE38Ca7mYUBQK7cjCWX1_u1NkshBm9t_rJk0js6XtH2EtoYEyhRxwp2lrgcfpCOe3E-mHLmQRjFHSgxtobWe4r9eZkF6xdtAkHXpCPxFwBV8Jv2fKaeltne2CY3xMI3umzmGnTKIqKE7UUagAPIg5SFMjNUYW33TgUVWUB8jDeBvc36wLgJ8CxON1tR6DKjAQHbnI_pURDKAtP0jBnfYY5g00TfETJjNhRdH0vbK3B9fjG4Gulkg' }
+          { id: '1', name: 'Lavender Botanical Elixir', price: 48, inventory: 25, category: 'Oils', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA' },
+          { id: '2', name: 'Eucalyptus Balance Tincture', price: 54, inventory: 18, category: 'Oils', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ' }
         ]);
       }
     } finally {
@@ -67,74 +71,225 @@ export default function AdminProducts() {
     setIsFormModalOpen(true);
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const filteredProducts = products.filter((p) => {
+    const matchesSearch = p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="font-headline-md text-headline-md text-on-surface">Products</h2>
-        <button onClick={handleAddClick} className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors">
+    <div className="space-y-6 md:space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="font-headline-md text-xl sm:text-headline-md text-on-surface">Products</h2>
+          <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant">
+            Manage your apothecary catalog, formulations, and stock levels.
+          </p>
+        </div>
+        <button
+          onClick={handleAddClick}
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-label-sm text-xs uppercase tracking-wider font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-xs w-full sm:w-auto shrink-0 cursor-pointer"
+        >
           <PlusIcon />
-          Add Product
+          <span>Add Product</span>
         </button>
       </div>
 
-      <div className="bg-surface rounded-xl border border-outline-variant overflow-hidden botanical-shadow">
+      {/* Filter / Search Bar */}
+      <div className="bg-surface p-3.5 sm:p-4 rounded-2xl border border-outline-variant/60 botanical-shadow flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Search products by title or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/60 focus:outline-none focus:border-primary text-primary placeholder:text-on-surface-variant/60"
+          />
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar shrink-0">
+          <button
+            type="button"
+            onClick={() => setSelectedCategory('All')}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-colors whitespace-nowrap cursor-pointer ${
+              selectedCategory === 'All'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+            }`}
+          >
+            All ({products.length})
+          </button>
+          {existingCategories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-colors whitespace-nowrap cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-primary text-on-primary'
+                  : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Card List (< md screens) */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="p-8 text-center text-on-surface-variant text-sm bg-surface rounded-2xl border border-outline-variant">
+            Loading products...
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="p-8 text-center text-on-surface-variant text-sm bg-surface rounded-2xl border border-outline-variant">
+            No products match your search.
+          </div>
+        ) : (
+          filteredProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-surface rounded-2xl border border-outline-variant/70 p-4 botanical-shadow space-y-3"
+            >
+              <div className="flex items-start gap-3">
+                <div className="relative w-14 h-14 rounded-xl bg-surface-container overflow-hidden shrink-0">
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-surface-container-highest text-on-surface-variant text-[10px] font-mono">
+                      No Img
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-surface-container text-secondary font-bold truncate">
+                      {product.category || 'General'}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        product.is_active
+                          ? 'bg-secondary-container text-on-secondary-container'
+                          : 'bg-surface-variant text-on-surface-variant'
+                      }`}
+                    >
+                      {product.is_active ? 'Active' : 'Draft'}
+                    </span>
+                  </div>
+
+                  <h3 className="font-body-md font-bold text-primary text-sm mt-1 truncate">
+                    {product.name}
+                  </h3>
+
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="font-mono font-bold text-primary text-sm">
+                      {formatNaira(product.price)}
+                    </span>
+                    <span
+                      className={`font-mono text-[11px] ${
+                        product.inventory < 10
+                          ? 'text-error font-bold'
+                          : 'text-on-surface-variant'
+                      }`}
+                    >
+                      {product.inventory} in stock
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Toolbar on Mobile Card */}
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-outline-variant/40">
+                <button
+                  onClick={() => handleEditClick(product)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high text-primary hover:bg-surface-container text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <EditIcon />
+                  <span>Edit</span>
+                </button>
+                <button
+                  onClick={() => setProductToDelete(product)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-error/10 text-error hover:bg-error/20 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <TrashIcon />
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table (>= md screens) */}
+      <div className="hidden md:block bg-surface rounded-2xl border border-outline-variant overflow-hidden botanical-shadow">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left border-collapse">
+          <table className="w-full text-left border-collapse">
             <thead className="bg-surface-container-low">
               <tr className="border-b border-outline-variant">
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Product</th>
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Category</th>
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Price</th>
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Inventory</th>
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Status</th>
-                <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Product</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Category</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Price</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Inventory</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Status</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/50">
+            <tbody className="font-body-md text-sm text-on-surface divide-y divide-outline-variant/50">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-on-surface-variant">Loading products...</td>
                 </tr>
-              ) : products.length === 0 ? (
+              ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-on-surface-variant">No products found.</td>
                 </tr>
               ) : (
-                products.map((product) => (
+                filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-surface-container-low/50 transition-colors">
                     <td className="p-4">
-                      <div className="flex items-center gap-4">
-                        <div className="relative w-12 h-12 rounded bg-surface-container overflow-hidden">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12 rounded-xl bg-surface-container overflow-hidden shrink-0">
                           {product.image ? (
                             <img src={product.image} alt={product.name} referrerPolicy="no-referrer" className="absolute inset-0 h-full w-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-surface-container-highest text-on-surface-variant font-label-sm">No Img</div>
                           )}
                         </div>
-                        <span className="font-body-lg text-primary">{product.name}</span>
+                        <span className="font-medium text-primary line-clamp-1">{product.name}</span>
                       </div>
                     </td>
-                    <td className="p-4 text-on-surface-variant">{product.category}</td>
-                    <td className="p-4">{formatNaira(product.price)}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${product.inventory < 10 ? 'bg-error/10 text-error' : 'bg-surface-container-high'}`}>
+                    <td className="p-4 text-on-surface-variant font-mono text-xs">{product.category}</td>
+                    <td className="p-4 font-mono font-medium">{formatNaira(product.price)}</td>
+                    <td className="p-4 font-mono text-xs">
+                      <span className={`px-2.5 py-1 rounded-full text-xs ${product.inventory < 10 ? 'bg-error/10 text-error font-bold' : 'bg-surface-container-high text-on-surface-variant'}`}>
                         {product.inventory} in stock
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${product.is_active ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-variant text-on-surface-variant'}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${product.is_active ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-variant text-on-surface-variant'}`}>
                         {product.is_active ? 'Active' : 'Draft'}
                       </span>
                     </td>
-                    <td className="p-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleEditClick(product)} aria-label={`Edit ${product.name}`} className="touch-target flex items-center justify-center p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container">
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => handleEditClick(product)} aria-label={`Edit ${product.name}`} className="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container cursor-pointer">
                           <EditIcon />
                         </button>
                         <button
                           onClick={() => setProductToDelete(product)}
                           aria-label={`Delete ${product.name}`}
-                          className="touch-target flex items-center justify-center p-2 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error/10"
+                          className="p-2 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error/10 cursor-pointer"
                         >
                           <TrashIcon />
                         </button>
@@ -181,6 +336,7 @@ export default function AdminProducts() {
           onClose={() => setIsFormModalOpen(false)}
           product={productToEdit}
           onSaved={fetchProducts}
+          existingCategories={existingCategories}
         />
       )}
     </div>

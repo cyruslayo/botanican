@@ -120,6 +120,11 @@
   --spacing-section-gap: clamp(3rem, 8vw, 5rem);
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(5.5rem + env(safe-area-inset-top, 0px));
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
@@ -257,4 +262,39 @@ h4 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Instagram & Anchor Deep-Linking: Target highlight and visibility guarantee */
+:target {
+  scroll-margin-top: calc(5.5rem + env(safe-area-inset-top, 0px));
+}
+
+/* Ensure that any section or element directly jumped to via URL hash is immediately visible */
+:target,
+:target * {
+  animation-play-state: running !important;
+}
+
+:target .reveal,
+:target.reveal,
+:target .reveal-group > * {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@keyframes target-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 99, 83, 0);
+  }
+  30% {
+    box-shadow: 0 0 0 6px rgba(79, 99, 83, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 99, 83, 0);
+  }
+}
+
+.target-glow-effect:target,
+article :target {
+  animation: target-glow 2.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

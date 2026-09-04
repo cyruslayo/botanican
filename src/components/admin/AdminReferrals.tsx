@@ -152,20 +152,20 @@ export default function AdminReferrals() {
         </div>
       </div>
 
-      {/* Section 1: Access Requests Table */}
+      {/* Section 1: Access Requests Table & Cards */}
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/30 pb-3">
-          <h3 className="font-headline-sm text-headline-sm text-primary">
+          <h3 className="font-headline-sm text-base sm:text-headline-sm text-primary font-bold">
             Membership Applications
           </h3>
-          <div className="flex bg-surface-container rounded-lg p-1 gap-1">
+          <div className="flex bg-surface-container rounded-xl p-1 gap-1 overflow-x-auto hide-scrollbar">
             {(['pending', 'approved', 'rejected', 'all'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setStatusFilter(tab)}
-                className={`px-3 py-1.5 rounded-md font-label-sm text-label-sm uppercase tracking-wider transition-colors ${
+                className={`px-3 py-1.5 rounded-lg font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
                   statusFilter === tab
-                    ? 'bg-surface text-primary font-bold shadow-sm'
+                    ? 'bg-surface text-primary font-bold shadow-xs'
                     : 'text-on-surface-variant hover:text-primary'
                 }`}
               >
@@ -175,35 +175,115 @@ export default function AdminReferrals() {
           </div>
         </div>
 
-        <div className="bg-surface rounded-xl border border-outline-variant overflow-hidden botanical-shadow">
+        {/* Mobile Applications Card List (< md screens) */}
+        <div className="md:hidden space-y-3">
+          {loading ? (
+            <div className="p-8 text-center text-on-surface-variant text-sm bg-surface rounded-2xl border border-outline-variant">
+              Loading membership applications...
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="p-8 text-center text-on-surface-variant text-sm bg-surface rounded-2xl border border-outline-variant">
+              No applications found in this filter category.
+            </div>
+          ) : (
+            requests.map((req) => (
+              <div
+                key={req.id}
+                className="bg-surface rounded-2xl border border-outline-variant/70 p-4 botanical-shadow space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-primary text-base">
+                    {req.instagram_handle}
+                  </span>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      req.status === 'approved'
+                        ? 'bg-secondary-container text-on-secondary-container'
+                        : req.status === 'rejected'
+                        ? 'bg-error/10 text-error'
+                        : 'bg-surface-container-high text-on-surface-variant'
+                    }`}
+                  >
+                    {req.status}
+                  </span>
+                </div>
+
+                <div className="space-y-1 text-xs text-on-surface-variant">
+                  <div className="flex justify-between">
+                    <span>Phone:</span>
+                    <span className="font-mono text-primary font-semibold">{req.phone}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Referred By:</span>
+                    <span className="font-mono text-primary">{req.referred_by || 'Organic'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Invite Code:</span>
+                    <span className="px-2 py-0.5 bg-surface-container rounded font-mono text-[11px] font-bold text-secondary">
+                      {req.referral_code}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Date:</span>
+                    <span className="font-mono">{new Date(req.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-outline-variant/40">
+                  {req.status !== 'approved' && (
+                    <button
+                      onClick={() => handleUpdateStatus(req.id, 'approved')}
+                      disabled={actionLoading === req.id}
+                      className="px-4 py-2 bg-primary text-on-primary rounded-xl font-mono text-xs uppercase tracking-wider font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      Approve
+                    </button>
+                  )}
+                  {req.status !== 'rejected' && (
+                    <button
+                      onClick={() => handleUpdateStatus(req.id, 'rejected')}
+                      disabled={actionLoading === req.id}
+                      className="px-4 py-2 border border-outline-variant/70 text-error hover:bg-error/10 rounded-xl font-mono text-xs uppercase tracking-wider font-bold transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      Reject
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Applications Table (>= md screens) */}
+        <div className="hidden md:block bg-surface rounded-2xl border border-outline-variant overflow-hidden botanical-shadow">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px] text-left border-collapse">
+            <table className="w-full text-left border-collapse">
               <thead className="bg-surface-container-low">
                 <tr className="border-b border-outline-variant">
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Instagram Handle
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Phone Number
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Referred By
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Invite Code
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-right">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider text-right">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/50">
+              <tbody className="font-body-md text-sm text-on-surface divide-y divide-outline-variant/50">
                 {loading ? (
                   <tr>
                     <td colSpan={7} className="p-8 text-center text-on-surface-variant">
@@ -220,31 +300,31 @@ export default function AdminReferrals() {
                   requests.map((req) => (
                     <tr key={req.id} className="hover:bg-surface-container-low/50 transition-colors">
                       <td className="p-4">
-                        <div className="font-mono font-bold text-primary text-base">
+                        <div className="font-mono font-bold text-primary text-sm">
                           {req.instagram_handle}
                         </div>
                       </td>
-                      <td className="p-4 text-on-surface-variant font-mono text-sm">
+                      <td className="p-4 text-on-surface-variant font-mono text-xs">
                         {req.phone}
                       </td>
-                      <td className="p-4 text-on-surface-variant font-mono text-sm">
-                        {req.referred_by}
+                      <td className="p-4 text-on-surface-variant font-mono text-xs">
+                        {req.referred_by || 'Organic'}
                       </td>
                       <td className="p-4">
                         <span className="px-2.5 py-1 bg-surface-container rounded-md font-mono text-xs text-primary font-bold">
                           {req.referral_code}
                         </span>
                       </td>
-                      <td className="p-4 text-on-surface-variant text-sm">
+                      <td className="p-4 text-on-surface-variant text-xs font-mono">
                         {new Date(req.created_at).toLocaleDateString()}
                       </td>
                       <td className="p-4">
                         <span
                           className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider ${
                             req.status === 'approved'
-                              ? 'bg-secondary-container text-on-secondary-container'
+                              ? 'bg-secondary-container text-on-secondary-container font-bold'
                               : req.status === 'rejected'
-                              ? 'bg-error/10 text-error'
+                              ? 'bg-error/10 text-error font-bold'
                               : 'bg-surface-container-high text-on-surface-variant'
                           }`}
                         >
@@ -257,7 +337,7 @@ export default function AdminReferrals() {
                             <button
                               onClick={() => handleUpdateStatus(req.id, 'approved')}
                               disabled={actionLoading === req.id}
-                              className="px-3 py-1.5 bg-primary text-on-primary rounded-md font-label-sm text-xs uppercase tracking-wider hover:bg-primary/90 transition-colors disabled:opacity-50"
+                              className="px-3 py-1.5 bg-primary text-on-primary rounded-lg font-mono text-xs uppercase tracking-wider font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
                             >
                               Approve
                             </button>
@@ -266,7 +346,7 @@ export default function AdminReferrals() {
                             <button
                               onClick={() => handleUpdateStatus(req.id, 'rejected')}
                               disabled={actionLoading === req.id}
-                              className="px-3 py-1.5 border border-outline text-error hover:bg-error/10 rounded-md font-label-sm text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                              className="px-3 py-1.5 border border-outline-variant/80 text-error hover:bg-error/10 rounded-lg font-mono text-xs uppercase tracking-wider font-bold transition-colors disabled:opacity-50 cursor-pointer"
                             >
                               Reject
                             </button>
@@ -284,33 +364,85 @@ export default function AdminReferrals() {
 
       {/* Section 2: Active Referral Codes Directory */}
       <section className="space-y-4">
-        <h3 className="font-headline-sm text-headline-sm text-primary border-b border-outline-variant/30 pb-3">
+        <h3 className="font-headline-sm text-base sm:text-headline-sm text-primary font-bold border-b border-outline-variant/30 pb-3">
           Active Invitation Codes
         </h3>
 
-        <div className="bg-surface rounded-xl border border-outline-variant overflow-hidden botanical-shadow">
+        {/* Mobile Codes Card List (< md screens) */}
+        <div className="md:hidden space-y-3">
+          {codes.length === 0 ? (
+            <div className="p-8 text-center text-on-surface-variant text-sm bg-surface rounded-2xl border border-outline-variant">
+              No referral codes created yet.
+            </div>
+          ) : (
+            codes.map((c) => (
+              <div
+                key={c.id}
+                className="bg-surface rounded-2xl border border-outline-variant/70 p-4 botanical-shadow space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-base text-primary">
+                    {c.code}
+                  </span>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      c.is_active
+                        ? 'bg-secondary-container text-on-secondary-container'
+                        : 'bg-surface-variant text-on-surface-variant'
+                    }`}
+                  >
+                    {c.is_active ? 'Active' : 'Disabled'}
+                  </span>
+                </div>
+
+                <div className="space-y-1 text-xs text-on-surface-variant">
+                  <div className="flex justify-between">
+                    <span>Member:</span>
+                    <span className="font-mono text-primary font-bold">{c.owner_handle || c.owner_email}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Created:</span>
+                    <span className="font-mono">{new Date(c.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-outline-variant/40 flex justify-end">
+                  <button
+                    onClick={() => handleCopyLink(c.code)}
+                    className="w-full sm:w-auto px-4 py-2 bg-primary text-on-primary rounded-xl font-mono text-xs uppercase tracking-wider font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copySuccess === c.code ? '✓ Link Copied!' : 'Copy Invite Link'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Codes Table (>= md screens) */}
+        <div className="hidden md:block bg-surface rounded-2xl border border-outline-variant overflow-hidden botanical-shadow">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left border-collapse">
+            <table className="w-full text-left border-collapse">
               <thead className="bg-surface-container-low">
                 <tr className="border-b border-outline-variant">
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Code
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Member / Instagram Handle
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Created Date
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-right">
+                  <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider text-right">
                     Share Link
                   </th>
                 </tr>
               </thead>
-              <tbody className="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/50">
+              <tbody className="font-body-md text-sm text-on-surface divide-y divide-outline-variant/50">
                 {codes.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-on-surface-variant">
@@ -324,12 +456,12 @@ export default function AdminReferrals() {
                       <td className="p-4 text-on-surface-variant font-mono font-bold">
                         {c.owner_handle || c.owner_email}
                       </td>
-                      <td className="p-4 text-on-surface-variant text-sm">
+                      <td className="p-4 text-on-surface-variant text-xs font-mono">
                         {new Date(c.created_at).toLocaleDateString()}
                       </td>
                       <td className="p-4">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-xs ${
+                          className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                             c.is_active
                               ? 'bg-secondary-container text-on-secondary-container'
                               : 'bg-surface-variant text-on-surface-variant'
@@ -341,7 +473,7 @@ export default function AdminReferrals() {
                       <td className="p-4 text-right">
                         <button
                           onClick={() => handleCopyLink(c.code)}
-                          className="px-3 py-1.5 border border-outline rounded-md font-label-sm text-xs uppercase tracking-wider hover:bg-surface-container transition-colors inline-flex items-center gap-1.5"
+                          className="px-3 py-1.5 border border-outline-variant/80 rounded-xl font-mono text-xs uppercase tracking-wider font-bold hover:bg-surface-container transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                         >
                           {copySuccess === c.code ? 'Copied!' : 'Copy Invite Link'}
                         </button>
@@ -357,9 +489,9 @@ export default function AdminReferrals() {
 
       {/* Modal: Generate Invitation Code */}
       {isCreateCodeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="bg-surface p-6 rounded-2xl border border-outline-variant botanical-shadow max-w-md w-full">
-            <h3 className="font-headline-sm text-headline-sm text-primary mb-2">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in">
+          <div className="bg-surface p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-outline-variant botanical-shadow max-w-md w-full">
+            <h3 className="font-headline-sm text-base sm:text-headline-sm text-primary font-bold mb-1">
               Generate Member Invite Code
             </h3>
             <p className="font-body-md text-body-md text-on-surface-variant mb-6">

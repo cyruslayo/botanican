@@ -22,7 +22,12 @@ if (!product) {
 }
 ---
 
-<Layout pathname={`/product/${product.slug}`} title={`${product.name} | Botanical Essence`}>
+<Layout
+  pathname={`/product/${product.slug}`}
+  title={`${product.name} | Botanical Essence`}
+  description={product.description}
+  image={product.image}
+>
   <MemberGate client:load>
     <ProductDetailIsland client:load product={product} />
   </MemberGate>

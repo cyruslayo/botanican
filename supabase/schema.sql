@@ -91,4 +91,41 @@ create index if not exists access_requests_status_idx on public.access_requests 
 create index if not exists access_requests_handle_idx on public.access_requests (instagram_handle);
 create index if not exists access_requests_phone_idx on public.access_requests (phone);
 
+-- Articles table for The Botanical Gazette
+create table if not exists public.articles (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  subtitle text,
+  category text not null default 'Monograph',
+  volume text default 'Vol. IV',
+  issue text default 'Issue 01',
+  date text default '2026',
+  read_time text default '5 min read',
+  author_name text default 'Botanica Research',
+  author_role text default 'Apothecary Editorial',
+  image_url text,
+  thesis text,
+  excerpt text,
+  content jsonb default '[]'::jsonb,
+  key_takeaways jsonb default '[]'::jsonb,
+  is_featured boolean default false,
+  status text default 'published',
+  related_product_slug text,
+  related_product_name text,
+  callout jsonb default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists articles_slug_idx on public.articles (slug);
+create index if not exists articles_created_at_idx on public.articles (created_at desc);
+
+-- Site settings table for global content & section CMS
+create table if not exists public.site_settings (
+  key text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
 

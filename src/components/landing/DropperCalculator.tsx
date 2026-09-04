@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { BOTTLE_OPTIONS, DRAW_OPTIONS, DROPS_PER_ML, BOTTLE_SIZE_ML } from '@/data/landing';
 
 export default function DropperCalculator() {
-  const [bottleId, setBottleId] = useState('750');
+  const [bottleId, setBottleId] = useState('50');
   const [drawId, setDrawId] = useState('half');
 
   const bottle = BOTTLE_OPTIONS.find((option) => option.id === bottleId) ?? BOTTLE_OPTIONS[1];

@@ -19,3 +19,5 @@ build-ladle/
 # Local working artifacts
 .scratch/
 .zcode/
+first-ui-issue.png
+*.png

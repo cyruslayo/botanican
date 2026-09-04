@@ -6,10 +6,10 @@
 import { X, Check } from 'lucide-react';
 
 const claims = [
-  { weak: 'Proprietary blend', strong: 'Named cannabinoids, in milligrams' },
-  { weak: 'Miracle results, guaranteed', strong: 'A stated onset window and dose math' },
-  { weak: 'Full-spectrum, with no report', strong: 'A batch-linked certificate of analysis' },
-  { weak: 'No lab named', strong: 'An independent, accredited third party' },
+  { weak: 'Proprietary herbal blend', strong: 'Calculated strain THC potency per gram' },
+  { weak: 'Unclear carrier liquid', strong: 'Pure coconut MCT oil infusion' },
+  { weak: 'Miracle results, guaranteed', strong: 'A stated onset window and dropper math' },
+  { weak: 'Unverifiable mystery volume', strong: 'Open formula: grams in, milligrams out' },
 ];
 ---
 
@@ -18,14 +18,14 @@ const claims = [
     <div class="max-w-2xl space-y-stack-md reveal">
       <h2 class="font-headline-lg text-headline-lg text-primary">Wellness, without the stereotype</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        The modern botanical consumer reads certificates, tracks onset, and keeps a log. The stereotype was never about the plant; it was about not knowing what you were taking. You know now.
+        The modern botanical consumer reads the math, tracks onset, and keeps a log. The stereotype was never about the plant; it was about not knowing what was in the oil. You know now.
       </p>
     </div>
 
     <div class="mt-12 reveal">
       <div class="hidden sm:grid grid-cols-2 gap-8 px-6 pb-3">
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant/70 font-bold">Hear this</span>
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">Demand this</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant/70 font-bold">What they say</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">What to demand</span>
       </div>
       <div class="reveal-group">
         {claims.map((claim) => (
@@ -47,7 +47,7 @@ const claims = [
       </div>
       <div class="border-t border-outline-variant/40 pt-6 mt-0">
         <p class="font-body-md text-body-md text-on-surface-variant">
-          Every Botanica batch answers all four. Ask for the certificate before you ask for the code.
+          Every Botanica batch is open-formula: strain potency, extraction grams, and dropper yield. Ask for the formula before you ask for the code.
         </p>
       </div>
     </div>

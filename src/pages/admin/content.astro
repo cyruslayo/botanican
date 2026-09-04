@@ -1,0 +1,13 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminGate from '@/components/admin/AdminGate';
+import AdminSiteContent from '@/components/admin/AdminSiteContent';
+
+export const prerender = true;
+---
+
+<AdminLayout pathname="/admin/content" title="Site Content & CMS | Store Admin">
+  <AdminGate client:load>
+    <AdminSiteContent client:load />
+  </AdminGate>
+</AdminLayout>

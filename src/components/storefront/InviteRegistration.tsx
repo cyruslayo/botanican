@@ -4,9 +4,12 @@ import { useStore } from '@nanostores/react';
 import { accessState, setPendingAccess, setApprovedAccess, clearAccess } from '@/store/access';
 import { validateReferralCode, submitAccessRequest, checkAccess, normalizeHandle } from '@/lib/referrals';
 import type { ReferralCode } from '@/lib/types';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function InviteRegistration({ initialCode = '' }: { initialCode?: string }) {
-  const access = useStore(accessState);
+  const isHydrated = useHydrated();
+  const rawAccess = useStore(accessState);
+  const access = isHydrated ? rawAccess : { status: 'unknown', instagramHandle: null, phone: null, referralCode: null };
   const [code, setCode] = useState(initialCode);
   const [referralInfo, setReferralInfo] = useState<ReferralCode | null>(null);
   const [validating, setValidating] = useState(false);
@@ -249,6 +252,8 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
             </h2>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
+                id="invitationCode"
+                name="invitationCode"
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
@@ -358,6 +363,8 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
         </h3>
         <form onSubmit={handleCheckStatus} className="flex flex-col sm:flex-row gap-3">
           <input
+            id="statusQuery"
+            name="statusQuery"
             type="text"
             required
             value={statusQuery}

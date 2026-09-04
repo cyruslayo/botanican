@@ -46,7 +46,7 @@ export const MOCK_PRODUCTS: Product[] = [
     inventory: 40,
     category: 'Edibles',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg',
-    is_active: true,
+    is_active: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -58,7 +58,7 @@ export const MOCK_PRODUCTS: Product[] = [
     inventory: 22,
     category: 'Edibles',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg',
-    is_active: true,
+    is_active: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -70,10 +70,11 @@ export const MOCK_PRODUCTS: Product[] = [
     inventory: 15,
     category: 'Edibles',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg',
-    is_active: true,
+    is_active: false,
     created_at: new Date().toISOString(),
   },
 ];
+
 
 export const MOCK_ORDERS: Order[] = [
   {

@@ -12,6 +12,8 @@ const navigation = [
   { name: 'Overview', href: '/admin', icon: 'LayoutDashboard' },
   { name: 'Products', href: '/admin/products', icon: 'Package' },
   { name: 'Orders', href: '/admin/orders', icon: 'ShoppingCart' },
+  { name: 'Journal', href: '/admin/journal', icon: 'BookOpen' },
+  { name: 'Site Content', href: '/admin/content', icon: 'Sliders' },
   { name: 'Referrals', href: '/admin/referrals', icon: 'UserCheck' },
   { name: 'Customers', href: '/admin/customers', icon: 'Users' },
 ];
@@ -53,21 +55,40 @@ const navigation = [
           })}
         </nav>
         <div class="p-4 border-t border-outline-variant">
-          <button class="flex items-center gap-3 px-4 py-3 w-full rounded-lg font-label-sm text-label-sm text-error hover:bg-error/10 transition-colors">
+          <button id="desktop-sign-out-btn" class="flex items-center gap-3 px-4 py-3 w-full rounded-lg font-label-sm text-label-sm text-error hover:bg-error/10 transition-colors cursor-pointer">
             Sign Out
           </button>
         </div>
       </aside>
 
-      <main class="flex-1 flex flex-col min-h-screen max-w-full overflow-hidden">
-        <header class="h-16 bg-surface border-b border-outline-variant flex items-center px-8 md:hidden">
-          <h1 class="font-headline-sm text-headline-sm text-primary">Store Admin</h1>
+      <main class="flex-1 flex flex-col min-h-screen max-w-full min-w-0 overflow-x-hidden">
+        <header class="h-16 bg-surface/90 backdrop-blur-xs border-b border-outline-variant/60 flex items-center justify-between px-4 sm:px-6 md:hidden sticky top-0 z-30">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            <div>
+              <span class="font-label-sm text-[10px] uppercase tracking-widest text-on-surface-variant/80 block">Store Admin</span>
+              <h1 class="font-headline-sm text-sm text-primary font-bold truncate max-w-[200px]">{title.split('|')[0].trim()}</h1>
+            </div>
+          </div>
+          <a href="/" target="_blank" rel="noreferrer" class="text-xs font-mono font-bold text-secondary px-2.5 py-1 bg-secondary-container/50 rounded-lg hover:bg-secondary-container transition-colors">
+            View Store ↗
+          </a>
         </header>
-        <div id="content" tabindex="-1" class="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div id="content" tabindex="-1" class="flex-1 p-3 sm:p-5 md:p-8 overflow-y-auto overscroll-contain @container">
           <slot />
         </div>
       </main>
     </div>
+    <script>
+      import { signOut } from '@/lib/auth';
+      const btn = document.getElementById('desktop-sign-out-btn');
+      if (btn) {
+        btn.addEventListener('click', async () => {
+          await signOut();
+          window.location.href = '/admin';
+        });
+      }
+    </script>
     <AdminBottomNav pathname={pathname} client:load />
   </body>
 </html>

@@ -2,10 +2,16 @@
 import { useStore } from '@nanostores/react';
 import { cartCount } from '@/store/cart';
 import { isApproved } from '@/store/access';
+import AccessStatusBanner from '@/components/storefront/AccessStatusBanner';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function Header({ pathname }: { pathname: string }) {
-  const count = useStore(cartCount);
-  const approved = useStore(isApproved);
+  const isHydrated = useHydrated();
+  const rawCount = useStore(cartCount);
+  const rawApproved = useStore(isApproved);
+
+  const approved = isHydrated && rawApproved;
+  const count = isHydrated ? rawCount : 0;
 
   const isCheckout = pathname.startsWith('/checkout');
   const isProduct = pathname.startsWith('/product');
@@ -14,7 +20,8 @@ export default function Header({ pathname }: { pathname: string }) {
   const showBackButton = isCheckout || isCart || isProduct;
 
   return (
-    <header className="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface/80">
+    <header className="sticky top-0 w-full z-50 backdrop-blur-xl bg-surface/80">
+      <AccessStatusBanner />
       <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full max-w-container-max mx-auto">
         {showBackButton ? (
           <button

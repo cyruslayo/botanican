@@ -8,35 +8,43 @@ import DropperMath from '@/components/landing/DropperMath.astro';
 import GoldenHour from '@/components/landing/GoldenHour.astro';
 import WhyItVaries from '@/components/landing/WhyItVaries.astro';
 import EveningRitual from '@/components/landing/EveningRitual.astro';
-import Proof from '@/components/landing/Proof.astro';
 import Identity from '@/components/landing/Identity.astro';
 import Faq from '@/components/landing/Faq.astro';
 import ClosingInvite from '@/components/landing/ClosingInvite.astro';
 import LandingFooter from '@/components/landing/LandingFooter.astro';
 import { buildFaqJsonLd } from '@/data/landing';
 
+import Masthead from '@/components/journal/Masthead.astro';
+import LeadStory from '@/components/journal/LeadStory.astro';
+import JournalGrid from '@/components/journal/JournalGrid.astro';
+import { getAllArticles, getFeaturedArticle } from '@/data/journal';
+
 export const prerender = true;
 
+const articles = await getAllArticles();
+const featuredArticle = getFeaturedArticle(articles);
 const faqJsonLd = buildFaqJsonLd();
 ---
 
 <Layout
   pathname="/"
-  title="Botanica | Private Botanical Apothecary"
-  description="Lab-verified botanical tinctures with exact milligram math and a predictable onset window. Private apothecary, delivered across Abuja."
+  title="Botanica | Private Botanical Apothecary & Journal"
+  description="Botanical tinctures calculated from strain THC potency per gram, infused into pure coconut MCT oil with exact milligram math and predictable onset. Private apothecary, delivered with discretion."
 >
   <MemberWelcome client:load />
+  <Masthead />
 
   <div id="public-landing">
     <main class="w-full">
       <Hero />
+      <LeadStory article={featuredArticle} />
       <OnsetTimeline />
       <Mechanism />
+      <JournalGrid articles={articles} />
       <DropperMath />
       <GoldenHour />
       <WhyItVaries />
       <EveningRitual />
-      <Proof />
       <Identity />
       <Faq />
       <ClosingInvite />

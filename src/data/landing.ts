@@ -13,9 +13,9 @@ export const OILS_IMAGE =
 export const EDIBLES_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg';
 
-/** Dropper calculator: 30 ml bottles in the current catalog, ~20 drops per ml. */
+/** Dropper calculator: 10 ml bottles in the current catalog, ~20 drops per ml. */
 export const DROPS_PER_ML = 20;
-export const BOTTLE_SIZE_ML = 30;
+export const BOTTLE_SIZE_ML = 10;
 
 export interface BottleOption {
   id: string;
@@ -24,9 +24,8 @@ export interface BottleOption {
 }
 
 export const BOTTLE_OPTIONS: BottleOption[] = [
-  { id: '500', label: '500 mg / 30 ml', totalMg: 500 },
-  { id: '750', label: '750 mg / 30 ml', totalMg: 750 },
-  { id: '1000', label: '1,000 mg / 30 ml', totalMg: 1000 },
+  { id: '25', label: '25 mg / 10 ml', totalMg: 25 },
+  { id: '50', label: '50 mg / 10 ml', totalMg: 50 },
 ];
 
 export interface DrawOption {

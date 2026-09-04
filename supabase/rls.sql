@@ -91,3 +91,13 @@ drop policy if exists access_requests_admin_update on public.access_requests;
 create policy access_requests_admin_update on public.access_requests
   for update using (public.is_admin());
 
+-- Site settings: public read, admin write
+alter table public.site_settings enable row level security;
+drop policy if exists site_settings_select on public.site_settings;
+create policy site_settings_select on public.site_settings
+  for select using (true);
+
+drop policy if exists site_settings_admin_all on public.site_settings;
+create policy site_settings_admin_all on public.site_settings
+  for all using (public.is_admin());
+

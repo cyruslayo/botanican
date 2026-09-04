@@ -3,11 +3,17 @@ import { useStore } from '@nanostores/react';
 import { cartItems, removeItem, updateQuantity, cartTotal, cartCount } from '@/store/cart';
 import { formatNaira } from '@/lib/utils';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/FadeIn';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function Cart() {
-  const items = useStore(cartItems);
-  const total = useStore(cartTotal);
-  const count = useStore(cartCount);
+  const isHydrated = useHydrated();
+  const rawItems = useStore(cartItems);
+  const rawTotal = useStore(cartTotal);
+  const rawCount = useStore(cartCount);
+
+  const items = isHydrated ? rawItems : [];
+  const total = isHydrated ? rawTotal : 0;
+  const count = isHydrated ? rawCount : 0;
 
   return (
     <main className="flex-1 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-24 md:pt-32 pb-32">

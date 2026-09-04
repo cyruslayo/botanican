@@ -1,31 +1,27 @@
 ---
-import { ShieldCheck, FlaskConical, Timer, Scale } from 'lucide-react';
+import { Calculator, Droplets, Timer, Scale } from 'lucide-react';
 import { HERO_IMAGE } from '@/data/landing';
+import HeroTrustBadge from './HeroTrustBadge';
 
 const trustItems = [
-  { icon: ShieldCheck, label: 'Third-Party Lab Tested' },
-  { icon: FlaskConical, label: 'CO2 Extracted, Zero Solvents' },
+  { icon: Calculator, label: 'Calculated Strain Potency' },
+  { icon: Droplets, label: 'Pure Coconut MCT Infusion' },
   { icon: Timer, label: 'Predictable Onset Windows' },
   { icon: Scale, label: 'Milligram-Exact Bottles' },
 ];
 ---
 
-<section class="w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<section id="intro" class="w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center py-10 md:py-16">
     <div class="md:col-span-7 lg:col-span-6 space-y-stack-md load-in">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary-container/40 rounded-full border border-outline-variant/40">
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          Private Botanical Apothecary
-        </span>
-      </div>
+      <HeroTrustBadge client:load />
 
       <h1 class="font-display-lg md:font-display-xl text-display-lg md:text-display-xl text-primary">
         Know exactly what's in the dropper.
       </h1>
 
-      <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-[34ch]">
-        Lab-verified tinctures with exact milligram math, a predictable onset window, and a calmer way to end the day.
+      <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-[36ch]">
+        Calculated from strain THC potency per gram, infused into pure coconut MCT oil with exact milligram math and a predictable 15-to-30-minute onset window.
       </p>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -59,7 +55,7 @@ const trustItems = [
           />
         </div>
         <figcaption class="font-body-sm text-body-sm text-on-surface-variant mt-3">
-          The Balance Tincture, batch-numbered and third-party tested.
+          The Balance Tincture, formulated from strain potency into pure coconut MCT oil.
         </figcaption>
       </figure>
     </div>

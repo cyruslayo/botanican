@@ -4,13 +4,36 @@ import { useStore } from '@nanostores/react';
 import { cartItems, cartTotal, clearCart } from '@/store/cart';
 import { isApproved, isPending, accessState } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
+import { getSiteSettings, fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function Checkout() {
-  const items = useStore(cartItems);
-  const total = useStore(cartTotal);
-  const approved = useStore(isApproved);
-  const pending = useStore(isPending);
+  const isHydrated = useHydrated();
+  const rawItems = useStore(cartItems);
+  const rawTotal = useStore(cartTotal);
+  const rawApproved = useStore(isApproved);
+  const rawPending = useStore(isPending);
   const access = useStore(accessState);
+
+  const approved = isHydrated && rawApproved;
+  const pending = isHydrated && rawPending;
+  const items = isHydrated ? rawItems : [];
+  const total = isHydrated ? rawTotal : 0;
+
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    setSiteSettings(getSiteSettings());
+    fetchLiveSiteSettings().then(setSiteSettings);
+
+    const onUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<SiteSettings>;
+      if (customEvent.detail) setSiteSettings(customEvent.detail);
+      else setSiteSettings(getSiteSettings());
+    };
+    window.addEventListener(SITE_SETTINGS_EVENT, onUpdate);
+    return () => window.removeEventListener(SITE_SETTINGS_EVENT, onUpdate);
+  }, []);
 
   const [formData, setFormData] = useState({
     instagramHandle: access.instagramHandle || '',
@@ -185,6 +208,7 @@ export default function Checkout() {
                     id="instagramHandle"
                     type="text"
                     name="instagramHandle"
+                    autoComplete="username"
                     placeholder="@your_handle"
                     value={formData.instagramHandle}
                     onChange={handleChange}
@@ -243,6 +267,7 @@ export default function Checkout() {
                   required
                   id="address"
                   name="address"
+                  autoComplete="street-address"
                   rows={3}
                   placeholder="House/Plot number, street name, building/estate name, landmark, or specific delivery instructions..."
                   value={formData.address}
@@ -257,7 +282,7 @@ export default function Checkout() {
                   <path d="M12 16v-4" />
                   <path d="M12 8h.01" />
                 </svg>
-                <span>Orders are dispatched via private courier directly within Abuja (FCT).</span>
+                <span>{siteSettings.bank.dispatchNote}</span>
               </div>
             </div>
           </section>
@@ -273,21 +298,21 @@ export default function Checkout() {
               <div className="space-y-2 font-body-lg text-on-surface bg-surface p-4 rounded-lg border border-outline-variant">
                 <div className="flex justify-between">
                   <span className="text-on-surface-variant font-label-md">Bank Name:</span>
-                  <span className="font-medium">Guaranty Trust Bank (GTB)</span>
+                  <span className="font-medium">{siteSettings.bank.bankName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-on-surface-variant font-label-md">Account Name:</span>
-                  <span className="font-medium">Botanical Wellness Ltd</span>
+                  <span className="font-medium">{siteSettings.bank.accountName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-on-surface-variant font-label-md">Account Number:</span>
-                  <span className="font-headline-sm text-primary">0123456789</span>
+                  <span className="font-headline-sm text-primary">{siteSettings.bank.accountNumber}</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <label className="font-label-md text-on-surface font-medium block">Upload Payment Receipt</label>
+              <label htmlFor="receipt" className="font-label-md text-on-surface font-medium block">Upload Payment Receipt</label>
 
               <label
                 htmlFor="receipt"
@@ -307,6 +332,8 @@ export default function Checkout() {
                 )}
                 <input
                   id="receipt"
+                  name="receipt"
+                  aria-label="Upload payment receipt"
                   type="file"
                   accept="image/*,.pdf"
                   className="sr-only"

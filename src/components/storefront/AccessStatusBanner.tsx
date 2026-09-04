@@ -12,8 +12,10 @@ import {
 } from '@/store/access';
 import { checkAccess, normalizeHandle } from '@/lib/referrals';
 import { getSupabase } from '@/lib/supabase';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function AccessStatusBanner() {
+  const isHydrated = useHydrated();
   const pending = useStore(isPending);
   const approved = useStore(isApproved);
   const access = useStore(accessState);
@@ -106,6 +108,8 @@ export default function AccessStatusBanner() {
       };
     } catch {}
   }, [pending, access.instagramHandle, revalidateStatus]);
+
+  if (!isHydrated || dismissed) return null;
 
   // View A: Celebratory In-App Approval Notification
   if (celebration && approved) {
