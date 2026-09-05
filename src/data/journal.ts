@@ -4,40 +4,40 @@ export type { Article, ArticleCallout };
 export const ARTICLES: Article[] = [
   {
     slug: 'circadian-tincture-chronobiology',
-    title: 'The Circadian Tincture: Why Chronobiology Outranks Potency',
-    subtitle: 'Matching botanical delivery to the biphasic rhythm of the nervous system.',
-    category: 'Circadian Science',
+    title: 'Why Timing Matters More Than Chasing Strength',
+    subtitle: 'Building a patient evening routine around consistent delivery and deliberate timing.',
+    category: 'Protocol & Ritual',
     volume: 'Vol. IV',
     issue: 'Issue 01',
     date: 'Autumn 2026',
-    readTime: '6 min read',
+    readTime: '5 min read',
     author: {
-      name: 'Dr. Evelyn Vance',
-      role: 'Head of Botanical Formulation',
+      name: 'Evelyn Vance',
+      role: 'Botanical Formulation & Research',
     },
     featured: true,
-    excerpt: 'High-potency botanical supplements often fail not from lack of active compounds, but from mistimed receptor engagement. When administered 90 minutes prior to deep slow-wave sleep, sublingual cannabinoids synchronize with natural core body temperature decline.',
+    excerpt: 'Many adults look for a higher number on the bottle when what they really need is a more thoughtful routine. Introducing a consistent visual draw during an unhurried wind-down gives the evening time to develop naturally.',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA',
-    thesis: 'The therapeutic window of lipid-soluble phytocannabinoids is governed primarily by circadian receptor density, not raw milligram volume.',
+    thesis: 'A repeatable evening routine depends on consistent timing and unhurried observation, not chasing higher potency.',
     content: [
-      'The modern functional consumer has been conditioned to look for a single metric: milligrams per bottle. We are trained by standard retail logic to equate higher numbers with superior efficacy. In human chronobiology, however, receptor affinity fluctuates on a precise 24-hour oscillary rhythm.',
-      'Cannabinoid Type 1 (CB1) and Type 2 (CB2) receptors throughout the central nervous system do not express with static sensitivity throughout the day. Between 8:00 PM and 10:30 PM, parasympathetic tone rises as peripheral blood vessels dilate to disperse heat. When phytocannabinoids are introduced during this descent, they work in concert with endogenous signaling cascades.',
-      'Administered sublingually, the compounds permeate the rich sublingual vascular network within 15 to 30 minutes, bypassing the extensive hepatic first-pass degradation that converts orally ingested compounds into erratic second-generation metabolites. The result is a smooth, reproducible glide rather than an overwhelming, unmoored peak.',
-      'The takeaway is practical and profound: half the dose administered at the precise biological inflection point achieves double the functional restorative depth.'
+      'Standard retail logic encourages consumers to equate higher numbers with a better experience. We are conditioned to look for raw volume rather than paying attention to the setting, route, and timing.',
+      'A deliberate evening begins well before reaching for a dropper. Dimming lights, putting work screens aside, and establishing quiet cues create an unhurried environment where an experience can be understood.',
+      'When taken with a consistent visual draw and route, a smaller amount paired with genuine patience provides clear, repeatable comparison across evenings.',
+      'The takeaway is practical: keeping your routine, timing, and visual draw steady is far more informative than continuously adjusting strength.'
     ],
     keyTakeaways: [
-      'CB1 receptor tone peaks during early evening parasympathetic wind-down.',
-      'Sublingual administration prevents unpredictable first-pass liver metabolite spikes.',
-      'Timing the dose 60 to 90 minutes before sleep yields deeper slow-wave progression with zero next-day fog.'
+      'Establishing a consistent evening wind-down sets the stage for deliberate use.',
+      'Keeping the visual draw and administration route steady allows meaningful comparison.',
+      'Allowing adequate time before assessing an experience prevents unnecessary adjustments.'
     ],
     relatedProductSlug: 'eucalyptus-balance-tincture',
     relatedProductName: 'Eucalyptus Balance Tincture 50mg',
     callout: {
       enabled: true,
       type: 'product',
-      badge: 'Mentioned Apothecary Formulation',
+      badge: 'Featured Botanical Formulation',
       title: 'Eucalyptus Balance Tincture 50mg',
-      description: 'CO2-extracted Tasmanian blue eucalyptus and cold-pressed MCT oil. Micro-batched with verified independent chromatography.',
+      description: 'Tasmanian blue eucalyptus infused into pure coconut MCT oil. Formulated for deliberate evening routines.',
       productSlug: 'eucalyptus-balance-tincture',
       ctaText: 'View Apothecary Batch',
       ctaUrl: '/product/eucalyptus-balance-tincture'

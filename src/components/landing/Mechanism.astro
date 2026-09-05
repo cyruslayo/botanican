@@ -1,42 +1,42 @@
 ---
 /**
- * P1.1 - Epithelial permeation / sublingual absorption.
- * P1.6 - Administration route comparison (liquid oils vs alternative formats).
+ * Edible-to-tincture bridge:
+ * Compares familiar edible format with liquid tincture format.
  */
 import { OILS_IMAGE } from '@/data/landing';
 
-const routes = [
+const comparisons = [
   {
-    format: 'Sublingual tincture',
-    onset: '15-30 min onset',
-    control: 'Steered drop by drop. The easiest route to titrate precisely.',
+    edible: 'Usually comes as a fixed piece.',
+    botanica: 'Uses a liquid draw you can repeat visually.',
   },
   {
-    format: 'Edible pastille',
-    onset: '60-90 min onset',
-    control: 'Pre-measured and discreet. Slower to arrive, stronger per milligram.',
+    edible: 'Usually goes through digestion.',
+    botanica: 'Can be held under the tongue or swallowed.',
   },
   {
-    format: 'Capsule',
-    onset: '45-90 min onset',
-    control: 'Fixed and familiar. No mid-course adjustments once taken.',
+    edible: 'Changing the amount usually means changing the portion.',
+    botanica: 'You can choose a smaller or larger visual draw.',
+  },
+  {
+    edible: 'Looks and feels like food.',
+    botanica: 'Uses a small, discreet dropper bottle.',
   },
 ];
 ---
 
-<section id="mechanism" class="w-full bg-surface">
+<section id="format" class="w-full bg-surface">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16 items-center">
       <div class="md:col-span-6 space-y-stack-md reveal">
         <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          The Mechanism
+          The Format
         </span>
-        <h2 class="font-headline-lg text-headline-lg text-primary">Under the tongue, or swallowed?</h2>
+        <h2 class="font-headline-lg text-headline-lg text-primary">
+          You already know edibles. Here is what changes.
+        </h2>
         <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-          The tissue beneath your tongue is thin, warm, and threaded with capillaries. Hold the dose there for 30 to 60 seconds and the active compounds pass straight into the bloodstream, skipping the stomach entirely.
-        </p>
-        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-          Swallow it immediately and the same amount takes the long road: digestion first, then liver metabolism, then a later and heavier arrival that is harder to steer.
+          Gummies and brownies give you a familiar fixed portion. A tincture changes the format: liquid, discreet, and adjustable by visual draw.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ const routes = [
           <div class="aspect-[4/3] rounded-xl overflow-hidden botanical-shadow bg-surface-container-low">
             <img
               src={OILS_IMAGE}
-              alt="Amber tincture bottle with a glass dropper, held above the tongue line"
+              alt="Amber tincture bottle with a dropper"
               referrerpolicy="no-referrer"
               loading="lazy"
               decoding="async"
@@ -55,22 +55,31 @@ const routes = [
             />
           </div>
           <figcaption class="font-body-sm text-body-sm text-on-surface-variant mt-3">
-            MCT carrier oil carries the extract. The mucosa does the rest.
+            A liquid format designed for discretion and visual reference.
           </figcaption>
         </figure>
       </div>
     </div>
 
     <div class="mt-14 md:mt-16 reveal-group">
-      {routes.map((route) => (
-        <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] sm:items-baseline gap-1 sm:gap-8 py-5 border-t border-outline-variant/40 last:border-b">
+      <div class="hidden sm:grid sm:grid-cols-2 gap-8 pb-3 border-b border-outline-variant/60 font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-bold">
+        <span>Familiar Edible</span>
+        <span class="text-secondary">Botanica Tincture</span>
+      </div>
+      {comparisons.map((item) => (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 py-5 border-b border-outline-variant/40">
           <div>
-            <h3 class="font-headline-sm text-headline-sm text-primary">{route.format}</h3>
-            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">{route.control}</p>
+            <span class="sm:hidden font-label-sm text-[11px] uppercase tracking-widest text-on-surface-variant/70 font-bold block mb-1">
+              Familiar Edible
+            </span>
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">{item.edible}</p>
           </div>
-          <span class="font-mono text-sm font-bold text-secondary sm:justify-self-end whitespace-nowrap">
-            {route.onset}
-          </span>
+          <div>
+            <span class="sm:hidden font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold block mb-1">
+              Botanica Tincture
+            </span>
+            <p class="font-body-md text-body-md text-primary font-bold leading-relaxed">{item.botanica}</p>
+          </div>
         </div>
       ))}
     </div>
