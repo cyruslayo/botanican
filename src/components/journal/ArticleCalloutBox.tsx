@@ -26,9 +26,9 @@ export default function ArticleCalloutBox({
     ? {
         enabled: true,
         type: 'product',
-        badge: 'Mentioned Apothecary Formulation',
-        title: fallbackProductName || 'Apothecary Formulation',
-        description: 'CO2-extracted, micro-batched with verified independent analytical chromatography.',
+        badge: 'Featured Botanical Formulation',
+        title: fallbackProductName || 'Botanica Tincture',
+        description: 'A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.',
         productSlug: fallbackProductSlug,
         ctaText: 'View Apothecary Batch',
         ctaUrl: `/product/${fallbackProductSlug}`,
@@ -208,7 +208,7 @@ export default function ArticleCalloutBox({
             {displayTitle}
           </h4>
           <p className="font-body-sm text-xs text-on-surface-variant max-w-lg leading-relaxed">
-            {activeCallout.description || (product?.description ? product.description.slice(0, 110) + '...' : 'CO2-extracted, micro-batched with verified independent chromatography.')}
+            {activeCallout.description || (product?.description ? product.description.slice(0, 110) + '...' : 'A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.')}
           </p>
         </div>
       </div>

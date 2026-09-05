@@ -37,7 +37,7 @@ export const ARTICLES: Article[] = [
       type: 'product',
       badge: 'Featured Botanical Formulation',
       title: 'Eucalyptus Balance Tincture',
-      description: 'Tasmanian blue eucalyptus infused into pure coconut MCT oil. Formulated for deliberate evening routines.',
+      description: 'A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.',
       productSlug: 'eucalyptus-balance-tincture',
       ctaText: 'View Apothecary Batch',
       ctaUrl: '/product/eucalyptus-balance-tincture'
@@ -63,9 +63,9 @@ export const ARTICLES: Article[] = [
     content: [
       'Most adults who explore cannabis tinctures are already familiar with edibles. A gummy or pastille provides a fixed, pre-portioned piece that is chewed and swallowed. You take the piece, and digestion handles the rest.',
       'A tincture changes the physical format entirely: it is a liquid extract carried in coconut MCT oil. Instead of taking a fixed confection, you draw liquid into a small dropper bottle.',
-      'Because the dropper is unmarked, you rely on simple visual reference states—such as a quarter or half fill height—to maintain consistency. This visual reference gives you flexible, observable control that a solid edible cannot match.',
+      'Because the dropper is unmarked, you rely on simple visual reference states—such as a quarter or half fill height—to maintain consistency. This creates a different kind of control from taking a familiar fixed edible portion.',
       'How you take the tincture also introduces choice. Holding the drops under your tongue allows absorption through oral tissue, which can feel sooner than swallowing the liquid directly into digestion.',
-      'Timing can vary based on your chosen route, recent food, and personal metabolism. Giving each experience adequate time before adjusting anything is the key to building a predictable routine.'
+      'Timing can vary based on your chosen route, recent food, and personal metabolism. Giving each experience adequate time before adjusting anything is the key to building a repeatable routine.'
     ],
     keyTakeaways: [
       'Fixed edible pieces differ fundamentally from an adjustable liquid format.',
@@ -143,7 +143,7 @@ export async function getAllArticles(): Promise<Article[]> {
           type: 'product',
           badge: 'Featured Botanical Formulation',
           title: row.related_product_name || 'Apothecary Formulation',
-          description: 'A small-batch Botanica formulation featured alongside this journal entry.',
+          description: 'A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.',
           productSlug: row.related_product_slug,
           ctaText: 'View Apothecary Batch',
           ctaUrl: `/product/${row.related_product_slug}`

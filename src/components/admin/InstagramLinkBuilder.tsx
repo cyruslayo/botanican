@@ -96,12 +96,12 @@ const PRESET_LINKS: LinkOption[] = [
     description: 'Key takeaways on CB1 receptor tone and sleep architecture.'
   },
   {
-    title: 'Supercritical CO2 Extraction (Thesis)',
+    title: 'From Edibles to Drops (Thesis)',
     category: 'Journal Monograph',
-    path: '/journal/supercritical-co2-terpene-integrity',
+    path: '/journal/from-edibles-to-drops',
     anchor: 'thesis',
-    stickerText: 'LAB EXTRACTION 🧪',
-    description: 'Supercritical fluid chromatography and terpene preservation.'
+    stickerText: 'EDIBLES TO DROPS 🌿',
+    description: 'Moving from fixed portions to an adjustable liquid format.'
   },
   {
     title: 'Sublingual Titration Protocol (Takeaways)',

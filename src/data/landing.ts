@@ -52,7 +52,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'What is a cannabis tincture?',
     answer:
-      'A cannabis tincture is a liquid extract infused into a carrier oil such as coconut MCT. It is taken using a dropper bottle, either held under the tongue or swallowed.',
+      'A cannabis tincture is a liquid cannabis extract carried in coconut MCT oil and dispensed with a dropper. It can be held under the tongue or swallowed.',
   },
   {
     question: 'How is this different from a gummy?',
