@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
-import { cartItems, cartTotal, clearCart } from '@/store/cart';
+import { cartItems, cartTotal, clearCart, getCartLineKey } from '@/store/cart';
 import { isApproved, isPending, accessState } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
 import { getSiteSettings, fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
@@ -350,7 +350,7 @@ export default function Checkout() {
 
             <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2">
               {items.map((item) => (
-                <div key={item.id} className="flex gap-4">
+                <div key={getCartLineKey(item)} className="flex gap-4">
                   <div className="w-16 h-16 bg-surface rounded-lg relative overflow-hidden flex-shrink-0">
                     {item.image ? (
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
