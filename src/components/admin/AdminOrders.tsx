@@ -6,10 +6,12 @@ import { formatNaira } from '@/lib/utils';
 export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const { getSupabase } = await import('@/lib/supabase');
       const supabase = getSupabase();
@@ -21,16 +23,12 @@ export default function AdminOrders() {
       setOrders(data ?? []);
     } catch (error) {
       console.error('Error fetching orders: ', error);
-      if (orders.length === 0) {
-        setOrders([
-          { id: 'ORD-092', user_id: '@jane_wellness', total: 145000, status: 'Fulfilled', created_at: new Date('2023-10-24').toISOString(), items: [{ name: 'Serenity Blend', quantity: 1, price: 85000 }, { name: 'Clarity Botanicals', quantity: 2, price: 30000 }], shipping_address: { instagramHandle: '@jane_wellness', phone: '+234 803 111 2222', region: 'Maitama', address: 'Plot 412, Rhine Street, off IBB Way', city: 'Abuja', state: 'FCT' } },
-          { id: 'ORD-091', user_id: '@john_botanicals', total: 85000, status: 'Processing', created_at: new Date('2023-10-23').toISOString(), items: [{ name: 'Serenity Blend', quantity: 1, price: 85000 }], shipping_address: { instagramHandle: '@john_botanicals', phone: '+234 812 333 4444', region: 'Asokoro', address: '14 Nelson Mandela Street, Asokoro', city: 'Abuja', state: 'FCT' } },
-        ]);
-      }
+      setOrders([]);
+      setError('Orders could not be loaded.');
     } finally {
       setLoading(false);
     }
-  }, [orders.length]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -62,6 +60,12 @@ export default function AdminOrders() {
           Total: <span className="font-bold text-primary">{orders.length}</span>
         </div>
       </div>
+
+      {error && !loading && (
+        <div className="p-8 text-center text-on-surface-variant bg-surface rounded-2xl border border-error/30">
+          {error}
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="bg-surface p-3.5 sm:p-4 rounded-2xl border border-outline-variant/60 botanical-shadow space-y-3">

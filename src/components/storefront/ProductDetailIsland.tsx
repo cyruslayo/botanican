@@ -61,7 +61,7 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
             <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-stack-sm">{product.name}</h1>
             <p className="font-body-lg text-body-lg text-secondary mb-stack-md">{formatNaira(product.price)}</p>
             <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-              {product.description || 'Experience the pure essence of nature. Our premium products are meticulously extracted to preserve balance and deliver elevated tranquility.'}
+              {product.description || 'Product details are managed by the Botanica apothecary.'}
             </p>
           </div>
 
@@ -137,13 +137,8 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
               </button>
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openSection === 'details' ? 'max-h-[500px] pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  Extracted using clean CO2 methods to ensure zero residual solvents.
-                  Grown organically in sun-drenched coastal farms.
+                  Product information is managed by the Botanica apothecary.
                 </p>
-                <ul className="mt-4 space-y-2 font-body-sm text-on-surface-variant">
-                  <li className="flex items-center gap-2"><LeafIcon /> Organic Ingredients</li>
-                  <li className="flex items-center gap-2"><DropletIcon /> Solvent Free</li>
-                </ul>
               </div>
             </div>
 
@@ -157,8 +152,7 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
               </button>
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openSection === 'usage' ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  Take 1 full dropper (1ml) under the tongue. Hold for 30 seconds before swallowing.
-                  Use daily or as needed for optimal balance.
+                  Use deliberately and allow adequate time before changing another variable. Do not drive or operate machinery after THC use.
                 </p>
               </div>
             </div>
@@ -196,23 +190,6 @@ function BagIcon() {
   );
 }
 
-function LeafIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary">
-      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-    </svg>
-  );
-}
-
-function DropletIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary">
-      <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
-    </svg>
-  );
-}
-
 function LockIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -229,4 +206,3 @@ function CheckIcon() {
     </svg>
   );
 }
-

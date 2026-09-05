@@ -1,6 +1,5 @@
 import { getSupabase } from './supabase';
 import type { Product } from './types';
-import { MOCK_PRODUCTS } from './mockData';
 
 export async function getActiveProducts(): Promise<Product[]> {
   try {
@@ -11,14 +10,12 @@ export async function getActiveProducts(): Promise<Product[]> {
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
-    if (!error && data && data.length > 0) {
-      return data as Product[];
-    }
+    if (!error) return (data ?? []) as Product[];
   } catch {
-    // Fallback to mock catalog when Supabase is not yet seeded or configured
+    // An unavailable catalog is treated as empty.
   }
 
-  return MOCK_PRODUCTS.filter((p) => p.is_active);
+  return [];
 }
 
 export async function getProductsByCategory(category: string): Promise<Product[]> {
@@ -31,14 +28,12 @@ export async function getProductsByCategory(category: string): Promise<Product[]
       .eq('category', category)
       .order('created_at', { ascending: false });
 
-    if (!error && data && data.length > 0) {
-      return data as Product[];
-    }
+    if (!error) return (data ?? []) as Product[];
   } catch {
-    // Fallback to mock catalog
+    // An unavailable catalog is treated as empty.
   }
 
-  return MOCK_PRODUCTS.filter((p) => p.is_active && p.category.toLowerCase() === category.toLowerCase());
+  return [];
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
@@ -51,13 +46,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .eq('slug', slug)
       .maybeSingle();
 
-    if (!error && data) {
-      return data as Product;
-    }
+    if (!error) return data ? (data as Product) : null;
   } catch {
-    // Fallback to mock catalog
+    // An unavailable product is treated as missing.
   }
 
-  return MOCK_PRODUCTS.find((p) => p.slug === slug && p.is_active) ?? null;
+  return null;
 }
-

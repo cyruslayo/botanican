@@ -14,7 +14,7 @@ let product: Product | null = null;
 try {
   product = await getProductBySlug(String(slug));
 } catch (error) {
-  console.warn(`Falling back to placeholder for slug "${slug}":`, error);
+  console.warn(`Unable to load product for slug "${slug}":`, error);
 }
 
 if (!product) {
@@ -32,4 +32,3 @@ if (!product) {
     <ProductDetailIsland client:load product={product} />
   </MemberGate>
 </Layout>
-
