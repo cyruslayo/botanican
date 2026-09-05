@@ -147,7 +147,7 @@ export default function AdminArticles() {
             The Botanical Gazette Articles
           </h2>
           <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant">
-            Author and publish peer-reviewed monographs, chronobiology protocols, and frontpage cover stories.
+            Author and publish editorial monographs, format guides, and frontpage cover stories.
           </p>
         </div>
 
@@ -218,7 +218,7 @@ export default function AdminArticles() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Vol. IV"
+                  placeholder="e.g. Vol. I"
                   value={gazetteSettings.volume}
                   onChange={(e) => setGazetteSettings({ ...gazetteSettings, volume: e.target.value })}
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"

@@ -26,13 +26,13 @@ export default function ArticleFormModal({
   const [category, setCategory] = useState<Article['category']>(
     articleToEdit?.category || 'Monograph'
   );
-  const [volume, setVolume] = useState(articleToEdit?.volume || 'Vol. IV');
-  const [issue, setIssue] = useState(articleToEdit?.issue || 'Issue 04');
-  const [date, setDate] = useState(articleToEdit?.date || 'Autumn 2026');
+  const [volume, setVolume] = useState(articleToEdit?.volume || 'Vol. I');
+  const [issue, setIssue] = useState(articleToEdit?.issue || 'Issue 01');
+  const [date, setDate] = useState(articleToEdit?.date || 'September 2026');
   const [readTime, setReadTime] = useState(articleToEdit?.readTime || '5 min read');
-  const [authorName, setAuthorName] = useState(articleToEdit?.author.name || 'Botanica Research');
+  const [authorName, setAuthorName] = useState(articleToEdit?.author.name || 'Botanica Editorial');
   const [authorRole, setAuthorRole] = useState(
-    articleToEdit?.author.role || 'Apothecary Science Contributor'
+    articleToEdit?.author.role || 'Apothecary Journal'
   );
   const [image, setImage] = useState(
     articleToEdit?.image ||
@@ -219,7 +219,7 @@ export default function ArticleFormModal({
                 required
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="e.g. The Circadian Tincture: Why Chronobiology Outranks Potency"
+                placeholder="e.g. What Is a Cannabis Tincture?"
                 className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-md text-primary focus:border-secondary focus:outline-none"
               />
             </div>
@@ -265,7 +265,7 @@ export default function ArticleFormModal({
                   type="text"
                   value={volume}
                   onChange={(e) => setVolume(e.target.value)}
-                  placeholder="e.g. Vol. IV"
+                  placeholder="e.g. Vol. I"
                   className="w-full px-3 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
                 <input

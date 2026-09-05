@@ -492,7 +492,7 @@ export default function AdminSiteContent() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Vol. IV"
+                  placeholder="e.g. Vol. I"
                   value={gazetteSettings.volume}
                   onChange={(e) => setGazetteSettings({ ...gazetteSettings, volume: e.target.value })}
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
