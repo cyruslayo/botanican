@@ -14,8 +14,8 @@ export interface GazetteSettings {
 
 export const DEFAULT_GAZETTE_SETTINGS: GazetteSettings = {
   publicationName: 'The Botanical Gazette & Journal',
-  volume: 'Vol. IV',
-  edition: 'Autumn Edition',
+  volume: 'Vol. I',
+  edition: 'Issue 01',
   circulation: 'Private Circulation',
   harvestLabel: 'Botanical Harvest BT-2481',
   qualityBadge: 'Small-Batch Botanical Edition',
