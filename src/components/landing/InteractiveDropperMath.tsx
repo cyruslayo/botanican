@@ -115,8 +115,8 @@ export default function InteractiveDropperMath() {
         </div>
 
         <div className="w-full pt-4 mt-2 border-t border-outline-variant/40 flex items-center justify-between text-[11px] font-mono text-on-surface-variant">
-          <span>Glass: Borosilicate 3.3</span>
-          <span className="text-secondary font-bold">Unmarked Dropper</span>
+          <span>Unmarked Glass Dropper</span>
+          <span className="text-secondary font-bold">Visual Reference</span>
         </div>
       </div>
 
