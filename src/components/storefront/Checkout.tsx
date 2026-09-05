@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
-import { cartItems, cartTotal, clearCart } from '@/store/cart';
+import { cartItems, cartTotal, clearCart, getCartLineKey } from '@/store/cart';
 import { isApproved, isPending, accessState } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
 import { getSiteSettings, fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
@@ -350,7 +350,7 @@ export default function Checkout() {
 
             <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2">
               {items.map((item) => (
-                <div key={item.id} className="flex gap-4">
+                <div key={getCartLineKey(item)} className="flex gap-4">
                   <div className="w-16 h-16 bg-surface rounded-lg relative overflow-hidden flex-shrink-0">
                     {item.image ? (
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -361,6 +361,13 @@ export default function Checkout() {
                   <div className="flex-1">
                     <p className="font-label-sm text-on-surface line-clamp-1">{item.name}</p>
                     <p className="font-body-sm text-on-surface-variant">Qty: {item.quantity}</p>
+                    {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                      <div className="font-label-sm text-label-sm text-on-surface-variant space-y-0.5">
+                        {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
+                        {item.strain_name && <p>{item.strain_name}</p>}
+                        {item.batch_code && <p>{item.batch_code}</p>}
+                      </div>
+                    )}
                     <p className="font-label-md text-primary">{formatNaira(item.price * item.quantity)}</p>
                   </div>
                 </div>

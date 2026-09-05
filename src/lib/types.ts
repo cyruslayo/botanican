@@ -10,6 +10,10 @@ export interface Product {
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+  strain_name?: string | null;
+  batch_code?: string | null;
 }
 
 export interface OrderItem {
@@ -19,6 +23,10 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+  strain_name?: string | null;
+  batch_code?: string | null;
 }
 
 export interface ShippingAddress {

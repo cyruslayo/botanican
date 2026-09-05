@@ -131,6 +131,13 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
                       <div className="min-w-0">
                         <p className="font-body-md text-primary font-bold text-xs sm:text-sm truncate">{item.name}</p>
                         <p className="text-[11px] font-mono text-on-surface-variant">Qty: {item.quantity}</p>
+                        {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                          <div className="text-[11px] font-mono text-on-surface-variant space-y-0.5">
+                            {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
+                            {item.strain_name && <p>Strain: {item.strain_name}</p>}
+                            {item.batch_code && <p>Batch: {item.batch_code}</p>}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <p className="font-mono font-bold text-xs sm:text-sm text-primary shrink-0 ml-2">

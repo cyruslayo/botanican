@@ -27,6 +27,10 @@ export default function ProductFormModal({
     category: 'Oils',
     image: '',
     is_active: true,
+    strength_mg: '',
+    bottle_size_ml: '',
+    strain_name: '',
+    batch_code: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
@@ -52,6 +56,10 @@ export default function ProductFormModal({
         category: product.category || 'Oils',
         image: product.image || '',
         is_active: product.is_active ?? true,
+        strength_mg: product.strength_mg == null ? '' : String(product.strength_mg),
+        bottle_size_ml: product.bottle_size_ml == null ? '' : String(product.bottle_size_ml),
+        strain_name: product.strain_name || '',
+        batch_code: product.batch_code || '',
       });
       setIsAddingNewCategory(false);
       setNewCategoryName('');
@@ -65,6 +73,10 @@ export default function ProductFormModal({
         category: 'Oils',
         image: '',
         is_active: true,
+        strength_mg: '',
+        bottle_size_ml: '',
+        strain_name: '',
+        batch_code: '',
       });
       setIsAddingNewCategory(false);
       setNewCategoryName('');
@@ -88,7 +100,7 @@ export default function ProductFormModal({
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? Number(value) : value
+      [name]: type === 'number' && name !== 'strength_mg' && name !== 'bottle_size_ml' ? Number(value) : value
     }));
   };
 
@@ -115,6 +127,10 @@ export default function ProductFormModal({
         category: formData.category,
         image: formData.image,
         is_active: formData.is_active,
+        strength_mg: formData.strength_mg.trim() === '' ? null : Number(formData.strength_mg),
+        bottle_size_ml: formData.bottle_size_ml.trim() === '' ? null : Number(formData.bottle_size_ml),
+        strain_name: formData.strain_name.trim() || null,
+        batch_code: formData.batch_code.trim() || null,
       };
 
       const { getSupabase } = await import('@/lib/supabase');
@@ -179,6 +195,32 @@ export default function ProductFormModal({
               />
             </div>
 
+            <div className="sm:col-span-2 border-t border-outline-variant/60 pt-5 space-y-4">
+              <div>
+                <h4 className="font-headline-sm text-on-surface">Tincture &amp; Batch Details</h4>
+                <p className="font-body-sm text-on-surface-variant">Optional metadata controlled by the administrator.</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  ['strength_mg', 'Strength (mg)'],
+                  ['bottle_size_ml', 'Bottle Size (ml)'],
+                ].map(([name, label]) => (
+                  <div className="space-y-2" key={name}>
+                    <label htmlFor={name} className="font-label-md text-label-md text-on-surface-variant">{label}</label>
+                    <input id={name} type="number" step="any" min="0" name={name} value={formData[name as 'strength_mg' | 'bottle_size_ml']} onChange={handleChange} className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+                  </div>
+                ))}
+                <div className="space-y-2">
+                  <label htmlFor="strain_name" className="font-label-md text-label-md text-on-surface-variant">Strain Name</label>
+                  <input id="strain_name" type="text" name="strain_name" value={formData.strain_name} onChange={handleChange} className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="batch_code" className="font-label-md text-label-md text-on-surface-variant">Batch Code</label>
+                  <input id="batch_code" type="text" name="batch_code" value={formData.batch_code} onChange={handleChange} className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="font-label-md text-label-md text-on-surface-variant">Slug (URL)</label>
               <input
@@ -189,6 +231,7 @@ export default function ProductFormModal({
                 onChange={handleChange}
                 className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
+              <p className="font-body-sm text-[11px] text-on-surface-variant">Changing a published slug can break existing links.</p>
             </div>
 
             <div className="space-y-2 md:col-span-2">

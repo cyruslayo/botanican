@@ -1,6 +1,6 @@
 'use client';
 import { useStore } from '@nanostores/react';
-import { cartItems, removeItem, updateQuantity, cartTotal, cartCount } from '@/store/cart';
+import { cartItems, getCartLineKey, removeItem, updateQuantity, cartTotal, cartCount } from '@/store/cart';
 import { formatNaira } from '@/lib/utils';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/FadeIn';
 import { useHydrated } from '@/lib/useHydrated';
@@ -32,7 +32,7 @@ export default function Cart() {
           ) : (
             <StaggerContainer>
               {items.map((item) => (
-                <StaggerItem key={item.id} className="flex gap-stack-md py-stack-md relative group">
+                <StaggerItem key={getCartLineKey(item)} className="flex gap-stack-md py-stack-md relative group">
                   <div className="w-24 md:w-32 aspect-[3/4] shrink-0 bg-surface-container rounded-lg overflow-hidden relative">
                     <img src={item.image} alt={item.name} referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
                   </div>
@@ -41,21 +41,27 @@ export default function Cart() {
                     <div>
                       <div className="flex justify-between items-start">
                         <h3 className="font-body-lg text-body-lg text-on-surface pr-4">{item.name}</h3>
-                        <button onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name} from bag`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-error transition-colors p-1 -mt-1 -mr-1">
+                        <button onClick={() => removeItem(getCartLineKey(item))} aria-label={`Remove ${item.name} from bag`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-error transition-colors p-1 -mt-1 -mr-1">
                           <XIcon />
                         </button>
                       </div>
-                      <p className="font-body-md text-body-md text-on-surface-variant mt-1">{item.variant}</p>
+                      {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                        <div className="font-label-sm text-label-sm text-on-surface-variant mt-1 space-y-0.5">
+                          {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
+                          {item.strain_name && <p>Strain: {item.strain_name}</p>}
+                          {item.batch_code && <p>Batch: {item.batch_code}</p>}
+                        </div>
+                      )}
                       <p className="font-headline-sm text-headline-sm text-on-surface mt-2">{formatNaira(item.price)}</p>
                     </div>
 
                     <div className="flex items-center gap-4 mt-4">
                       <div className="flex items-center border border-outline-variant rounded-full px-3 py-1">
-                        <button onClick={() => updateQuantity(item.id, -1)} aria-label={`Decrease quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
+                        <button onClick={() => updateQuantity(getCartLineKey(item), -1)} aria-label={`Decrease quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
                           <MinusIcon />
                         </button>
                         <span className="font-body-md text-body-md text-on-surface w-8 text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, 1)} aria-label={`Increase quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
+                        <button onClick={() => updateQuantity(getCartLineKey(item), 1)} aria-label={`Increase quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
                           <PlusIcon />
                         </button>
                       </div>

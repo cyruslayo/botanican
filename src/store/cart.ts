@@ -8,7 +8,23 @@ export type CartItem = {
   price: number;
   quantity: number;
   image: string;
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+  strain_name?: string | null;
+  batch_code?: string | null;
 };
+
+export function getCartLineKey(item: CartItem): string {
+  return JSON.stringify([
+    item.id,
+    item.variant ?? '',
+    item.strength_mg ?? '',
+    item.bottle_size_ml ?? '',
+    item.strain_name ?? '',
+    item.batch_code ?? '',
+    item.price ?? '',
+  ]);
+}
 
 const CART_STORAGE_KEY = 'botanica_cart_items';
 
@@ -45,11 +61,12 @@ export const addItem = (item: CartItem): boolean => {
   }
 
   const current = cartItems.get();
-  const existing = current.find((i) => i.id === item.id);
+  const itemKey = getCartLineKey(item);
+  const existing = current.find((i) => getCartLineKey(i) === itemKey);
   if (existing) {
     cartItems.set(
       current.map((i) =>
-        i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+        getCartLineKey(i) === itemKey ? { ...i, quantity: i.quantity + item.quantity } : i
       )
     );
   } else {
@@ -58,14 +75,14 @@ export const addItem = (item: CartItem): boolean => {
   return true;
 };
 
-export const removeItem = (id: string) => {
-  cartItems.set(cartItems.get().filter((i) => i.id !== id));
+export const removeItem = (lineKey: string) => {
+  cartItems.set(cartItems.get().filter((item) => getCartLineKey(item) !== lineKey));
 };
 
-export const updateQuantity = (id: string, delta: number) => {
+export const updateQuantity = (lineKey: string, delta: number) => {
   cartItems.set(
     cartItems.get().map((i) => {
-      if (i.id === id) {
+      if (getCartLineKey(i) === lineKey) {
         const newQ = Math.max(1, i.quantity + delta);
         return { ...i, quantity: newQ };
       }
