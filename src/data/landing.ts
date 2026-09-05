@@ -13,34 +13,6 @@ export const OILS_IMAGE =
 export const EDIBLES_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg';
 
-/** Dropper calculator: 10 ml bottles in the current catalog, ~20 drops per ml. */
-export const DROPS_PER_ML = 20;
-export const BOTTLE_SIZE_ML = 10;
-
-export interface BottleOption {
-  id: string;
-  label: string;
-  totalMg: number;
-}
-
-export const BOTTLE_OPTIONS: BottleOption[] = [
-  { id: '25', label: '25 mg / 10 ml', totalMg: 25 },
-  { id: '50', label: '50 mg / 10 ml', totalMg: 50 },
-];
-
-export interface DrawOption {
-  id: string;
-  label: string;
-  ml: number;
-}
-
-export const DRAW_OPTIONS: DrawOption[] = [
-  { id: 'quarter', label: '¼ pipette', ml: 0.25 },
-  { id: 'half', label: '½ pipette', ml: 0.5 },
-  { id: 'three-quarter', label: '¾ pipette', ml: 0.75 },
-  { id: 'full', label: 'Full pipette', ml: 1 },
-];
-
 export interface FaqItem {
   question: string;
   answer: string;
@@ -50,7 +22,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'What is a cannabis tincture?',
     answer:
-      'A cannabis tincture is a liquid extract, typically held in a plant-based carrier oil like coconut MCT oil, delivered with a dropper bottle for measured personal routines.',
+      'A cannabis tincture is a liquid cannabis format dispensed with a dropper. Botanica uses this format for discreet, deliberate routines.',
   },
   {
     question: 'How is this different from a gummy?',
@@ -60,7 +32,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'What does a quarter or half draw mean?',
     answer:
-      'Because the current dropper is unmarked, a quarter or half draw is a visual reference for how much liquid you draw into the pipette, helping you repeat the same serving visually.',
+      'They are visual references on our guide. The physical dropper is unmarked, so these labels describe approximate fill positions, not calibrated measurements.',
   },
   {
     question: 'Why is the current dropper unmarked?',

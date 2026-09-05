@@ -13,25 +13,25 @@ const DRAW_LEVELS: DrawLevel[] = [
     id: 'quarter',
     label: '¼ draw',
     fillPct: 25,
-    description: 'A modest visual level for light routines and initial exploration.',
+    description: 'A visual reference near one quarter of the illustrated chamber.',
   },
   {
     id: 'half',
     label: '½ draw',
     fillPct: 50,
-    description: 'A balanced midpoint visual draw level.',
+    description: 'A visual reference near the middle of the illustrated chamber.',
   },
   {
     id: 'three-quarter',
     label: '¾ draw',
     fillPct: 75,
-    description: 'A higher visual level within the pipette chamber.',
+    description: 'A visual reference near three quarters of the illustrated chamber.',
   },
   {
     id: 'full',
     label: 'Full draw',
     fillPct: 100,
-    description: 'A complete visual draw into the dropper tube.',
+    description: 'A visual reference near the top of the illustrated chamber.',
   },
 ];
 
@@ -151,10 +151,10 @@ export default function InteractiveDropperMath() {
             Visual Repeatability
           </span>
           <h3 className="font-headline-sm text-primary font-bold">
-            Aim for the same visual fill each time.
+            Use the same visual reference when you want a useful comparison.
           </h3>
           <p className="font-body-md text-on-surface-variant leading-relaxed mt-2">
-            The physical dropper is clean glass with no printed lines. Choosing a visual benchmark allows you to evaluate your experience consistently.
+            The guide gives you a visible reference you can return to later.
           </p>
         </div>
 
