@@ -12,6 +12,13 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
   const [addedNotice, setAddedNotice] = useState(false);
   const approved = useStore(isApproved);
   const pending = useStore(isPending);
+  const bottleStrength = product.strength_mg != null ? `${product.strength_mg} mg` : null;
+  const bottleSize = product.bottle_size_ml != null ? `${product.bottle_size_ml} ml` : null;
+  const variantParts = [
+    bottleStrength && bottleSize ? `${bottleStrength} / ${bottleSize}` : null,
+    product.strain_name || null,
+    product.batch_code ? `Batch ${product.batch_code}` : null,
+  ].filter(Boolean);
 
   const toggleSection = (section: string) => {
     setOpenSection(openSection === section ? null : section);
@@ -21,10 +28,14 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
     const success = addItem({
       id: product.id,
       name: product.name,
-      variant: product.category || '',
+      variant: variantParts.join(' • ') || product.category || '',
       price: product.price,
       quantity,
       image: product.image || '',
+      strength_mg: product.strength_mg ?? null,
+      bottle_size_ml: product.bottle_size_ml ?? null,
+      strain_name: product.strain_name ?? null,
+      batch_code: product.batch_code ?? null,
     });
 
     if (success) {
@@ -60,6 +71,14 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
             </div>
             <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-stack-sm">{product.name}</h1>
             <p className="font-body-lg text-body-lg text-secondary mb-stack-md">{formatNaira(product.price)}</p>
+            {(bottleStrength || bottleSize || product.strain_name || product.batch_code) && (
+              <div className="mb-stack-md space-y-1.5 font-label-sm text-label-sm text-on-surface-variant">
+                {bottleStrength && <p>Calculated bottle strength: {bottleStrength}</p>}
+                {bottleSize && <p>Bottle size: {bottleSize}</p>}
+                {product.strain_name && <p>Current strain: {product.strain_name}</p>}
+                {product.batch_code && <p>Current batch: {product.batch_code}</p>}
+              </div>
+            )}
             <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
               {product.description || 'Product details are managed by the Botanica apothecary.'}
             </p>

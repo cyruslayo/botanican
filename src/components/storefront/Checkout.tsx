@@ -361,6 +361,13 @@ export default function Checkout() {
                   <div className="flex-1">
                     <p className="font-label-sm text-on-surface line-clamp-1">{item.name}</p>
                     <p className="font-body-sm text-on-surface-variant">Qty: {item.quantity}</p>
+                    {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                      <div className="font-label-sm text-label-sm text-on-surface-variant space-y-0.5">
+                        {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
+                        {item.strain_name && <p>{item.strain_name}</p>}
+                        {item.batch_code && <p>{item.batch_code}</p>}
+                      </div>
+                    )}
                     <p className="font-label-md text-primary">{formatNaira(item.price * item.quantity)}</p>
                   </div>
                 </div>

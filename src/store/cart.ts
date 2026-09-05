@@ -8,6 +8,10 @@ export type CartItem = {
   price: number;
   quantity: number;
   image: string;
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+  strain_name?: string | null;
+  batch_code?: string | null;
 };
 
 const CART_STORAGE_KEY = 'botanica_cart_items';

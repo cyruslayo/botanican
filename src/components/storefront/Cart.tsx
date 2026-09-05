@@ -46,6 +46,13 @@ export default function Cart() {
                         </button>
                       </div>
                       <p className="font-body-md text-body-md text-on-surface-variant mt-1">{item.variant}</p>
+                      {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                        <div className="font-label-sm text-label-sm text-on-surface-variant mt-1 space-y-0.5">
+                          {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
+                          {item.strain_name && <p>Strain: {item.strain_name}</p>}
+                          {item.batch_code && <p>Batch: {item.batch_code}</p>}
+                        </div>
+                      )}
                       <p className="font-headline-sm text-headline-sm text-on-surface mt-2">{formatNaira(item.price)}</p>
                     </div>
 

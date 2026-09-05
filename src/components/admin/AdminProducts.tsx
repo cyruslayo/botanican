@@ -210,6 +210,7 @@ export default function AdminProducts() {
                       {product.inventory} in stock
                     </span>
                   </div>
+                  <ProductMetadata product={product} />
                 </div>
               </div>
 
@@ -273,7 +274,10 @@ export default function AdminProducts() {
                         <span className="font-medium text-primary line-clamp-1">{product.name}</span>
                       </div>
                     </td>
-                    <td className="p-4 text-on-surface-variant font-mono text-xs">{product.category}</td>
+                    <td className="p-4 text-on-surface-variant font-mono text-xs">
+                      <div>{product.category}</div>
+                      <ProductMetadata product={product} />
+                    </td>
                     <td className="p-4 font-mono font-medium">{formatNaira(product.price)}</td>
                     <td className="p-4 font-mono text-xs">
                       <span className={`px-2.5 py-1 rounded-full text-xs ${product.inventory < 10 ? 'bg-error/10 text-error font-bold' : 'bg-surface-container-high text-on-surface-variant'}`}>
@@ -343,6 +347,21 @@ export default function AdminProducts() {
           existingCategories={existingCategories}
         />
       )}
+    </div>
+  );
+}
+
+function ProductMetadata({ product }: { product: any }) {
+  const hasBottle = product.strength_mg != null || product.bottle_size_ml != null;
+  const bottle = hasBottle
+    ? `${product.strength_mg != null ? `${product.strength_mg} mg` : '—'}${product.strength_mg != null && product.bottle_size_ml != null ? ' / ' : ''}${product.bottle_size_ml != null ? `${product.bottle_size_ml} ml` : ''}`
+    : '—';
+
+  return (
+    <div className="mt-1 space-y-0.5 text-[11px] font-mono text-on-surface-variant">
+      <div>{bottle}</div>
+      <div>{product.strain_name ? `Strain: ${product.strain_name}` : 'Strain: —'}</div>
+      <div>{product.batch_code ? `Batch: ${product.batch_code}` : 'Batch: —'}</div>
     </div>
   );
 }
