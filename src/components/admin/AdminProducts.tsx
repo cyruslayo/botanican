@@ -6,6 +6,7 @@ import { formatNaira } from '@/lib/utils';
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [productToDelete, setProductToDelete] = useState<any | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function AdminProducts() {
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const { getSupabase } = await import('@/lib/supabase');
       const supabase = getSupabase();
@@ -46,16 +48,12 @@ export default function AdminProducts() {
       setProducts(data ?? []);
     } catch (error) {
       console.error('Error fetching products: ', error);
-      if (products.length === 0) {
-        setProducts([
-          { id: '1', name: 'Lavender Botanical Elixir', price: 48, inventory: 25, category: 'Oils', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA' },
-          { id: '2', name: 'Eucalyptus Balance Tincture', price: 54, inventory: 18, category: 'Oils', is_active: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ' }
-        ]);
-      }
+      setProducts([]);
+      setError('Products could not be loaded.');
     } finally {
       setLoading(false);
     }
-  }, [products.length]);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -99,6 +97,12 @@ export default function AdminProducts() {
           <span>Add Product</span>
         </button>
       </div>
+
+      {error && !loading && (
+        <div className="p-8 text-center text-on-surface-variant bg-surface rounded-2xl border border-error/30">
+          {error}
+        </div>
+      )}
 
       {/* Filter / Search Bar */}
       <div className="bg-surface p-3.5 sm:p-4 rounded-2xl border border-outline-variant/60 botanical-shadow flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

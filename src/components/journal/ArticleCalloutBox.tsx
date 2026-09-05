@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import type { ArticleCallout, Product } from '@/lib/types';
 import { formatNaira } from '@/lib/utils';
-import { ShoppingBag, Tag, Megaphone, ArrowRight, Check, Copy, Sparkles, ExternalLink } from 'lucide-react';
+import { ShoppingBag, Tag, Megaphone, ArrowRight, Check, Copy, ExternalLink } from 'lucide-react';
 
 interface ArticleCalloutBoxProps {
   callout?: ArticleCallout;
@@ -40,6 +40,7 @@ export default function ArticleCalloutBox({
   useEffect(() => {
     if (!targetSlug) return;
     let isMounted = true;
+    setProduct(null);
     setLoading(true);
 
     async function loadProduct() {
@@ -50,24 +51,15 @@ export default function ArticleCalloutBox({
           .from('products')
           .select('*')
           .eq('slug', targetSlug)
+          .eq('is_active', true)
           .maybeSingle();
 
         if (isMounted && data) {
           setProduct(data as Product);
-          return;
         }
       } catch {}
 
-      // Fallback to mock catalog
-      try {
-        const { MOCK_PRODUCTS } = await import('@/lib/mockData');
-        const found = MOCK_PRODUCTS.find((p) => p.slug === targetSlug);
-        if (isMounted && found) {
-          setProduct(found);
-        }
-      } catch {} finally {
-        if (isMounted) setLoading(false);
-      }
+      if (isMounted) setLoading(false);
     }
 
     loadProduct();
@@ -77,6 +69,10 @@ export default function ArticleCalloutBox({
   }, [targetSlug]);
 
   if (!activeCallout || activeCallout.enabled === false) {
+    return null;
+  }
+
+  if (activeCallout.type === 'product' && !loading && !product) {
     return null;
   }
 
