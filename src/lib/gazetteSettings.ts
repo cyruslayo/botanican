@@ -17,8 +17,8 @@ export const DEFAULT_GAZETTE_SETTINGS: GazetteSettings = {
   volume: 'Vol. IV',
   edition: 'Autumn Edition',
   circulation: 'Private Circulation',
-  harvestLabel: 'Supercritical Botanical Harvest BT-2481',
-  qualityBadge: 'Analytically Verified • Third-Party Tested',
+  harvestLabel: 'Botanical Harvest BT-2481',
+  qualityBadge: 'Small-Batch Botanical Edition',
   archiveLinkText: 'Browse Archive →',
 };
 

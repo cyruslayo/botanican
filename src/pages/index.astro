@@ -28,8 +28,8 @@ const faqJsonLd = buildFaqJsonLd();
 
 <Layout
   pathname="/"
-  title="Botanica | Private Botanical Apothecary & Journal"
-  description="Botanical tinctures calculated from strain THC potency per gram, infused into pure coconut MCT oil with exact milligram math and predictable onset. Private apothecary, delivered with discretion."
+  title="Botanica | Cannabis Tinctures & Journal"
+  description="A content-first guide to cannabis tinctures, deliberate use, visual draw methods, strain education, and private member access."
 >
   <MemberWelcome client:load />
   <Masthead />
@@ -38,8 +38,8 @@ const faqJsonLd = buildFaqJsonLd();
     <main class="w-full">
       <Hero />
       <LeadStory article={featuredArticle} />
-      <OnsetTimeline />
       <Mechanism />
+      <OnsetTimeline />
       <JournalGrid articles={articles} />
       <DropperMath />
       <GoldenHour />

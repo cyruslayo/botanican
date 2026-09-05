@@ -14,60 +14,60 @@ interface LinkOption {
 const PRESET_LINKS: LinkOption[] = [
   // Landing sections
   {
-    title: 'Onset Timeline (15-30m vs 60-90m)',
+    title: 'Two Routes. Different Timing.',
     category: 'Landing Section',
     path: '/',
     anchor: 'onset',
-    stickerText: 'ONSET TIMELINE ⏱️',
-    description: 'Direct comparison of sublingual absorption speed vs swallowed edibles.'
+    stickerText: 'TWO ROUTES ⏱️',
+    description: 'How under-the-tongue and swallowed use can differ in timing.'
   },
   {
-    title: 'The Mechanism (Sublingual Absorption)',
+    title: 'From Edibles to Tinctures',
     category: 'Landing Section',
     path: '/',
-    anchor: 'mechanism',
-    stickerText: 'HOW IT WORKS 💧',
-    description: 'Under the tongue vs swallowed liver metabolism science.'
+    anchor: 'format',
+    stickerText: 'EDIBLES TO DROPS 🌿',
+    description: 'A simple comparison between familiar edibles and the tincture format.'
   },
   {
-    title: 'Interactive Dropper Math',
+    title: 'Visual Draw Guide',
     category: 'Landing Section',
     path: '/',
     anchor: 'dose',
-    stickerText: 'CALCULATE DOSE 🧮',
-    description: 'Apothecary pipette graduated milligram calculator.'
+    stickerText: 'SEE THE DRAW 💧',
+    description: 'See quarter, half, three-quarter, and full visual draw references.'
   },
   {
-    title: 'The Golden Hour (Wait Before Redosing)',
+    title: 'Give It Time',
     category: 'Landing Section',
     path: '/',
     anchor: 'golden-hour',
-    stickerText: 'WAIT 90 MIN ⏳',
-    description: 'The impatient redose warning & titration golden rules.'
+    stickerText: 'GIVE IT TIME ⏳',
+    description: 'A patient approach to keeping the draw, route, and other variables consistent.'
   },
   {
-    title: 'Biological Variables Bento',
+    title: 'Why the Same Draw Can Feel Different',
     category: 'Landing Section',
     path: '/',
     anchor: 'variables',
-    stickerText: 'WHY IT VARIES 🧬',
-    description: 'Enzyme metabolism, meal timing, and absorption differences.'
+    stickerText: 'WHY IT VARIES',
+    description: 'Route, food, individual differences, and previous experience can affect timing.'
   },
   {
-    title: 'The Evening Ritual (Step-by-Step)',
+    title: 'A Deliberate Evening',
     category: 'Landing Section',
     path: '/',
     anchor: 'ritual',
-    stickerText: 'EVENING RITUAL 🌙',
-    description: '7:30pm to 9:30pm habit stacking and sensory wind-down protocol.'
+    stickerText: 'AFTER THE DAY IS DONE',
+    description: 'A simple post-work routine for separating professional time from the evening.'
   },
   {
-    title: 'Botanica Library / Field Notes',
+    title: 'From the Botanica Journal',
     category: 'Landing Section',
     path: '/',
     anchor: 'dispatches',
-    stickerText: 'READ LIBRARY 📚',
-    description: 'Grid of published monographs and extraction logs.'
+    stickerText: 'READ THE JOURNAL',
+    description: 'Editorial guides on tinctures, cannabis routines, format, and deliberate use.'
   },
   {
     title: 'Member Verification / Apply',
@@ -80,36 +80,36 @@ const PRESET_LINKS: LinkOption[] = [
 
   // Journal Monograph Links
   {
-    title: 'Circadian Tincture Monograph (Thesis)',
+    title: 'Why Timing Matters More Than Chasing Strength',
     category: 'Journal Monograph',
     path: '/journal/circadian-tincture-chronobiology',
     anchor: 'thesis',
-    stickerText: 'CIRCADIAN THESIS 🔬',
-    description: 'Central thesis: Chronobiology outranks raw milligram potency.'
+    stickerText: 'TIMING & ROUTINE',
+    description: 'Why consistency and patience matter more than continually chasing strength.'
   },
   {
-    title: 'Circadian Tincture (Takeaways)',
+    title: 'Timing & Routine Takeaways',
     category: 'Journal Monograph',
     path: '/journal/circadian-tincture-chronobiology',
     anchor: 'takeaways',
-    stickerText: 'KEY TAKEAWAYS 🌿',
-    description: 'Key takeaways on CB1 receptor tone and sleep architecture.'
+    stickerText: 'KEY TAKEAWAYS',
+    description: 'Practical notes on consistent visual draws, route, and patience.'
   },
   {
-    title: 'Supercritical CO2 Extraction (Thesis)',
+    title: 'From Edibles to Drops (Thesis)',
     category: 'Journal Monograph',
-    path: '/journal/supercritical-co2-terpene-integrity',
+    path: '/journal/from-edibles-to-drops',
     anchor: 'thesis',
-    stickerText: 'LAB EXTRACTION 🧪',
-    description: 'Supercritical fluid chromatography and terpene preservation.'
+    stickerText: 'EDIBLES TO DROPS 🌿',
+    description: 'Moving from fixed portions to an adjustable liquid format.'
   },
   {
-    title: 'Sublingual Titration Protocol (Takeaways)',
+    title: 'Cannabis After the Day Is Done',
     category: 'Journal Monograph',
-    path: '/journal/sublingual-bioavailability-mechanics',
+    path: '/journal/cannabis-after-the-day-is-done',
     anchor: 'takeaways',
-    stickerText: 'TITRATION PROTOCOL 📝',
-    description: 'Step-by-step sublingual absorption mechanics and rules.'
+    stickerText: 'AFTER WORK',
+    description: 'A deliberate approach to separating cannabis use from professional time.'
   },
 
   // Shop & Apothecary
