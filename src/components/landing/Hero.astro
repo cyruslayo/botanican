@@ -1,13 +1,13 @@
 ---
-import { Calculator, Droplets, Timer, Scale } from 'lucide-react';
+import { Droplets, Eye, Compass, ShieldCheck } from 'lucide-react';
 import { HERO_IMAGE } from '@/data/landing';
 import HeroTrustBadge from './HeroTrustBadge';
 
 const trustItems = [
-  { icon: Calculator, label: 'Calculated Strain Potency' },
-  { icon: Droplets, label: 'Pure Coconut MCT Infusion' },
-  { icon: Timer, label: 'Predictable Onset Windows' },
-  { icon: Scale, label: 'Milligram-Exact Bottles' },
+  { icon: Droplets, label: 'Small-Batch Tincture' },
+  { icon: Eye, label: 'Visual Draw Guidance' },
+  { icon: Compass, label: 'Two Ways to Take It' },
+  { icon: ShieldCheck, label: 'Built for Deliberate Use' },
 ];
 ---
 
@@ -17,19 +17,19 @@ const trustItems = [
       <HeroTrustBadge client:load />
 
       <h1 class="font-display-lg md:font-display-xl text-display-lg md:text-display-xl text-primary">
-        Know exactly what's in the dropper.
+        From fixed edibles to a more deliberate draw.
       </h1>
 
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-[36ch]">
-        Calculated from strain THC potency per gram, infused into pure coconut MCT oil with exact milligram math and a predictable 15-to-30-minute onset window.
+        Botanica is a small-batch cannabis tincture for adults who prefer discretion, repeatable use, and a method they can understand.
       </p>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
         <a
-          href="#mechanism"
+          href="#draw-guide"
           class="px-8 py-3.5 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-widest font-bold rounded-full text-center hover:opacity-90 active:scale-[0.98] transition-all"
         >
-          Learn the Method
+          See How the Dropper Works
         </a>
         <a
           href="/invite"
@@ -55,7 +55,7 @@ const trustItems = [
           />
         </div>
         <figcaption class="font-body-sm text-body-sm text-on-surface-variant mt-3">
-          The Balance Tincture, formulated from strain potency into pure coconut MCT oil.
+          The Balance Tincture, formulated for discretion and a repeatable visual draw.
         </figcaption>
       </figure>
     </div>

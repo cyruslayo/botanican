@@ -1,63 +1,60 @@
 ---
 /**
- * P1.5 - Why the same amount feels different (metabolism, biology, timing).
- * P2.5 - Gut contents and biological variables.
- * P3.4 - Dietary fats and systemic absorption.
- * Asymmetric bento: 5 items, 5 cells, image + tinted cells for variation.
+ * Why timing varies:
+ * Educational section focusing on four simple factors:
+ * Route, Food, Individual differences, Previous experience.
  */
-import { EDIBLES_IMAGE } from '@/data/landing';
+
+const factors = [
+  {
+    title: 'Route',
+    body: 'Holding the tincture under the tongue can feel sooner, while swallowing it routes the oil through digestion.',
+  },
+  {
+    title: 'Food',
+    body: 'Taking a tincture on an empty stomach or alongside a meal changes how quickly your body absorbs it.',
+  },
+  {
+    title: 'Individual differences',
+    body: 'Each person processes cannabinoids differently depending on personal physiology and daily state.',
+  },
+  {
+    title: 'Previous experience',
+    body: 'Familiarity with tinctures or edibles shapes how comfortable and noticeable each draw feels.',
+  },
+];
 ---
 
 <section id="variables" class="w-full bg-surface-container-low border-b border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal">
-      <h2 class="font-headline-lg text-headline-lg text-primary">Why the same amount can feel different</h2>
+      <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+        Personal Factors
+      </span>
+      <h2 class="font-headline-lg text-headline-lg text-primary">Timing is personal.</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        Two people, the same milligram, the same evening, different arrival. The variables below do the differentiating.
+        Cannabis does not run on a mechanical schedule. Several straightforward factors influence how timing unfolds.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mt-12 reveal-group">
-      <div class="md:col-span-2 bg-surface rounded-xl p-6 sm:p-8 border border-outline-variant/40">
-        <h3 class="font-headline-sm text-headline-sm text-primary">Your metabolism</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed max-w-[52ch]">
-          Liver enzymes set the pace. Fast converters clear an amount quickly and quietly; slow converters feel the same amount linger into the morning. This is why a friend's perfect dose can be your heavy one, and why your own log outranks any generic chart.
-        </p>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mt-12 reveal-group">
+      {factors.map((factor) => (
+        <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-outline-variant/40 botanical-shadow space-y-2">
+          <span class="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold block">
+            Factor
+          </span>
+          <h3 class="font-headline-sm text-headline-sm text-primary">{factor.title}</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            {factor.body}
+          </p>
+        </div>
+      ))}
+    </div>
 
-      <div class="relative rounded-xl overflow-hidden bg-surface-container min-h-48">
-        <img
-          src={EDIBLES_IMAGE}
-          alt="A quiet evening table with herbal tea and a light snack"
-          referrerpolicy="no-referrer"
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 w-full h-full object-cover"
-          width="640"
-          height="480"
-        />
-      </div>
-
-      <div class="bg-surface rounded-xl p-6 sm:p-8 border border-outline-variant/40">
-        <h3 class="font-headline-sm text-headline-sm text-primary">Fat is a multiplier</h3>
-        <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
-          These compounds are oil-soluble. A fatty snack alongside a swallowed dose can deepen the arrival and stretch it longer.
-        </p>
-      </div>
-
-      <div class="bg-surface rounded-xl p-6 sm:p-8 border border-outline-variant/40">
-        <h3 class="font-headline-sm text-headline-sm text-primary">What the stomach holds</h3>
-        <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
-          A full stomach slows every route down. An empty one speeds the sublingual path but can sharpen the edge of the arrival.
-        </p>
-      </div>
-
-      <div class="bg-secondary-container/60 rounded-xl p-6 sm:p-8 border border-outline-variant/40">
-        <h3 class="font-headline-sm text-headline-sm text-primary">The takeaway</h3>
-        <p class="font-body-sm text-body-sm text-on-secondary-container mt-2 leading-relaxed">
-          Consistency beats optimisation. Fix the variables you control, then read the results honestly.
-        </p>
-      </div>
+    <div class="mt-10 p-6 rounded-2xl bg-secondary-container/50 border border-outline-variant/40 reveal max-w-2xl">
+      <p class="font-body-md text-body-md text-on-secondary-container leading-relaxed">
+        Compare your own experiences under similar conditions instead of copying someone else’s routine.
+      </p>
     </div>
   </div>
 </section>
