@@ -32,7 +32,7 @@ export interface DrawOption {
   id: string;
   label: string;
   ratio: number;
-  ml?: number;
+  ml: number;
 }
 
 export const DRAW_OPTIONS: DrawOption[] = [

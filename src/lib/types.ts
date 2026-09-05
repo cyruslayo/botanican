@@ -96,7 +96,13 @@ export interface Article {
   slug: string;
   title: string;
   subtitle: string;
-  category: 'Monograph' | 'Circadian Science' | 'Extraction & Lab' | 'Protocol & Ritual';
+  category:
+    | 'Monograph'
+    | 'Circadian Science'
+    | 'Extraction & Lab'
+    | 'Protocol & Ritual'
+    | 'Format & Method'
+    | 'Culture & Routine';
   volume: string;
   issue: string;
   date: string;

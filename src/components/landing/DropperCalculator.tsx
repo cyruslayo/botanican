@@ -11,11 +11,10 @@ export default function DropperCalculator() {
 
   const { mgPerDraw, drops, label } = useMemo(() => {
     const mgPerMl = bottle.totalMg / BOTTLE_SIZE_ML;
-    const drawVolume = draw.ml ?? draw.ratio;
-    const mg = mgPerMl * drawVolume;
+    const mg = mgPerMl * draw.ml;
     return {
       mgPerDraw: Math.round(mg * 10) / 10,
-      drops: Math.round(drawVolume * DROPS_PER_ML),
+      drops: Math.round(draw.ml * DROPS_PER_ML),
       label: draw.label.toLowerCase(),
     };
   }, [bottle, draw]);

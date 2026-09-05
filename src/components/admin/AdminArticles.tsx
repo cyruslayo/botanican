@@ -259,7 +259,7 @@ export default function AdminArticles() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Supercritical Botanical Harvest BT-2481"
+                  placeholder="e.g. Botanical Harvest BT-2481"
                   value={gazetteSettings.harvestLabel}
                   onChange={(e) => setGazetteSettings({ ...gazetteSettings, harvestLabel: e.target.value })}
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
@@ -268,11 +268,11 @@ export default function AdminArticles() {
 
               <div className="space-y-1.5">
                 <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">
-                  Lab &amp; Accreditation Badge
+                  Edition &amp; Quality Badge
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Analytically Verified • Third-Party Tested"
+                  placeholder="e.g. Small-Batch Botanical Edition"
                   value={gazetteSettings.qualityBadge}
                   onChange={(e) => setGazetteSettings({ ...gazetteSettings, qualityBadge: e.target.value })}
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"

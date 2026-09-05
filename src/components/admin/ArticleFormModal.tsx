@@ -251,6 +251,8 @@ export default function ArticleFormModal({
                 <option value="Circadian Science">Circadian Science</option>
                 <option value="Extraction & Lab">Extraction & Lab</option>
                 <option value="Protocol & Ritual">Protocol & Ritual</option>
+                <option value="Format & Method">Format & Method</option>
+                <option value="Culture & Routine">Culture & Routine</option>
               </select>
             </div>
 
