@@ -1,25 +1,25 @@
 ---
 /**
- * Responsible-use section:
- * Focuses on patience, consistency, and clear responsible-use guidelines.
+ * P2.1 - The impatient redose trap.
+ * P2.2 - Golden rules for consistent titration.
  */
-import { Eye, Compass, Shuffle } from 'lucide-react';
+import { Hourglass, Scale, NotebookPen } from 'lucide-react';
 
 const rules = [
   {
-    icon: Eye,
-    title: 'Keep the draw consistent',
-    body: 'Use the same visual level when you want a useful comparison.',
+    icon: Hourglass,
+    title: 'Hold the full window',
+    body: 'Give the slower route its complete 90 minutes before you judge anything.',
   },
   {
-    icon: Compass,
-    title: 'Keep the route consistent',
-    body: 'Changing the route can also change how the experience develops.',
+    icon: Scale,
+    title: 'Keep the amount constant',
+    body: 'Same milligrams, same clock time, same seat, for three evenings in a row.',
   },
   {
-    icon: Shuffle,
+    icon: NotebookPen,
     title: 'Change one thing at a time',
-    body: 'Make one change, then learn from that experience before changing something else.',
+    body: 'Adjust a single variable, log it, and read the result before touching anything else.',
   },
 ];
 ---
@@ -28,20 +28,17 @@ const rules = [
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16 items-start">
       <div class="md:col-span-6 space-y-stack-md reveal">
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          Responsible Use
-        </span>
-        <h2 class="font-headline-lg text-headline-lg text-primary">Give the first draw time.</h2>
+        <h2 class="font-headline-lg text-headline-lg text-primary">It hasn't worked yet. Wait.</h2>
         <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-          Adding more too quickly makes the experience harder to understand.
+          Redosing at minute 25 stacks two amounts into the same hour. Sublingual arrives within half an hour, but a swallowed dose can take ninety minutes to finish landing. Top up before the first amount has finished arriving and both land together.
         </p>
         <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-          Whether you take the tincture under the tongue or swallowed, give your body ample time to respond before deciding how the level worked for you.
+          The gentle evening you planned becomes a heavy one. The amount was fine. The patience was not.
         </p>
       </div>
 
       <div class="md:col-span-6 md:pl-8 reveal">
-        <h3 class="font-headline-sm text-headline-sm text-primary mb-6">Responsible-use rules</h3>
+        <h3 class="font-headline-sm text-headline-sm text-primary mb-6">The golden rules</h3>
         <div class="space-y-2">
           {rules.map(({ icon: Icon, title, body }) => (
             <div class="flex gap-4 py-4 border-t border-outline-variant/40 last:border-b">
@@ -54,12 +51,6 @@ const rules = [
               </div>
             </div>
           ))}
-        </div>
-
-        <div class="mt-8 p-4 rounded-xl bg-surface-container-low border border-outline-variant/40">
-          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-            Do not drive or operate machinery after THC use. Follow local law and workplace policy.
-          </p>
         </div>
       </div>
     </div>

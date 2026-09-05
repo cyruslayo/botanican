@@ -1,60 +1,55 @@
 ---
 /**
- * Deliberate-use identity:
- * Focuses on discretion, repeatable method, patient approach, and adult routine.
+ * P4.4 - Reframing functional wellness for modern professionals.
+ * P4.5 - Spotting weak product claims vs verifiable quality.
  */
-import { Shield, Repeat, Clock, UserCheck } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 
-const identityPoints = [
-  {
-    icon: Shield,
-    title: 'Discreet format',
-    body: 'No smoke. No gummy or brownie format. Just a small dropper bottle.',
-  },
-  {
-    icon: Repeat,
-    title: 'Repeatable method',
-    body: 'Use the same visual draw and route when you want a useful comparison.',
-  },
-  {
-    icon: Clock,
-    title: 'Patient approach',
-    body: 'Understand one experience before changing the next one.',
-  },
-  {
-    icon: UserCheck,
-    title: 'Adult routine',
-    body: 'Built around deliberate use, not cannabis spectacle.',
-  },
+const claims = [
+  { weak: 'Proprietary herbal blend', strong: 'Calculated strain THC potency per gram' },
+  { weak: 'Unclear carrier liquid', strong: 'Pure coconut MCT oil infusion' },
+  { weak: 'Miracle results, guaranteed', strong: 'A stated onset window and dropper math' },
+  { weak: 'Unverifiable mystery volume', strong: 'Open formula: grams in, milligrams out' },
 ];
 ---
 
 <section id="identity" class="w-full bg-surface">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal">
-      <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-        The Philosophy
-      </span>
-      <h2 class="font-headline-lg text-headline-lg text-primary">
-        For people who prefer control over spectacle.
-      </h2>
+      <h2 class="font-headline-lg text-headline-lg text-primary">Wellness, without the stereotype</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        Botanica is designed for adults who want cannabis to fit a private, deliberate routine.
+        The modern botanical consumer reads the math, tracks onset, and keeps a log. The stereotype was never about the plant; it was about not knowing what was in the oil. You know now.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mt-12 reveal-group">
-      {identityPoints.map(({ icon: Icon, title, body }) => (
-        <div class="bg-surface-container-low rounded-2xl p-6 sm:p-8 border border-outline-variant/40 botanical-shadow flex items-start gap-4">
-          <div class="w-10 h-10 rounded-full bg-secondary-container/70 text-on-secondary-container flex items-center justify-center shrink-0 mt-0.5">
-            <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
+    <div class="mt-12 reveal">
+      <div class="hidden sm:grid grid-cols-2 gap-8 px-6 pb-3">
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant/70 font-bold">What they say</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">What to demand</span>
+      </div>
+      <div class="reveal-group">
+        {claims.map((claim) => (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-8 items-center py-5 sm:px-6 border-t border-outline-variant/40">
+            <div class="flex items-center gap-3">
+              <span class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0">
+                <X size={13} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <span class="font-body-md text-body-md text-on-surface-variant/70">{claim.weak}</span>
+            </div>
+            <div class="flex items-center gap-3 sm:pl-4">
+              <span class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+                <Check size={13} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <span class="font-body-md text-body-md text-primary font-bold">{claim.strong}</span>
+            </div>
           </div>
-          <div class="space-y-1">
-            <h3 class="font-headline-sm text-headline-sm text-primary">{title}</h3>
-            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">{body}</p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <div class="border-t border-outline-variant/40 pt-6 mt-0">
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Every Botanica batch is open-formula: strain potency, extraction grams, and dropper yield. Ask for the formula before you ask for the code.
+        </p>
+      </div>
     </div>
   </div>
 </section>

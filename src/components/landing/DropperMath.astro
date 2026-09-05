@@ -1,24 +1,24 @@
 ---
 /**
- * Visual Draw Guide:
- * Interactive dropper showing 4 selectable visual levels for a repeatable draw.
- * Physical dropper is unmarked; levels are approximate visual references.
+ * P1.2 - Milligram math from the label.
+ * P1.3 - Pipette markings: precision dosing without guesswork.
+ * Interactive apothecary pipette visual synchronized with dose calculator.
  */
 import InteractiveDropperMath from './InteractiveDropperMath';
 ---
 
-<section id="draw-guide" class="w-full bg-surface-container-low border-y border-outline-variant/30">
+<section id="dose" class="w-full bg-surface-container-low border-y border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal mb-12">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container/60 rounded-full border border-secondary/30">
         <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
         <span class="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary">
-          Visual Draw Reference
+          10 ml Micro-Batch Apothecary Flasks
         </span>
       </div>
-      <h2 class="font-headline-lg text-headline-lg text-primary">See the draw before you take it.</h2>
+      <h2 class="font-headline-lg text-headline-lg text-primary">Dropper math, made simple</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        The current dropper is unmarked. These levels are visual references for creating a more repeatable draw.
+        One squeeze is not a dose. The graduated marking on the borosilicate pipette is. Select your bottle strength and draw volume to preview exact milligram delivery.
       </p>
     </div>
 
@@ -26,9 +26,12 @@ import InteractiveDropperMath from './InteractiveDropperMath';
       <InteractiveDropperMath client:visible />
     </div>
 
-    <div class="mt-8 pt-6 border-t border-outline-variant/30 text-on-surface-variant font-body-sm text-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pt-8 border-t border-outline-variant/30 text-on-surface-variant font-body-md text-sm">
       <p class="leading-relaxed">
-        Visual levels are approximate. They are not calibrated volume markings.
+        Calculated directly from strain potency infused into pure coconut MCT oil. Botanica 10 ml bottles carry either 25 mg or 50 mg total active milligrams: divide by 10 millilitres of carrier oil (yielding 2.5 mg/ml or 5.0 mg/ml), and every fraction carries a verified, predictable share.
+      </p>
+      <p class="leading-relaxed">
+        A full pipette draw holds 1.0 ml (~20 drops). Graduated marks at 0.25 ml, 0.50 ml, 0.75 ml, and 1.0 ml eliminate dosing guesswork before the drop touches your tongue.
       </p>
     </div>
   </div>

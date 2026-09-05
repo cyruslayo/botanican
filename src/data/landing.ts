@@ -13,51 +13,70 @@ export const OILS_IMAGE =
 export const EDIBLES_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg';
 
+/** Dropper calculator: 10 ml bottles in the current catalog, ~20 drops per ml. */
+export const DROPS_PER_ML = 20;
+export const BOTTLE_SIZE_ML = 10;
+
+export interface BottleOption {
+  id: string;
+  label: string;
+  totalMg: number;
+}
+
+export const BOTTLE_OPTIONS: BottleOption[] = [
+  { id: '25', label: '25 mg / 10 ml', totalMg: 25 },
+  { id: '50', label: '50 mg / 10 ml', totalMg: 50 },
+];
+
+export interface DrawOption {
+  id: string;
+  label: string;
+  ml: number;
+}
+
+export const DRAW_OPTIONS: DrawOption[] = [
+  { id: 'quarter', label: '¼ pipette', ml: 0.25 },
+  { id: 'half', label: '½ pipette', ml: 0.5 },
+  { id: 'three-quarter', label: '¾ pipette', ml: 0.75 },
+  { id: 'full', label: 'Full pipette', ml: 1 },
+];
+
 export interface FaqItem {
   question: string;
   answer: string;
 }
 
+/** Landing FAQ: bedtime timing, grogginess, redose patience, routine, tracking, spectrum. */
 export const FAQ_ITEMS: FaqItem[] = [
   {
-    question: 'What is a cannabis tincture?',
+    question: 'How late is too late for a bedtime dose?',
     answer:
-      'A cannabis tincture is a liquid cannabis format dispensed with a dropper. Botanica uses this format for discreet, deliberate routines.',
+      'Count back 90 minutes from lights-out for a swallowed dose, or 30 minutes for one held under the tongue. Taken too close to bedtime, the onset can arrive while you are still awake and waiting, which is how nights get long.',
   },
   {
-    question: 'How is this different from a gummy?',
+    question: 'Why do I sometimes wake up groggy?',
     answer:
-      'A gummy is a fixed edible portion that must pass entirely through digestion. A tincture uses a liquid draw you can adjust visually and take either under the tongue or swallowed.',
+      'Next-morning grogginess usually traces to timing and amount, not the botanical itself. A larger amount taken later in the evening keeps working through the deepest sleep stages. An earlier, smaller dose in a cool, dark room is the adjustment most people need.',
   },
   {
-    question: 'What does a quarter or half draw mean?',
+    question: 'I feel nothing after 30 minutes. Should I take more?',
     answer:
-      'They are visual references on our guide. The physical dropper is unmarked, so these labels describe approximate fill positions, not calibrated measurements.',
+      'Not yet. Check the clock against your route: a dose held under the tongue lands within 15 to 30 minutes, while a swallowed one takes 60 to 90. Redosing inside the window stacks two amounts into a single evening.',
   },
   {
-    question: 'Why is the current dropper unmarked?',
+    question: 'How do I build a repeatable routine?',
     answer:
-      'The current physical droppers do not have printed measurement marks. Visual draw levels serve as approximate guides for repeatable routines rather than calibrated volume markings.',
+      'Fix three things: the same amount, the same time, the same setting. Hold them steady for three evenings before changing anything, then adjust one variable at a time so you can read what each change actually does.',
   },
   {
-    question: 'Does holding it under the tongue change anything?',
+    question: 'What should I write in my wellness log?',
     answer:
-      'Holding the tincture under the tongue allows contact with oral tissue, which can feel sooner than swallowing, where the extract must pass through digestion.',
+      'Four lines is enough: the amount in milligrams, the time taken, your mood before bed, and how you woke. Within a fortnight the patterns in your own data become the most reliable dosing guidance you own.',
   },
   {
-    question: 'Why can the same draw feel different on another day?',
+    question: 'Full-spectrum, broad-spectrum, or isolate: which fits me?',
     answer:
-      'Timing and experience are personal. Factors like whether you take it under the tongue or swallow it, recent food, your individual biology, and previous experience can all influence how it develops.',
-  },
-  {
-    question: 'Can I use Botanica during work?',
-    answer:
-      'Botanica is not marketed for workplace performance. THC can impair attention and judgment. Always follow workplace rules and local law.',
-  },
-  {
-    question: 'How should I compare one experience with another?',
-    answer:
-      'Compare your own experiences under similar conditions instead of copying someone else’s routine. Keep the visual draw level and route consistent, and change only one thing at a time.',
+      'Full-spectrum keeps the whole plant, including trace THC. Broad-spectrum removes the THC and keeps the rest of the plant. Isolate is a single compound alone. If you want depth with zero THC, broad-spectrum is the usual answer.',
   },
 ];
 

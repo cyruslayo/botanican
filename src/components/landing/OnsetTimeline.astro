@@ -1,16 +1,27 @@
 ---
 /**
- * Administration route explanation:
- * Explains two administration routes without guaranteed timing windows or strength comparisons.
+ * P1.4 - Onset windows: sublingual 15-30 min vs swallowed 60-90 min.
+ * Desktop: shared 0-90 minute scale with two range bands.
+ * Mobile: simplified large-number rows (explicit collapse).
  */
-const routeCards = [
+const toPct = (minutes: number) => (minutes / 90) * 100;
+
+const scaleMarks = [0, 15, 30, 45, 60, 75, 90];
+
+const routes = [
   {
-    title: 'Held under the tongue',
-    body: 'This route can feel sooner because the tincture spends time against tissue beneath the tongue.',
+    id: 'sublingual',
+    label: 'Held under the tongue',
+    note: 'Absorbed directly through the mucosa into the bloodstream. Fast, and easier to steer drop by drop.',
+    from: 15,
+    to: 30,
   },
   {
-    title: 'Swallowed',
-    body: 'This route passes through digestion and often takes longer to feel.',
+    id: 'swallowed',
+    label: 'Swallowed with food',
+    note: 'Routed through digestion and first-pass metabolism. Slower to arrive, heavier once it does.',
+    from: 60,
+    to: 90,
   },
 ];
 ---
@@ -18,36 +29,97 @@ const routeCards = [
 <section id="onset" class="w-full bg-surface-container-low border-b border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal">
-      <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-        Administration Routes
-      </span>
-      <h2 class="font-headline-lg text-headline-lg text-primary">The same tincture can take two routes.</h2>
+      <h2 class="font-headline-lg text-headline-lg text-primary">Two routes, two clocks</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        How you take a tincture influences how your body absorbs it. Understanding both routes helps you choose a consistent method for your routine.
+        The same milligram runs on two different schedules depending on how you take it. Map the windows before your first dose.
       </p>
     </div>
 
-    <!-- Two simple route cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mt-12 reveal-group">
-      {routeCards.map((card) => (
-        <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-outline-variant/40 botanical-shadow space-y-3">
-          <span class="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold block">
-            Route Option
+    <!-- Simplified rows for small screens -->
+    <div class="grid grid-cols-1 gap-8 mt-10 md:hidden reveal">
+      {routes.map((route) => (
+        <div class="bg-surface rounded-xl p-6 border border-outline-variant/40">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+            {route.label}
           </span>
-          <h3 class="font-headline-sm text-headline-sm text-primary">
-            {card.title}
-          </h3>
-          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-            {card.body}
+          <p class="font-display-md text-display-md text-primary mt-2">
+            {route.from}-{route.to} min
           </p>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">{route.note}</p>
         </div>
       ))}
     </div>
 
-    <div class="mt-8 pt-6 border-t border-outline-variant/30 reveal">
-      <p class="font-body-sm text-body-sm text-on-surface-variant max-w-[60ch] leading-relaxed">
-        Timing varies between people and can change with food, route, and other factors.
-      </p>
+    <!-- Shared-scale diagram for md and up -->
+    <div class="hidden md:block mt-14 reveal" aria-hidden="false">
+      <div class="space-y-10">
+        {routes.map((route) => (
+          <div>
+            <div class="flex items-baseline justify-between gap-8 mb-3">
+              <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">
+                {route.label}
+              </span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant text-right max-w-[52ch]">{route.note}</span>
+            </div>
+            <div class="relative h-10">
+              <div class="absolute inset-x-0 top-1/2 h-px bg-outline-variant" aria-hidden="true"></div>
+              <div
+                class="absolute top-1/2 -translate-y-1/2 h-2.5 rounded-full bg-secondary"
+                style={`left:${toPct(route.from)}%; width:${toPct(route.to) - toPct(route.from)}%`}
+                aria-hidden="true"
+              >
+              </div>
+              <span
+                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 border-secondary bg-surface"
+                style={`left:${toPct(route.from)}%`}
+                aria-hidden="true"
+              ></span>
+              <span
+                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 border-secondary bg-surface"
+                style={`left:${toPct(route.to)}%`}
+                aria-hidden="true"
+              ></span>
+              <span
+                class="absolute top-0 -translate-x-1/2 font-mono text-[11px] text-primary font-bold"
+                style={`left:${toPct(route.from)}%`}
+              >
+                {route.from} min
+              </span>
+              <span
+                class="absolute top-0 -translate-x-1/2 font-mono text-[11px] text-primary font-bold"
+                style={`left:${toPct(route.to)}%`}
+              >
+                {route.to} min
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="relative h-10 mt-2 border-t border-outline-variant/40" aria-hidden="true">
+        {scaleMarks.map((mark) => (
+          <div
+            class="absolute top-0 flex flex-col items-center"
+            style={`left:${toPct(mark)}%`}
+          >
+            <div class:list={["w-px h-2 bg-outline-variant", mark === 0 && "ml-px", mark === 90 && "-ml-px"]}></div>
+            <span
+              class:list={[
+                'font-mono text-[11px] text-on-surface-variant mt-1',
+                mark === 0 && '-translate-x-0',
+                mark === 90 && '-translate-x-full',
+                mark !== 0 && mark !== 90 && '-translate-x-1/2',
+              ]}
+            >
+              {mark === 90 ? '90 min' : mark}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
+
+    <p class="font-body-sm text-body-sm text-on-surface-variant mt-10 max-w-[52ch] reveal">
+      Individual timing varies with metabolism and what the stomach already holds. See <a href="#variables" class="text-primary underline underline-offset-4 hover:opacity-80">why the same amount can feel different</a>.
+    </p>
   </div>
 </section>
