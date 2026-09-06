@@ -17,11 +17,23 @@ const routes = [
     tag: 'Longer Route',
   },
 ];
+import SectionShare from './SectionShare';
 ---
 
 <section id="onset" class="w-full bg-surface-container-low border-b border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+          Timing &amp; Route
+        </span>
+        <SectionShare
+          client:idle
+          anchor="onset"
+          title="Two Routes. Different Timing."
+          text="See how under-the-tongue and swallowed tincture use can differ in timing."
+        />
+      </div>
       <h2 class="font-headline-lg text-headline-lg text-primary">Two routes. Different timing.</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
         How you take a tincture changes how it travels. Understanding the two primary administration routes helps you keep your routine consistent.
