@@ -1,30 +1,11 @@
 import { getSupabase } from './supabase';
 
-const DEMO_ADMIN_EMAIL = 'admin@botanica.com';
-
 export async function signInWithPassword(email: string, password: string) {
-  try {
-    const supabase = getSupabase();
-    const res = await supabase.auth.signInWithPassword({ email, password });
-    if (!res.error) return res;
-  } catch {
-    // Supabase unconfigured
-  }
-
-  if (email.toLowerCase() === DEMO_ADMIN_EMAIL) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('botanica_demo_admin', 'true');
-    }
-    return { data: { user: { id: 'demo-admin-id', email } }, error: null } as any;
-  }
-
-  return { data: null, error: { code: 'invalid_credentials', message: 'Invalid credentials' } } as any;
+  const supabase = getSupabase();
+  return await supabase.auth.signInWithPassword({ email, password });
 }
 
 export async function signOut() {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('botanica_demo_admin');
-  }
   try {
     const supabase = getSupabase();
     return await supabase.auth.signOut();
@@ -43,10 +24,6 @@ export async function getSession() {
 }
 
 export async function isAdmin() {
-  if (typeof window !== 'undefined' && localStorage.getItem('botanica_demo_admin') === 'true') {
-    return true;
-  }
-
   try {
     const supabase = getSupabase();
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
