@@ -5,7 +5,7 @@ import ArticleCard from '@/components/journal/ArticleCard.astro';
 import ApothecaryCallout from '@/components/journal/ApothecaryCallout';
 import { getAllArticles } from '@/data/journal';
 
-export const prerender = true;
+export const prerender = false;
 
 const articles = await getAllArticles();
 ---

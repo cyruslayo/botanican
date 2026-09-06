@@ -433,6 +433,7 @@ export function getFeaturedArticle(articles: Article[] = ARTICLES): Article {
   return articles.find((a) => a.featured) || articles[0];
 }
 
-export function getArticleBySlug(slug: string, articles: Article[] = ARTICLES): Article | undefined {
-  return articles.find((a) => a.slug === slug);
+export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
+  const articles = await getAllArticles();
+  return articles.find((article) => article.slug === slug);
 }

@@ -19,7 +19,7 @@ import LeadStory from '@/components/journal/LeadStory.astro';
 import JournalGrid from '@/components/journal/JournalGrid.astro';
 import { getAllArticles, getFeaturedArticle } from '@/data/journal';
 
-export const prerender = true;
+export const prerender = false;
 
 const articles = await getAllArticles();
 const featuredArticle = getFeaturedArticle(articles);

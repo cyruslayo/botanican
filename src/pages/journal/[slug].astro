@@ -3,22 +3,14 @@ import Layout from '@/layouts/Layout.astro';
 import Masthead from '@/components/journal/Masthead.astro';
 import ArticleShareBar from '@/components/journal/ArticleShareBar';
 import ArticleCalloutBox from '@/components/journal/ArticleCalloutBox';
-import { ARTICLES, type Article } from '@/data/journal';
+import { getArticleBySlug, type Article } from '@/data/journal';
 
-export const prerender = true;
+const { slug } = Astro.params;
+const article = slug ? await getArticleBySlug(slug) : undefined;
 
-export function getStaticPaths() {
-  return ARTICLES.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
-  }));
+if (!article || article.status === 'draft') {
+  return Astro.redirect('/journal');
 }
-
-interface Props {
-  article: Article;
-}
-
-const { article } = Astro.props;
 ---
 
 <Layout
