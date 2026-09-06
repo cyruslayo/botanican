@@ -7,7 +7,9 @@ interface Props {
 }
 
 const { articles = ARTICLES } = Astro.props;
-const remainingArticles = articles.filter((a) => !a.featured);
+const remainingArticles = articles
+  .filter((a) => !a.featured)
+  .slice(0, 2);
 ---
 
 <section id="dispatches" class="w-full bg-surface-container-low border-b border-outline-variant/30 py-20 md:py-28">
