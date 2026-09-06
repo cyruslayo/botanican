@@ -6,12 +6,8 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signOut() {
-  try {
-    const supabase = getSupabase();
-    return await supabase.auth.signOut();
-  } catch {
-    return { error: null } as any;
-  }
+  const supabase = getSupabase();
+  return await supabase.auth.signOut();
 }
 
 export async function getSession() {
