@@ -84,8 +84,16 @@ const navigation = [
       const btn = document.getElementById('desktop-sign-out-btn');
       if (btn) {
         btn.addEventListener('click', async () => {
-          await signOut();
-          window.location.href = '/admin';
+          try {
+            const { error } = await signOut();
+            if (error) {
+              console.error('Sign out failed:', error.message);
+              return;
+            }
+            window.location.href = '/admin';
+          } catch (err: any) {
+            console.error('Sign out failed:', err?.message || 'Unknown error');
+          }
         });
       }
     </script>

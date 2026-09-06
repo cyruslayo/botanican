@@ -41,8 +41,16 @@ export default function AdminBottomNav({ pathname }: AdminBottomNavProps) {
   const isMoreActive = secondaryItems.some((item) => item.active);
 
   const handleSignOut = async () => {
-    await signOut();
-    window.location.href = '/admin';
+    try {
+      const { error } = await signOut();
+      if (error) {
+        console.error('Sign out failed:', error.message);
+        return;
+      }
+      window.location.href = '/admin';
+    } catch (err: any) {
+      console.error('Sign out failed:', err?.message || 'Unknown error');
+    }
   };
 
   return (
