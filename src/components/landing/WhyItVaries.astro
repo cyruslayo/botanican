@@ -3,11 +3,23 @@
  * Why experiences vary:
  * Route, food, individual differences, previous experience.
  */
+import SectionShare from './SectionShare';
 ---
 
 <section id="variables" class="w-full bg-surface-container-low border-b border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+          Variables
+        </span>
+        <SectionShare
+          client:idle
+          anchor="variables"
+          title="Why the Same Draw Can Feel Different"
+          text="See why context can change how a similar visual draw develops."
+        />
+      </div>
       <h2 class="font-headline-lg text-headline-lg text-primary">Why the same draw can feel different.</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
         Even with a consistent visual fill, several factors influence how an experience develops from one day to the next.

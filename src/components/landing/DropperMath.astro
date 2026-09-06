@@ -5,16 +5,25 @@
  * Interactive apothecary pipette visual synchronized with dose calculator.
  */
 import InteractiveDropperMath from './InteractiveDropperMath';
+import SectionShare from './SectionShare';
 ---
 
 <section id="dose" class="w-full bg-surface-container-low border-y border-outline-variant/30">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="max-w-2xl space-y-stack-md reveal mb-12">
-      <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container/60 rounded-full border border-secondary/30">
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
-        <span class="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary">
-          Visual Reference Method
-        </span>
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container/60 rounded-full border border-secondary/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
+          <span class="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary">
+            Visual Reference Method
+          </span>
+        </div>
+        <SectionShare
+          client:idle
+          anchor="dose"
+          title="Visual Draw Guide"
+          text="See the approximate visual draw references used with an unmarked Botanica dropper."
+        />
       </div>
       <h2 class="font-headline-lg text-headline-lg text-primary">See the draw before you take it.</h2>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">

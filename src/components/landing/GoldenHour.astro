@@ -4,6 +4,7 @@
  * P2.2 - Golden rules for consistent titration.
  */
 import { Hourglass, Scale, NotebookPen } from 'lucide-react';
+import SectionShare from './SectionShare';
 
 const rules = [
   {
@@ -28,9 +29,17 @@ const rules = [
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16 items-start">
       <div class="md:col-span-6 space-y-stack-md reveal">
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          Responsible Use
-        </span>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+            Responsible Use
+          </span>
+          <SectionShare
+            client:idle
+            anchor="golden-hour"
+            title="Give It Time"
+            text="See why patience makes a cannabis routine easier to understand."
+          />
+        </div>
         <h2 class="font-headline-lg text-headline-lg text-primary">It has not arrived yet. Give it time.</h2>
         <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
           Adding more too quickly makes the experience harder to understand.

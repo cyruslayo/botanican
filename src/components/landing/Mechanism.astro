@@ -4,6 +4,7 @@
  * Compares familiar edible format with liquid tincture format.
  */
 import { OILS_IMAGE } from '@/data/landing';
+import SectionShare from './SectionShare';
 
 const comparisons = [
   {
@@ -29,9 +30,17 @@ const comparisons = [
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-x-16 items-center">
       <div class="md:col-span-6 space-y-stack-md reveal">
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          The Format
-        </span>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+            The Format
+          </span>
+          <SectionShare
+            client:idle
+            anchor="format"
+            title="What Changes From Edibles to Tinctures?"
+            text="See how a liquid tincture differs from a familiar fixed edible portion."
+          />
+        </div>
         <h2 class="font-headline-lg text-headline-lg text-primary">
           You already know edibles. Here is what changes.
         </h2>
