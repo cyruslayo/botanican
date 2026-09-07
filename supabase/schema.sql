@@ -60,7 +60,7 @@ for each row execute function public.touch_updated_at();
 create table if not exists public.referral_codes (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
-  owner_handle text not null,          -- e.g. '@jane_wellness'
+  owner_handle text not null,          -- e.g. '@member_handle'
   owner_email text,
   owner_id uuid references auth.users(id) on delete set null,
   is_active boolean not null default true,
@@ -69,6 +69,7 @@ create table if not exists public.referral_codes (
 
 create index if not exists referral_codes_code_idx on public.referral_codes (code);
 create index if not exists referral_codes_owner_handle_idx on public.referral_codes (owner_handle);
+create unique index if not exists referral_codes_code_unique_idx on public.referral_codes (lower(code));
 
 -- Access requests: tracks every person who registers via a referral link.
 -- Admin approves/rejects from /admin/referrals.
@@ -86,6 +87,12 @@ create table if not exists public.access_requests (
   reviewed_by text,
   created_at timestamptz not null default now()
 );
+
+alter table public.access_requests
+  drop constraint if exists access_requests_status_check;
+alter table public.access_requests
+  add constraint access_requests_status_check
+  check (status in ('pending', 'approved', 'rejected'));
 
 create index if not exists access_requests_status_idx on public.access_requests (status, created_at desc);
 create index if not exists access_requests_handle_idx on public.access_requests (instagram_handle);
@@ -127,5 +134,4 @@ create table if not exists public.site_settings (
   value jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
-
 

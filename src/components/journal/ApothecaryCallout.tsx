@@ -7,7 +7,9 @@ export default function ApothecaryCallout() {
 
   useEffect(() => {
     setSettings(getSiteSettings());
-    fetchLiveSiteSettings().then(setSettings);
+    fetchLiveSiteSettings()
+      .then(setSettings)
+      .catch((error) => console.error('Error loading live site settings:', error));
 
     const onUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<SiteSettings>;

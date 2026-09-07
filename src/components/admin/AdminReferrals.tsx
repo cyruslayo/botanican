@@ -17,10 +17,12 @@ export default function AdminReferrals() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Landing page invite code config
   const [landingCodeInput, setLandingCodeInput] = useState('');
   const [landingCodeSaved, setLandingCodeSaved] = useState(false);
+  const [landingCodeError, setLandingCodeError] = useState<string | null>(null);
 
   // New referral code modal
   const [isCreateCodeOpen, setIsCreateCodeOpen] = useState(false);
@@ -30,16 +32,19 @@ export default function AdminReferrals() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const [reqData, codeData] = await Promise.all([
+      const [reqData, codeData, landingCode] = await Promise.all([
         getAccessRequests(statusFilter),
         getReferralCodes(),
+        getLandingInviteCode(),
       ]);
       setRequests(reqData);
       setCodes(codeData);
-      setLandingCodeInput(getLandingInviteCode());
+      setLandingCodeInput(landingCode || '');
     } catch (err) {
       console.error('Error loading referral admin data:', err);
+      setError('Membership and referral data could not be loaded from Supabase.');
     } finally {
       setLoading(false);
     }
@@ -52,10 +57,11 @@ export default function AdminReferrals() {
   const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected') => {
     setActionLoading(id);
     try {
-      await updateAccessRequest(id, status, 'admin@botanica.com');
+      await updateAccessRequest(id, status);
       await loadData();
     } catch (err) {
       console.error('Error updating access request:', err);
+      setError('The membership review could not be saved.');
     } finally {
       setActionLoading(null);
     }
@@ -74,15 +80,25 @@ export default function AdminReferrals() {
       await loadData();
     } catch (err) {
       console.error('Error creating referral code:', err);
+      setError(err instanceof Error ? err.message : 'The referral code could not be created.');
     }
   };
 
-  const handleSaveLandingCode = (e: React.FormEvent) => {
+  const handleSaveLandingCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!landingCodeInput.trim()) return;
-    setLandingInviteCode(landingCodeInput.trim());
-    setLandingCodeSaved(true);
-    setTimeout(() => setLandingCodeSaved(false), 2500);
+    setLandingCodeError(null);
+    if (!landingCodeInput.trim()) {
+      setLandingCodeError('Enter an active referral code.');
+      return;
+    }
+    try {
+      await setLandingInviteCode(landingCodeInput.trim());
+      setLandingCodeSaved(true);
+      setTimeout(() => setLandingCodeSaved(false), 2500);
+    } catch (err) {
+      console.error('Error saving landing invitation code:', err);
+      setLandingCodeError(err instanceof Error ? err.message : 'The landing invitation could not be saved.');
+    }
   };
 
   const handleCopyLink = (codeStr: string) => {
@@ -96,7 +112,12 @@ export default function AdminReferrals() {
   };
 
   return (
-    <div className="space-y-12 pb-16">
+      <div className="space-y-12 pb-16">
+      {error && (
+        <div role="alert" className="p-4 rounded-xl border border-error/30 bg-error/10 text-error font-body-sm text-body-sm">
+          {error}
+        </div>
+      )}
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -137,7 +158,7 @@ export default function AdminReferrals() {
                 type="text"
                 value={landingCodeInput}
                 onChange={(e) => setLandingCodeInput(e.target.value)}
-                placeholder="e.g. botanica1"
+                placeholder="e.g. an active member code"
                 aria-label="Landing page invite code"
                 className="p-3 bg-surface border border-outline rounded-lg font-mono font-bold text-primary text-sm min-w-[180px] focus:border-primary focus:outline-none"
               />
@@ -149,6 +170,7 @@ export default function AdminReferrals() {
               {landingCodeSaved ? 'Saved!' : 'Save Code'}
             </button>
           </form>
+          {landingCodeError && <p role="alert" className="mt-3 text-sm text-error">{landingCodeError}</p>}
         </div>
       </div>
 

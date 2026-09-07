@@ -7,6 +7,7 @@ import {
   accessState,
   clearAccess,
   setApprovedAccess,
+  setRejectedAccess,
   hasApprovalCelebration,
   dismissApprovalCelebration,
 } from '@/store/access';
@@ -21,6 +22,7 @@ export default function AccessStatusBanner() {
   const access = useStore(accessState);
   const celebration = useStore(hasApprovalCelebration);
   const [dismissed, setDismissed] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
 
   useEffect(() => {
     setDismissed(false);
@@ -28,16 +30,23 @@ export default function AccessStatusBanner() {
 
   // Sync / check status with server/storage
   const revalidateStatus = useCallback(async () => {
-    const handleOrPhone = access.instagramHandle || access.phone;
-    if (!handleOrPhone) return;
+    const handle = access.instagramHandle;
+    const phone = access.phone;
+    if (!handle || !phone) return;
 
     try {
-      const res = await checkAccess(handleOrPhone);
+      const res = await checkAccess(handle, phone);
+      setVerificationError(null);
       if (res.status === 'approved' && access.status !== 'approved') {
-        const handle = res.instagramHandle || normalizeHandle(handleOrPhone);
-        setApprovedAccess(handle, res.phone, res.referralCode, true);
+        const approvedHandle = res.instagramHandle || normalizeHandle(handle);
+        setApprovedAccess(approvedHandle, phone, res.referralCode, true);
+      } else if (res.status === 'rejected') {
+        setRejectedAccess(res.instagramHandle || normalizeHandle(handle), phone);
       }
-    } catch {}
+    } catch (error) {
+      console.error('Error checking membership status:', error);
+      setVerificationError('Membership status is temporarily unavailable. We will keep checking.');
+    }
   }, [access.instagramHandle, access.phone, access.status]);
 
   // 1. Auto-polling every 5 seconds while in 'pending' status
@@ -181,6 +190,9 @@ export default function AccessStatusBanner() {
             &times;
           </button>
         </div>
+        {verificationError && (
+          <p className="mt-1 text-xs text-on-secondary-container/80">{verificationError}</p>
+        )}
       </aside>
     );
   }

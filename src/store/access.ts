@@ -86,6 +86,16 @@ export function setPendingAccess(instagramHandle: string, phone?: string) {
   });
 }
 
+export function setRejectedAccess(instagramHandle: string, phone?: string) {
+  hasApprovalCelebration.set(false);
+  accessState.set({
+    instagramHandle,
+    phone: phone || null,
+    status: 'rejected',
+    referralCode: null,
+  });
+}
+
 export function clearAccess() {
   hasApprovalCelebration.set(false);
   accessState.set({

@@ -1,33 +1,26 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { getAccessRequests } from '@/lib/referrals';
+import type { AccessRequest } from '@/lib/types';
 
 export default function AdminCustomers() {
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<AccessRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { getSupabase } = await import('@/lib/supabase');
-      const supabase = getSupabase();
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, email, role, created_at')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setCustomers(data ?? []);
+      setCustomers(await getAccessRequests('all'));
     } catch (error) {
       console.error('Error fetching customers: ', error);
-      if (customers.length === 0) {
-        setCustomers([
-          { id: 'cust-1', email: 'jane@example.com', role: 'customer', created_at: new Date('2023-10-24').toISOString() },
-          { id: 'cust-2', email: 'john@example.com', role: 'customer', created_at: new Date('2023-10-23').toISOString() },
-        ]);
-      }
+      setCustomers([]);
+      setError('Member records could not be loaded from Supabase.');
     } finally {
       setLoading(false);
     }
-  }, [customers.length]);
+  }, []);
 
   useEffect(() => {
     fetchCustomers();
@@ -36,8 +29,9 @@ export default function AdminCustomers() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCustomers = customers.filter((c) =>
-    c.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.role?.toLowerCase().includes(searchQuery.toLowerCase())
+    c.instagram_handle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.status.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -46,7 +40,7 @@ export default function AdminCustomers() {
         <div>
           <h2 className="font-headline-md text-xl sm:text-headline-md text-on-surface">Customers</h2>
           <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant">
-            Registered customer accounts, roles, and authorization status.
+            Approved access requests are the member/customer source for this storefront.
           </p>
         </div>
         <div className="text-xs font-mono text-on-surface-variant bg-surface px-3 py-1.5 rounded-xl border border-outline-variant/60 w-fit">
@@ -54,11 +48,13 @@ export default function AdminCustomers() {
         </div>
       </div>
 
+      {error && <div role="alert" className="p-4 rounded-xl border border-error/30 bg-error/10 text-error text-sm">{error}</div>}
+
       {/* Search Bar */}
       <div className="bg-surface p-3.5 sm:p-4 rounded-2xl border border-outline-variant/60 botanical-shadow">
         <input
           type="text"
-          placeholder="Search customers by email or role..."
+          placeholder="Search members by handle, phone, or status..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/60 focus:outline-none focus:border-primary text-primary"
@@ -83,22 +79,24 @@ export default function AdminCustomers() {
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs font-bold text-primary break-all">
-                  {customer.email}
+                  {customer.instagram_handle}
                 </span>
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                    customer.role === 'admin'
+                    customer.status === 'approved'
                       ? 'bg-secondary-container text-on-secondary-container'
+                      : customer.status === 'rejected'
+                      ? 'bg-error/10 text-error'
                       : 'bg-surface-container-high text-on-surface-variant'
                   }`}
                 >
-                  {customer.role}
+                  {customer.status}
                 </span>
               </div>
               <div className="flex justify-between text-xs text-on-surface-variant pt-1 border-t border-outline-variant/40">
-                <span>Joined Date:</span>
+                <span>Approved Date:</span>
                 <span className="font-mono">
-                  {customer.created_at ? new Date(customer.created_at).toLocaleDateString() : 'N/A'}
+                  {customer.reviewed_at ? new Date(customer.reviewed_at).toLocaleDateString() : 'Pending review'}
                 </span>
               </div>
             </div>
@@ -112,9 +110,9 @@ export default function AdminCustomers() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-surface-container-low">
               <tr className="border-b border-outline-variant">
-                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Email</th>
-                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Role</th>
-                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Joined Date</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Instagram Handle</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Phone</th>
+                <th className="p-4 font-label-sm text-xs text-on-surface-variant uppercase tracking-wider">Status / Approval Date</th>
               </tr>
             </thead>
             <tbody className="font-body-md text-sm text-on-surface divide-y divide-outline-variant/50">
@@ -129,14 +127,13 @@ export default function AdminCustomers() {
               ) : (
                 filteredCustomers.map((customer) => (
                   <tr key={customer.id} className="hover:bg-surface-container-low/50 transition-colors">
-                    <td className="p-4 font-medium text-primary font-mono text-xs">{customer.email}</td>
+                    <td className="p-4 font-medium text-primary font-mono text-xs">{customer.instagram_handle}</td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${customer.role === 'admin' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}`}>
-                        {customer.role}
-                      </span>
+                      <span className="font-mono text-xs">{customer.phone}</span>
                     </td>
                     <td className="p-4 text-on-surface-variant font-mono text-xs">
-                      {customer.created_at ? new Date(customer.created_at).toLocaleDateString() : 'N/A'}
+                      <span className="block uppercase">{customer.status}</span>
+                      {customer.reviewed_at ? new Date(customer.reviewed_at).toLocaleDateString() : 'Pending review'}
                     </td>
                   </tr>
                 ))

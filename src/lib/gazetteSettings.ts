@@ -1,6 +1,4 @@
-/**
- * Helpers for store and publication settings (Masthead volume/edition, quality claim, harvest label, etc.)
- */
+import { fetchLiveSiteSettings, saveSiteSettings } from './siteSettings';
 
 export interface GazetteSettings {
   publicationName: string;
@@ -36,14 +34,41 @@ export function getGazetteSettings(): GazetteSettings {
   return DEFAULT_GAZETTE_SETTINGS;
 }
 
-export function saveGazetteSettings(settings: Partial<GazetteSettings>): GazetteSettings {
+function fromSiteSettings(settings: Awaited<ReturnType<typeof fetchLiveSiteSettings>>): GazetteSettings {
+  return {
+    publicationName: settings.publicationName || DEFAULT_GAZETTE_SETTINGS.publicationName,
+    volume: settings.volume || DEFAULT_GAZETTE_SETTINGS.volume,
+    edition: settings.edition || DEFAULT_GAZETTE_SETTINGS.edition,
+    circulation: settings.circulation || DEFAULT_GAZETTE_SETTINGS.circulation,
+    harvestLabel: settings.harvestLabel || DEFAULT_GAZETTE_SETTINGS.harvestLabel,
+    qualityBadge: settings.qualityBadge || DEFAULT_GAZETTE_SETTINGS.qualityBadge,
+    archiveLinkText: settings.archiveLinkText || DEFAULT_GAZETTE_SETTINGS.archiveLinkText,
+  };
+}
+
+function cacheGazetteSettings(settings: GazetteSettings): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(LOCAL_GAZETTE_SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // A cache failure must never change the persistence result.
+  }
+}
+
+export async function fetchLiveGazetteSettings(): Promise<GazetteSettings> {
+  const settings = fromSiteSettings(await fetchLiveSiteSettings());
+  cacheGazetteSettings(settings);
+  return settings;
+}
+
+export async function saveGazetteSettings(settings: Partial<GazetteSettings>): Promise<GazetteSettings> {
   const current = getGazetteSettings();
   const updated = { ...current, ...settings };
+
+  await saveSiteSettings(updated);
+  cacheGazetteSettings(updated);
   if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(LOCAL_GAZETTE_SETTINGS_KEY, JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent('botanica-gazette-settings-updated', { detail: updated }));
-    } catch {}
+    window.dispatchEvent(new CustomEvent('botanica-gazette-settings-updated', { detail: updated }));
   }
   return updated;
 }

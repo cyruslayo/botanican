@@ -47,13 +47,8 @@ drop policy if exists products_admin_delete on public.products;
 create policy products_admin_delete on public.products
   for delete using (public.is_admin());
 
--- Orders: anonymous guest checkout can insert; admins can read/update.
--- For guest insert there is no auth.uid(), so this policy allows any insert
--- matching the client-provided user_id. Keep this in mind for production
--- hardening (e.g. add server-side validation or CAPTCHA).
+-- Orders are created through the create_member_order security-definer RPC.
 drop policy if exists orders_insert on public.orders;
-create policy orders_insert on public.orders
-  for insert with check (true);
 
 drop policy if exists orders_admin_select on public.orders;
 create policy orders_admin_select on public.orders
@@ -63,11 +58,13 @@ drop policy if exists orders_admin_update on public.orders;
 create policy orders_admin_update on public.orders
   for update using (public.is_admin());
 
--- Referral codes: anyone can read (to validate invite links); admins can CRUD.
+-- Referral codes are admin-only at the table boundary. Public validation uses
+-- the redacted validate_referral_code RPC from the repair migration.
 alter table public.referral_codes enable row level security;
 drop policy if exists referral_codes_select on public.referral_codes;
-create policy referral_codes_select on public.referral_codes
-  for select using (true);
+drop policy if exists referral_codes_admin_select on public.referral_codes;
+create policy referral_codes_admin_select on public.referral_codes
+  for select using (public.is_admin());
 
 drop policy if exists referral_codes_admin_insert on public.referral_codes;
 create policy referral_codes_admin_insert on public.referral_codes
@@ -75,21 +72,29 @@ create policy referral_codes_admin_insert on public.referral_codes
 
 drop policy if exists referral_codes_admin_update on public.referral_codes;
 create policy referral_codes_admin_update on public.referral_codes
-  for update using (public.is_admin());
+  for update using (public.is_admin()) with check (public.is_admin());
 
--- Access requests: anonymous insert (for registration); admins can read/update.
+drop policy if exists referral_codes_admin_delete on public.referral_codes;
+create policy referral_codes_admin_delete on public.referral_codes
+  for delete using (public.is_admin());
+
+-- Access requests: anonymous users may submit pending applications only.
 alter table public.access_requests enable row level security;
 drop policy if exists access_requests_insert on public.access_requests;
 create policy access_requests_insert on public.access_requests
-  for insert with check (true);
+  for insert with check (
+    status = 'pending'
+    and reviewed_at is null
+    and reviewed_by is null
+  );
 
 drop policy if exists access_requests_select on public.access_requests;
 create policy access_requests_select on public.access_requests
-  for select using (public.is_admin() or email = current_setting('request.jwt.claims', true)::json->>'email');
+  for select using (public.is_admin());
 
 drop policy if exists access_requests_admin_update on public.access_requests;
 create policy access_requests_admin_update on public.access_requests
-  for update using (public.is_admin());
+  for update using (public.is_admin()) with check (public.is_admin());
 
 -- Site settings: public read, admin write
 alter table public.site_settings enable row level security;
@@ -100,4 +105,3 @@ create policy site_settings_select on public.site_settings
 drop policy if exists site_settings_admin_all on public.site_settings;
 create policy site_settings_admin_all on public.site_settings
   for all using (public.is_admin());
-

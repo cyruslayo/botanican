@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Article, Product } from '@/lib/types';
 import { getAllArticles } from '@/data/journal';
-import { getGazetteSettings, saveGazetteSettings, type GazetteSettings, DEFAULT_GAZETTE_SETTINGS } from '@/lib/gazetteSettings';
+import { getGazetteSettings, fetchLiveGazetteSettings, saveGazetteSettings, type GazetteSettings, DEFAULT_GAZETTE_SETTINGS } from '@/lib/gazetteSettings';
 import ArticleFormModal from './ArticleFormModal';
 import { BookOpen, Plus, Sparkles, ExternalLink, Edit2, Trash2, CheckCircle2, Sliders, Check } from 'lucide-react';
 
@@ -17,10 +17,13 @@ export default function AdminArticles() {
   const [gazetteSettings, setGazetteSettings] = useState<GazetteSettings>(DEFAULT_GAZETTE_SETTINGS);
   const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+  const [articlesError, setArticlesError] = useState<string | null>(null);
 
 
   const fetchArticlesAndProducts = useCallback(async () => {
     setLoading(true);
+    setArticlesError(null);
     try {
       const liveArticles = await getAllArticles();
       setArticles(liveArticles);
@@ -30,10 +33,11 @@ export default function AdminArticles() {
       const supabase = getSupabase();
       const { data } = await supabase.from('products').select('*');
       if (data) setProducts(data);
-    } catch {
-      // Fallback
-      const liveArticles = await getAllArticles();
-      setArticles(liveArticles);
+    } catch (error) {
+      console.error('Error loading articles and products:', error);
+      setArticles([]);
+      setProducts([]);
+      setArticlesError('Articles and product references could not be loaded from Supabase.');
     } finally {
       setLoading(false);
     }
@@ -42,13 +46,25 @@ export default function AdminArticles() {
   useEffect(() => {
     fetchArticlesAndProducts();
     setGazetteSettings(getGazetteSettings());
+    fetchLiveGazetteSettings()
+      .then(setGazetteSettings)
+      .catch((error) => {
+        console.error('Error loading live Gazette settings:', error);
+        setSettingsError('Live Gazette settings could not be loaded from Supabase.');
+      });
   }, [fetchArticlesAndProducts]);
 
-  const handleSaveGazetteSettings = (e: React.FormEvent) => {
+  const handleSaveGazetteSettings = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveGazetteSettings(gazetteSettings);
-    setSettingsSaved(true);
-    setTimeout(() => setSettingsSaved(false), 2500);
+    setSettingsError(null);
+    try {
+      await saveGazetteSettings(gazetteSettings);
+      setSettingsSaved(true);
+      setTimeout(() => setSettingsSaved(false), 2500);
+    } catch (error) {
+      console.error('Error saving Gazette settings:', error);
+      setSettingsError('Gazette settings could not be saved to Supabase.');
+    }
   };
 
   const handleSaveArticle = async (articleData: Partial<Article>) => {
@@ -95,13 +111,9 @@ export default function AdminArticles() {
       }
 
       await fetchArticlesAndProducts();
-    } catch {
-      // Local state fallback for previewing
-      if (articleToEdit) {
-        setArticles(articles.map(a => a.slug === articleToEdit.slug ? { ...a, ...articleData } as Article : a));
-      } else {
-        setArticles([{ ...articleData, slug: articleData.slug || 'temp-slug' } as Article, ...articles]);
-      }
+    } catch (error) {
+      console.error('Error saving article:', error);
+      setArticlesError('The article could not be saved to Supabase.');
     }
   };
 
@@ -120,7 +132,10 @@ export default function AdminArticles() {
           featured: a.slug === targetArticle.slug ? !a.featured : false,
         })));
       }
-    } catch {}
+    } catch (error) {
+      console.error('Error toggling featured article:', error);
+      setArticlesError('The featured article change could not be saved.');
+    }
   };
 
   const handleDelete = async (targetArticle: Article) => {
@@ -133,7 +148,10 @@ export default function AdminArticles() {
         await supabase.from('articles').delete().eq('id', targetArticle.id);
       }
       setArticles(articles.filter(a => a.slug !== targetArticle.slug));
-    } catch {}
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      setArticlesError('The article could not be deleted from Supabase.');
+    }
   };
 
   return (
@@ -177,6 +195,8 @@ export default function AdminArticles() {
         </div>
       </div>
 
+      {articlesError && <p role="alert" className="p-3 rounded-xl bg-error/10 border border-error/30 text-error text-sm">{articlesError}</p>}
+
       {showSettingsDrawer && (
         <div className="bg-surface rounded-2xl border border-secondary/30 p-6 sm:p-8 botanical-shadow space-y-6">
           <div className="flex items-start justify-between">
@@ -199,6 +219,7 @@ export default function AdminArticles() {
           </div>
 
           <form onSubmit={handleSaveGazetteSettings} className="space-y-4">
+            {settingsError && <p role="alert" className="text-sm text-error bg-error/10 rounded-xl p-3">{settingsError}</p>}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">

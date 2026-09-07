@@ -3,21 +3,36 @@ import { useEffect, useState } from 'react';
 import { getLandingInviteCode } from '@/lib/referrals';
 
 export default function InviteCodeCard() {
-  const [inviteCode, setInviteCode] = useState('botanica1');
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    try {
-      const code = getLandingInviteCode();
-      if (code) setInviteCode(code);
-    } catch {}
+    getLandingInviteCode()
+      .then(setInviteCode)
+      .catch((error) => console.error('Error loading landing invitation:', error))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleCopyCode = () => {
+    if (!inviteCode) return;
     navigator.clipboard.writeText(inviteCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  if (loading || !inviteCode) {
+    return (
+      <div className="bg-surface/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-md mx-auto space-y-3 w-full text-center">
+        <span className="font-label-sm text-xs uppercase tracking-widest text-secondary block font-bold">
+          Official Reader Invite
+        </span>
+        <p className="text-sm text-on-primary/80">
+          {loading ? 'Checking invitation availability…' : 'Reader invitations are currently unavailable. Please use a member-supplied link.'}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-surface/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-md mx-auto space-y-4 w-full">

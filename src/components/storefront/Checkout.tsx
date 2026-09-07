@@ -24,7 +24,9 @@ export default function Checkout() {
 
   useEffect(() => {
     setSiteSettings(getSiteSettings());
-    fetchLiveSiteSettings().then(setSiteSettings);
+    fetchLiveSiteSettings()
+      .then(setSiteSettings)
+      .catch((error) => console.error('Error loading live site settings:', error));
 
     const onUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<SiteSettings>;

@@ -9,6 +9,7 @@ import {
 } from '@/lib/siteSettings';
 import {
   getGazetteSettings,
+  fetchLiveGazetteSettings,
   saveGazetteSettings,
   type GazetteSettings,
   DEFAULT_GAZETTE_SETTINGS,
@@ -31,15 +32,22 @@ export default function AdminSiteContent() {
   const [gazetteSettings, setGazetteSettings] = useState<GazetteSettings>(DEFAULT_GAZETTE_SETTINGS);
 
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setSiteSettings(getSiteSettings());
     setGazetteSettings(getGazetteSettings());
 
-    fetchLiveSiteSettings().then((live) => {
-      if (live) setSiteSettings(live);
-    });
+    Promise.all([fetchLiveSiteSettings(), fetchLiveGazetteSettings()])
+      .then(([live, gazette]) => {
+        setSiteSettings(live);
+        setGazetteSettings(gazette);
+      })
+      .catch((error) => {
+        console.error('Error loading live site settings:', error);
+        setSaveError('Live site settings could not be loaded from Supabase.');
+      });
   }, []);
 
   const triggerSavedNotice = (msg: string) => {
@@ -50,11 +58,13 @@ export default function AdminSiteContent() {
   const handleSaveBankSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveError(null);
     try {
       await saveSiteSettings({ bank: siteSettings.bank });
       triggerSavedNotice('Bank Transfer instructions updated live!');
-    } catch {
-      triggerSavedNotice('Saved locally.');
+    } catch (error) {
+      console.error('Error saving bank settings:', error);
+      setSaveError('Bank transfer settings could not be saved to Supabase.');
     } finally {
       setSaving(false);
     }
@@ -63,11 +73,13 @@ export default function AdminSiteContent() {
   const handleSaveAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveError(null);
     try {
       await saveSiteSettings({ announcement: siteSettings.announcement });
       triggerSavedNotice('Announcement banner settings updated live!');
-    } catch {
-      triggerSavedNotice('Saved locally.');
+    } catch (error) {
+      console.error('Error saving announcement settings:', error);
+      setSaveError('Announcement settings could not be saved to Supabase.');
     } finally {
       setSaving(false);
     }
@@ -76,6 +88,7 @@ export default function AdminSiteContent() {
   const handleSaveBanners = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveError(null);
     try {
       await saveSiteSettings({
         heroTrustBadge: siteSettings.heroTrustBadge,
@@ -83,19 +96,24 @@ export default function AdminSiteContent() {
         apothecaryCalloutSubtitle: siteSettings.apothecaryCalloutSubtitle,
       });
       triggerSavedNotice('Storefront banners & copy updated live!');
-    } catch {
-      triggerSavedNotice('Saved locally.');
+    } catch (error) {
+      console.error('Error saving banner settings:', error);
+      setSaveError('Storefront banner settings could not be saved to Supabase.');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleSaveGazette = (e: React.FormEvent) => {
+  const handleSaveGazette = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveError(null);
     try {
-      saveGazetteSettings(gazetteSettings);
+      await saveGazetteSettings(gazetteSettings);
       triggerSavedNotice('Gazette & Masthead settings updated live!');
+    } catch (error) {
+      console.error('Error saving Gazette settings:', error);
+      setSaveError('Gazette settings could not be saved to Supabase.');
     } finally {
       setSaving(false);
     }
@@ -121,6 +139,11 @@ export default function AdminSiteContent() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-secondary-container text-secondary text-xs font-mono font-bold animate-in fade-in shrink-0 self-start sm:self-auto">
             <Check className="w-4 h-4" />
             <span>{savedNotice}</span>
+          </div>
+        )}
+        {saveError && (
+          <div role="alert" className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-error/10 text-error text-xs font-mono font-bold shrink-0 self-start sm:self-auto">
+            <span>{saveError}</span>
           </div>
         )}
       </div>

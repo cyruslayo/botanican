@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import MemberGate from '@/components/storefront/MemberGate';
 import { OILS_IMAGE } from '@/data/landing';
 
 export const prerender = true;
@@ -10,6 +11,7 @@ export const prerender = true;
   title="Member Portal | Botanica Private Apothecary"
   description="Private member dashboard and apothecary collection access."
 >
+  <MemberGate client:load>
   <main class="w-full pt-12 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <div id="portal-root" class="space-y-stack-lg">
       <div class="rounded-2xl overflow-hidden botanical-shadow bg-surface-container-low p-6 sm:p-10 md:p-14 border border-secondary/20">
@@ -71,4 +73,5 @@ export const prerender = true;
       </div>
     </div>
   </main>
+  </MemberGate>
 </Layout>

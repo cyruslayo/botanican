@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { isApproved, isPending, accessState } from '@/store/access';
+import { isApproved, isPending, accessState, clearAccess, setApprovedAccess, setPendingAccess } from '@/store/access';
+import { checkAccess } from '@/lib/referrals';
 
 interface MemberGateProps {
   children: React.ReactNode;
@@ -12,12 +13,52 @@ export default function MemberGate({ children }: MemberGateProps) {
   const pending = useStore(isPending);
   const access = useStore(accessState);
   const [hydrated, setHydrated] = useState(false);
+  const [verification, setVerification] = useState<'checking' | 'verified' | 'error'>('checking');
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  if (!hydrated) {
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const handle = access.instagramHandle;
+    const phone = access.phone;
+    if (!handle || !phone) {
+      clearAccess();
+      setVerification('verified');
+      return;
+    }
+
+    let active = true;
+    setVerification('checking');
+    checkAccess(handle, phone)
+      .then((result) => {
+        if (!active) return;
+        if (result.status === 'approved') {
+          setApprovedAccess(result.instagramHandle || handle, phone, result.referralCode);
+          setVerification('verified');
+          return;
+        }
+        if (result.status === 'pending') {
+          setPendingAccess(result.instagramHandle || handle, phone);
+          setVerification('verified');
+          return;
+        }
+        clearAccess();
+        setVerification('verified');
+      })
+      .catch((error) => {
+        console.error('Error verifying member access:', error);
+        if (active) setVerification('error');
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [hydrated, access.instagramHandle, access.phone]);
+
+  if (!hydrated || verification === 'checking') {
     return (
       <div className="min-h-[70dvh] flex items-center justify-center pt-24">
         <div className="flex flex-col items-center gap-3">
@@ -27,6 +68,22 @@ export default function MemberGate({ children }: MemberGateProps) {
           </span>
         </div>
       </div>
+    );
+  }
+
+  if (verification === 'error') {
+    return (
+      <main className="min-h-[70dvh] flex items-center justify-center px-margin-mobile md:px-margin-desktop pt-24">
+        <div className="max-w-xl w-full bg-surface-container-low rounded-2xl p-8 border border-error/30 botanical-shadow text-center">
+          <h1 className="font-headline-sm text-headline-sm text-primary mb-3">Unable to verify member access</h1>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-6">
+            Membership verification is temporarily unavailable. Please try again when the connection is restored.
+          </p>
+          <a href="/invite" className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest">
+            Check Application Status
+          </a>
+        </div>
+      </main>
     );
   }
 

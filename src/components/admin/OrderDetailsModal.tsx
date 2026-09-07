@@ -21,14 +21,10 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
     setError(null);
     setIsSaving(true);
     try {
-      if (order.id.startsWith('ORD-')) {
-        // Mock fallback order, ignore db write
-      } else {
-        const { getSupabase } = await import('@/lib/supabase');
-        const supabase = getSupabase();
-        const { error } = await supabase.from('orders').update({ status }).eq('id', order.id);
-        if (error) throw error;
-      }
+      const { getSupabase } = await import('@/lib/supabase');
+      const supabase = getSupabase();
+      const { error } = await supabase.from('orders').update({ status }).eq('id', order.id);
+      if (error) throw error;
       onSaved();
       onClose();
     } catch (err: any) {

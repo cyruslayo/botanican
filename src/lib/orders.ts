@@ -8,26 +8,21 @@ export async function createOrder(payload: {
   receiptUrl: string;
 }) {
   const supabase = getSupabase();
-  const customerId =
-    payload.shippingAddress.instagramHandle ||
-    payload.shippingAddress.email ||
-    payload.shippingAddress.phone ||
-    'Guest';
-
-  const { data, error } = await supabase.from('orders').insert({
-    user_id: customerId,
-    items: payload.items,
-    total: payload.total,
-    status: 'Pending Verification',
-    shipping_address: payload.shippingAddress,
-    receipt_url: payload.receiptUrl,
+  const { data, error } = await supabase.rpc('create_member_order', {
+    p_instagram_handle: payload.shippingAddress.instagramHandle,
+    p_phone: payload.shippingAddress.phone,
+    p_items: payload.items,
+    p_total: payload.total,
+    p_shipping_address: payload.shippingAddress,
+    p_receipt_url: payload.receiptUrl,
   });
 
   if (error) {
     throw error;
   }
 
-  return data;
+  if (!data) throw new Error('Order creation returned no order ID.');
+  return data as string;
 }
 
 export async function uploadReceipt(file: File): Promise<string> {
@@ -35,16 +30,7 @@ export async function uploadReceipt(file: File): Promise<string> {
   const path = `receipts/${Date.now()}_${file.name}`;
   const { error } = await supabase.storage.from('receipts').upload(path, file);
 
-  if (error) {
-    // Preserve the original Firebase behavior: fall back to base64 when storage
-    // rules or network conditions block the upload.
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+  if (error) throw error;
 
   const { data } = supabase.storage.from('receipts').getPublicUrl(path);
   return data.publicUrl;

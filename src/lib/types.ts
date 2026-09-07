@@ -65,7 +65,7 @@ export interface Profile {
 export interface ReferralCode {
   id: string;
   code: string;
-  owner_handle: string; // e.g. "@jane_wellness"
+  owner_handle: string; // e.g. "@member_handle"
   owner_email?: string;
   owner_id?: string;
   is_active: boolean;

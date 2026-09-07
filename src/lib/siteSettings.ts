@@ -25,6 +25,14 @@ export interface SiteSettings {
   heroTrustBadge: string;
   apothecaryCalloutTitle: string;
   apothecaryCalloutSubtitle: string;
+  landingInviteCode?: string;
+  publicationName?: string;
+  volume?: string;
+  edition?: string;
+  circulation?: string;
+  harvestLabel?: string;
+  qualityBadge?: string;
+  archiveLinkText?: string;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
@@ -43,6 +51,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   heroTrustBadge: 'Members Only · Application Required',
   apothecaryCalloutTitle: 'Looking for the Apothecary Collection?',
   apothecaryCalloutSubtitle: 'Our tinctures are batched in limited micro-volumes. Enter your reader invite code to browse current bottle drops.',
+  landingInviteCode: '',
 };
 
 const LOCAL_SITE_SETTINGS_KEY = 'botanica_site_settings';
@@ -62,86 +71,78 @@ function isSupabaseConfigured(): boolean {
   }
 }
 
+function mergeSiteSettings(value: Partial<SiteSettings> | null | undefined): SiteSettings {
+  return {
+    ...DEFAULT_SITE_SETTINGS,
+    ...(value || {}),
+    bank: { ...DEFAULT_SITE_SETTINGS.bank, ...(value?.bank || {}) },
+    announcement: { ...DEFAULT_SITE_SETTINGS.announcement, ...(value?.announcement || {}) },
+  };
+}
+
+function cacheSiteSettings(settings: SiteSettings): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(LOCAL_SITE_SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // A cache failure must never change the persistence result.
+  }
+}
+
 export function getSiteSettings(): SiteSettings {
   if (typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem(LOCAL_SITE_SETTINGS_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        return {
-          ...DEFAULT_SITE_SETTINGS,
-          ...parsed,
-          bank: { ...DEFAULT_SITE_SETTINGS.bank, ...(parsed.bank || {}) },
-          announcement: { ...DEFAULT_SITE_SETTINGS.announcement, ...(parsed.announcement || {}) },
-        };
+        return mergeSiteSettings(JSON.parse(stored));
       }
     } catch {}
   }
   return DEFAULT_SITE_SETTINGS;
 }
 
-let tableMissingChecked = false;
-
 export async function fetchLiveSiteSettings(): Promise<SiteSettings> {
-  if (isSupabaseConfigured() && !tableMissingChecked) {
-    try {
-      const supabase = getSupabase();
-      const { data, error } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'global')
-        .maybeSingle();
-
-      if (error) {
-        // Table not created in Supabase yet (PGRST205 or 404)
-        if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
-          tableMissingChecked = true;
-        }
-      } else if (data?.value) {
-        const parsed = data.value;
-        const merged: SiteSettings = {
-          ...DEFAULT_SITE_SETTINGS,
-          ...parsed,
-          bank: { ...DEFAULT_SITE_SETTINGS.bank, ...(parsed.bank || {}) },
-          announcement: { ...DEFAULT_SITE_SETTINGS.announcement, ...(parsed.announcement || {}) },
-        };
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(LOCAL_SITE_SETTINGS_KEY, JSON.stringify(merged));
-        }
-        return merged;
-      }
-    } catch {
-      tableMissingChecked = true;
-    }
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase is not configured for live site settings.');
   }
 
-  return getSiteSettings();
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('value')
+    .eq('key', 'global')
+    .maybeSingle();
+
+  if (error) throw error;
+
+  const merged = mergeSiteSettings(data?.value);
+  cacheSiteSettings(merged);
+  return merged;
 }
 
 export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {
   const current = getSiteSettings();
-  const updated: SiteSettings = {
+  const updated = mergeSiteSettings({
     ...current,
     ...settings,
     bank: settings.bank ? { ...current.bank, ...settings.bank } : current.bank,
     announcement: settings.announcement ? { ...current.announcement, ...settings.announcement } : current.announcement,
-  };
+  });
 
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase is not configured for live site settings.');
+  }
+
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('site_settings')
+    .upsert({ key: 'global', value: updated, updated_at: new Date().toISOString() });
+
+  if (error) throw error;
+
+  cacheSiteSettings(updated);
   if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(LOCAL_SITE_SETTINGS_KEY, JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent(SITE_SETTINGS_EVENT, { detail: updated }));
-    } catch {}
+    window.dispatchEvent(new CustomEvent(SITE_SETTINGS_EVENT, { detail: updated }));
   }
-
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = getSupabase();
-      await supabase
-        .from('site_settings')
-        .upsert({ key: 'global', value: updated, updated_at: new Date().toISOString() });
-    } catch {}
-  }
-
   return updated;
 }

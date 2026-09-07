@@ -1,12 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getGazetteSettings, DEFAULT_GAZETTE_SETTINGS, type GazetteSettings } from '@/lib/gazetteSettings';
+import { getGazetteSettings, fetchLiveGazetteSettings, DEFAULT_GAZETTE_SETTINGS, type GazetteSettings } from '@/lib/gazetteSettings';
 
 export default function MastheadBar() {
   const [settings, setSettings] = useState<GazetteSettings>(DEFAULT_GAZETTE_SETTINGS);
 
   useEffect(() => {
     setSettings(getGazetteSettings());
+    fetchLiveGazetteSettings()
+      .then(setSettings)
+      .catch((error) => console.error('Error loading live Gazette settings:', error));
 
     const handleUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<GazetteSettings>;
