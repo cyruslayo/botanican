@@ -658,6 +658,9 @@ create policy access_requests_admin_update on public.access_requests
   with check (public.is_admin());
 
 drop policy if exists referral_codes_select on public.referral_codes;
+create policy referral_codes_select on public.referral_codes
+  for select to anon, authenticated
+  using (is_active = true);
 drop policy if exists referral_codes_admin_select on public.referral_codes;
 drop policy if exists referral_codes_admin_insert on public.referral_codes;
 drop policy if exists referral_codes_admin_update on public.referral_codes;
@@ -704,6 +707,7 @@ create policy site_settings_admin_all on public.site_settings
   with check (public.is_admin());
 
 revoke all on public.referral_codes from anon, authenticated;
+grant select on public.referral_codes to anon;
 grant select, insert, update, delete on public.referral_codes to authenticated;
 grant insert on public.access_requests to anon, authenticated;
 grant select, update on public.access_requests to authenticated;

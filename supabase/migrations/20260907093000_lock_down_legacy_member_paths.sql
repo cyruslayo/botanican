@@ -47,6 +47,10 @@ revoke insert on public.access_requests from public, anon, authenticated;
 drop policy if exists orders_insert on public.orders;
 revoke insert on public.orders from public, anon, authenticated;
 
+-- Remove the transition-time public referral table read. Admin table access remains.
+drop policy if exists referral_codes_select on public.referral_codes;
+revoke select on public.referral_codes from anon;
+
 -- Preserve the existing bucket and file limits, but make receipt objects private.
 update storage.buckets
 set public = false,
