@@ -53,7 +53,7 @@ export default function AdminDashboard() {
       const liveOrders = orders.filter((order) => order.status.toLowerCase() !== 'cancelled');
       setMetrics({
         orderValue: liveOrders.reduce((sum, order) => sum + Number(order.total || 0), 0),
-        totalOrders: liveOrders.length,
+        totalOrders: orders.length,
         activeProducts: productsResult.data?.length || 0,
         pendingApplications: applicationsResult.count || 0,
         recentOrders: liveOrders.slice(0, 5),

@@ -33,7 +33,7 @@ $$;
 
 create table if not exists public.referral_codes (
   id uuid primary key default gen_random_uuid(),
-  code text not null,
+  code text not null unique,
   owner_handle text not null,
   owner_email text,
   owner_id uuid references auth.users(id) on delete set null,
@@ -53,11 +53,26 @@ create unique index if not exists referral_codes_code_unique_idx
 create index if not exists referral_codes_owner_handle_idx
   on public.referral_codes (lower(owner_handle));
 
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.referral_codes'::regclass
+      and contype = 'u'
+      and pg_get_constraintdef(oid) = 'UNIQUE (code)'
+  ) then
+    alter table public.referral_codes
+      add constraint referral_codes_code_unique unique (code);
+  end if;
+end
+$$;
+
 create table if not exists public.access_requests (
   id uuid primary key default gen_random_uuid(),
   instagram_handle text not null,
   phone text not null,
-  referral_code text not null,
+  referral_code text not null references public.referral_codes(code),
   referred_by text not null,
   status text not null default 'pending',
   email text,
@@ -86,6 +101,21 @@ create index if not exists access_requests_handle_idx
   on public.access_requests (lower(instagram_handle));
 create index if not exists access_requests_phone_idx
   on public.access_requests (phone);
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.access_requests'::regclass
+      and conname = 'access_requests_referral_code_fkey'
+  ) then
+    alter table public.access_requests
+      add constraint access_requests_referral_code_fkey
+      foreign key (referral_code) references public.referral_codes(code) not valid;
+  end if;
+end
+$$;
 
 update public.access_requests
 set status = 'pending'
@@ -131,6 +161,67 @@ as $$
   limit 1;
 $$;
 
+create or replace function public.submit_access_request(
+  p_instagram_handle text,
+  p_phone text,
+  p_referral_code text
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  normalized_handle text;
+  normalized_code text;
+  validated_code text;
+  referring_handle text;
+  created_request_id uuid;
+begin
+  normalized_handle := case
+    when trim(coalesce(p_instagram_handle, '')) = '' then ''
+    when left(lower(trim(p_instagram_handle)), 1) = '@' then lower(trim(p_instagram_handle))
+    else '@' || lower(trim(p_instagram_handle))
+  end;
+  normalized_code := lower(trim(coalesce(p_referral_code, '')));
+
+  if normalized_handle = '' or length(trim(coalesce(p_phone, ''))) < 5 or normalized_code = '' then
+    raise exception 'Instagram handle, phone, and referral code are required' using errcode = '22023';
+  end if;
+
+  select rc.code, rc.owner_handle into validated_code, referring_handle
+  from public.referral_codes rc
+  where lower(rc.code) = normalized_code
+    and rc.is_active = true
+  limit 1;
+
+  if referring_handle is null then
+    raise exception 'Referral code is invalid or inactive' using errcode = '22023';
+  end if;
+
+  insert into public.access_requests (
+    instagram_handle,
+    phone,
+    referral_code,
+    referred_by,
+    status,
+    reviewed_at,
+    reviewed_by
+  ) values (
+    normalized_handle,
+    trim(p_phone),
+    validated_code,
+    referring_handle,
+    'pending',
+    null,
+    null
+  )
+  returning id into created_request_id;
+
+  return created_request_id;
+end;
+$$;
+
 create or replace function public.check_access_status(
   p_instagram_handle text,
   p_phone text
@@ -161,7 +252,13 @@ as $$
       when ar.status = 'approved' then (
         select rc.code
         from public.referral_codes rc
-        where lower(rc.owner_handle) = lower(ar.instagram_handle)
+        where case
+          when left(lower(trim(rc.owner_handle)), 1) = '@' then lower(trim(rc.owner_handle))
+          else '@' || lower(trim(rc.owner_handle))
+        end = case
+          when left(lower(trim(ar.instagram_handle)), 1) = '@' then lower(trim(ar.instagram_handle))
+          else '@' || lower(trim(ar.instagram_handle))
+        end
           and rc.is_active = true
         order by rc.created_at asc
         limit 1
@@ -190,6 +287,7 @@ declare
   request_row public.access_requests;
   member_code text;
   reviewer text;
+  normalized_member_handle text;
 begin
   if not public.is_admin() then
     raise exception 'Admin access required' using errcode = '42501';
@@ -208,6 +306,11 @@ begin
     raise exception 'Access request not found' using errcode = 'P0002';
   end if;
 
+  normalized_member_handle := case
+    when left(lower(trim(request_row.instagram_handle)), 1) = '@' then lower(trim(request_row.instagram_handle))
+    else '@' || lower(trim(request_row.instagram_handle))
+  end;
+
   reviewer := coalesce(
     (select p.email from public.profiles p where p.id = auth.uid()),
     (auth.jwt() ->> 'email'),
@@ -217,10 +320,30 @@ begin
   if p_new_status = 'approved' then
     select rc.code into member_code
     from public.referral_codes rc
-    where lower(rc.owner_handle) = lower(request_row.instagram_handle)
+     where case
+       when left(lower(trim(rc.owner_handle)), 1) = '@' then lower(trim(rc.owner_handle))
+       else '@' || lower(trim(rc.owner_handle))
+     end = normalized_member_handle
       and rc.is_active = true
     order by rc.created_at asc
     limit 1;
+
+    if member_code is null then
+      select rc.code into member_code
+      from public.referral_codes rc
+       where case
+         when left(lower(trim(rc.owner_handle)), 1) = '@' then lower(trim(rc.owner_handle))
+         else '@' || lower(trim(rc.owner_handle))
+       end = normalized_member_handle
+      order by rc.created_at asc
+      limit 1;
+
+      if member_code is not null then
+        update public.referral_codes
+        set is_active = true
+        where code = member_code;
+      end if;
+    end if;
 
     if member_code is null then
       loop
@@ -245,6 +368,14 @@ begin
         end;
       end loop;
     end if;
+  elsif p_new_status = 'rejected' then
+    update public.referral_codes
+    set is_active = false
+    where case
+      when left(lower(trim(owner_handle)), 1) = '@' then lower(trim(owner_handle))
+      else '@' || lower(trim(owner_handle))
+    end = normalized_member_handle
+      and is_active = true;
   end if;
 
   update public.access_requests
@@ -434,14 +565,6 @@ alter table public.orders enable row level security;
 alter table public.site_settings enable row level security;
 
 drop policy if exists access_requests_insert on public.access_requests;
-create policy access_requests_insert on public.access_requests
-  for insert to anon, authenticated
-  with check (
-    status = 'pending'
-    and reviewed_at is null
-    and reviewed_by is null
-  );
-
 drop policy if exists access_requests_select on public.access_requests;
 create policy access_requests_select on public.access_requests
   for select to authenticated
@@ -488,8 +611,8 @@ create policy site_settings_admin_all on public.site_settings
 revoke all on public.referral_codes from anon, authenticated;
 grant select, insert, update, delete on public.referral_codes to authenticated;
 revoke all on public.access_requests from anon;
-grant insert on public.access_requests to anon;
-grant select, insert, update on public.access_requests to authenticated;
+revoke insert on public.access_requests from public, anon, authenticated;
+grant select, update on public.access_requests to authenticated;
 revoke all on public.orders from anon;
 grant select, update on public.orders to authenticated;
 grant select on public.site_settings to anon, authenticated;
@@ -497,6 +620,8 @@ grant insert, update, delete on public.site_settings to authenticated;
 
 revoke all on function public.validate_referral_code(text) from public;
 grant execute on function public.validate_referral_code(text) to anon, authenticated;
+revoke all on function public.submit_access_request(text, text, text) from public;
+grant execute on function public.submit_access_request(text, text, text) to anon, authenticated;
 revoke all on function public.check_access_status(text, text) from public;
 grant execute on function public.check_access_status(text, text) to anon, authenticated;
 revoke all on function public.review_access_request(uuid, text) from public;

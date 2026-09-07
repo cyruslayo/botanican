@@ -66,13 +66,10 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
 
     try {
       const cleanHandle = normalizeHandle(formData.instagramHandle);
-      const referredByHandle = referralInfo.owner_handle;
-
       const res = await submitAccessRequest({
         instagramHandle: cleanHandle,
         phone: formData.phone,
         referralCode: referralInfo.code,
-        referredBy: referredByHandle,
       });
 
       if (res.success) {

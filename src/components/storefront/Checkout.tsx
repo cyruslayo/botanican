@@ -4,7 +4,7 @@ import { useStore } from '@nanostores/react';
 import { cartItems, cartTotal, clearCart, getCartLineKey } from '@/store/cart';
 import { isApproved, isPending, accessState } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
-import { getSiteSettings, fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
+import { fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { useHydrated } from '@/lib/useHydrated';
 
 export default function Checkout() {
@@ -21,17 +21,25 @@ export default function Checkout() {
   const total = isHydrated ? rawTotal : 0;
 
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
+  const [liveSettingsLoaded, setLiveSettingsLoaded] = useState(false);
+  const [liveSettingsError, setLiveSettingsError] = useState<string | null>(null);
 
   useEffect(() => {
-    setSiteSettings(getSiteSettings());
+    setLiveSettingsLoaded(false);
+    setLiveSettingsError(null);
     fetchLiveSiteSettings()
-      .then(setSiteSettings)
-      .catch((error) => console.error('Error loading live site settings:', error));
+      .then((liveSettings) => {
+        setSiteSettings(liveSettings);
+        setLiveSettingsLoaded(true);
+      })
+      .catch((error) => {
+        console.error('Error loading live site settings:', error);
+        setLiveSettingsError('Payment instructions are temporarily unavailable.');
+      });
 
     const onUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<SiteSettings>;
       if (customEvent.detail) setSiteSettings(customEvent.detail);
-      else setSiteSettings(getSiteSettings());
     };
     window.addEventListener(SITE_SETTINGS_EVENT, onUpdate);
     return () => window.removeEventListener(SITE_SETTINGS_EVENT, onUpdate);
@@ -79,6 +87,16 @@ export default function Checkout() {
   };
 
   const submitOrder = async () => {
+    const paymentConfigured = Boolean(
+      liveSettingsLoaded &&
+      siteSettings.bank.bankName.trim() &&
+      siteSettings.bank.accountName.trim() &&
+      siteSettings.bank.accountNumber.trim()
+    );
+    if (!paymentConfigured) {
+      setError('Payment instructions are temporarily unavailable.');
+      return;
+    }
     if (items.length === 0) {
       setError('Your cart is empty');
       return;
@@ -180,6 +198,28 @@ export default function Checkout() {
               Explore Products
             </a>
           </div>
+        </div>
+      </main>
+    );
+  }
+
+  const paymentConfigured = Boolean(
+    liveSettingsLoaded &&
+    siteSettings.bank.bankName.trim() &&
+    siteSettings.bank.accountName.trim() &&
+    siteSettings.bank.accountNumber.trim()
+  );
+  if (!paymentConfigured) {
+    return (
+      <main className="max-w-2xl mx-auto px-margin-mobile md:px-margin-desktop pt-32 pb-24 text-center">
+        <div className="bg-surface-container-low rounded-2xl p-8 botanical-shadow border border-secondary/20">
+          <h1 className="font-headline-md text-headline-md text-primary mb-3">Payment instructions unavailable</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mb-6">
+            {liveSettingsError || 'Loading current payment instructions…'}
+          </p>
+          <a href="/" className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest">
+            Return to Store
+          </a>
         </div>
       </main>
     );

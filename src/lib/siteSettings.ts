@@ -37,9 +37,9 @@ export interface SiteSettings {
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   bank: {
-    bankName: 'Guaranty Trust Bank (GTB)',
-    accountName: 'Botanical Wellness Ltd',
-    accountNumber: '0123456789',
+    bankName: '',
+    accountName: '',
+    accountNumber: '',
     dispatchNote: 'Orders are dispatched via private courier directly within Abuja (FCT).',
   },
   announcement: {

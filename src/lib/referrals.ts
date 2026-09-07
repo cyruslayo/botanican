@@ -42,27 +42,26 @@ export async function submitAccessRequest(payload: {
   instagramHandle: string;
   phone: string;
   referralCode: string;
-  referredBy: string;
 }): Promise<{ success: boolean; error?: string }> {
   const cleanHandle = normalizeHandle(payload.instagramHandle);
   const cleanPhone = normalizePhone(payload.phone);
   const cleanCode = payload.referralCode.trim().toLowerCase();
-  const cleanReferredBy = normalizeHandle(payload.referredBy) || payload.referredBy.trim();
 
   if (!cleanHandle || cleanHandle.length < 2) return { success: false, error: 'Please enter a valid Instagram handle.' };
   if (!cleanPhone || cleanPhone.length < 5) return { success: false, error: 'Please enter a valid phone number.' };
 
-  const { error } = await getSupabase().from('access_requests').insert({
-    instagram_handle: cleanHandle,
-    phone: cleanPhone,
-    referral_code: cleanCode,
-    referred_by: cleanReferredBy,
-    status: 'pending',
+  const { data, error } = await getSupabase().rpc('submit_access_request', {
+    p_instagram_handle: cleanHandle,
+    p_phone: cleanPhone,
+    p_referral_code: cleanCode,
   });
-  if (!error) return { success: true };
-  if (error.code === '23505') return { success: false, error: 'This Instagram handle is already registered.' };
-  console.error('Error submitting access request:', error);
-  return { success: false, error: 'We could not submit your application. Please try again.' };
+  if (error) {
+    if (error.code === '23505') return { success: false, error: 'This Instagram handle is already registered.' };
+    console.error('Error submitting access request:', error);
+    return { success: false, error: 'We could not submit your application. Please try again.' };
+  }
+  if (data) return { success: true };
+  return { success: false, error: 'The application was not confirmed by Supabase.' };
 }
 
 export async function checkAccess(

@@ -78,15 +78,10 @@ drop policy if exists referral_codes_admin_delete on public.referral_codes;
 create policy referral_codes_admin_delete on public.referral_codes
   for delete using (public.is_admin());
 
--- Access requests: anonymous users may submit pending applications only.
+-- Access requests are submitted through the security-definer
+-- submit_access_request RPC. There is no direct public INSERT policy.
 alter table public.access_requests enable row level security;
 drop policy if exists access_requests_insert on public.access_requests;
-create policy access_requests_insert on public.access_requests
-  for insert with check (
-    status = 'pending'
-    and reviewed_at is null
-    and reviewed_by is null
-  );
 
 drop policy if exists access_requests_select on public.access_requests;
 create policy access_requests_select on public.access_requests
