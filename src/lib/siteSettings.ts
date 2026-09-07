@@ -121,7 +121,20 @@ export async function fetchLiveSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {
-  const current = getSiteSettings();
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase is not configured for live site settings.');
+  }
+
+  const supabase = getSupabase();
+  const { data, error: readError } = await supabase
+    .from('site_settings')
+    .select('value')
+    .eq('key', 'global')
+    .maybeSingle();
+
+  if (readError) throw readError;
+
+  const current = mergeSiteSettings(data?.value);
   const updated = mergeSiteSettings({
     ...current,
     ...settings,
@@ -129,16 +142,11 @@ export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise
     announcement: settings.announcement ? { ...current.announcement, ...settings.announcement } : current.announcement,
   });
 
-  if (!isSupabaseConfigured()) {
-    throw new Error('Supabase is not configured for live site settings.');
-  }
-
-  const supabase = getSupabase();
-  const { error } = await supabase
+  const { error: writeError } = await supabase
     .from('site_settings')
     .upsert({ key: 'global', value: updated, updated_at: new Date().toISOString() });
 
-  if (error) throw error;
+  if (writeError) throw writeError;
 
   cacheSiteSettings(updated);
   if (typeof window !== 'undefined') {

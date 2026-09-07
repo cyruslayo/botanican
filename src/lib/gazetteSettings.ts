@@ -62,10 +62,8 @@ export async function fetchLiveGazetteSettings(): Promise<GazetteSettings> {
 }
 
 export async function saveGazetteSettings(settings: Partial<GazetteSettings>): Promise<GazetteSettings> {
-  const current = getGazetteSettings();
-  const updated = { ...current, ...settings };
-
-  await saveSiteSettings(updated);
+  const savedSiteSettings = await saveSiteSettings(settings);
+  const updated = fromSiteSettings(savedSiteSettings);
   cacheGazetteSettings(updated);
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('botanica-gazette-settings-updated', { detail: updated }));

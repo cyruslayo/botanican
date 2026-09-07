@@ -15,16 +15,18 @@ export default function AdminProducts() {
   async function handleDeleteConfirm() {
     if (!productToDelete) return;
     setIsDeleting(true);
+    setError(null);
     try {
       const { getSupabase } = await import('@/lib/supabase');
       const supabase = getSupabase();
-      if (productToDelete.id.length > 5) {
-        await supabase.from('products').delete().eq('id', productToDelete.id);
-      }
+      if (!productToDelete.id) throw new Error('The selected product has no database ID.');
+      const { error } = await supabase.from('products').delete().eq('id', productToDelete.id);
+      if (error) throw error;
       setProducts(products.filter((p) => p.id !== productToDelete.id));
       setProductToDelete(null);
     } catch (error) {
       console.error('Error deleting product: ', error);
+      setError('The product could not be deleted from Supabase.');
     } finally {
       setIsDeleting(false);
     }

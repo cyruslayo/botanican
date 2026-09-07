@@ -12,7 +12,7 @@ export default function AdminCustomers() {
     setLoading(true);
     setError(null);
     try {
-      setCustomers(await getAccessRequests('all'));
+      setCustomers(await getAccessRequests('approved'));
     } catch (error) {
       console.error('Error fetching customers: ', error);
       setCustomers([]);

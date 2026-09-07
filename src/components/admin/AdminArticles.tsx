@@ -1,15 +1,43 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import type { Article, Product } from '@/lib/types';
-import { getAllArticles } from '@/data/journal';
 import { getGazetteSettings, fetchLiveGazetteSettings, saveGazetteSettings, type GazetteSettings, DEFAULT_GAZETTE_SETTINGS } from '@/lib/gazetteSettings';
 import ArticleFormModal from './ArticleFormModal';
-import { BookOpen, Plus, Sparkles, ExternalLink, Edit2, Trash2, CheckCircle2, Sliders, Check } from 'lucide-react';
+import { Plus, ExternalLink, Edit2, Trash2, CheckCircle2, Sliders, Check } from 'lucide-react';
+
+function mapArticleRow(row: any): Article {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    subtitle: row.subtitle || '',
+    category: row.category,
+    volume: row.volume || 'Vol. I',
+    issue: row.issue || 'Issue 01',
+    date: row.date || '',
+    readTime: row.read_time || '5 min read',
+    author: {
+      name: row.author_name || 'Botanica Editorial',
+      role: row.author_role || 'Apothecary Journal',
+    },
+    featured: Boolean(row.is_featured),
+    excerpt: row.excerpt || '',
+    image: row.image_url || '',
+    thesis: row.thesis || '',
+    content: Array.isArray(row.content) ? row.content : [],
+    keyTakeaways: Array.isArray(row.key_takeaways) ? row.key_takeaways : [],
+    relatedProductSlug: row.related_product_slug,
+    relatedProductName: row.related_product_name,
+    callout: row.callout || undefined,
+    status: row.status || 'published',
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+}
 
 export default function AdminArticles() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [articleToEdit, setArticleToEdit] = useState<Article | null>(null);
 
@@ -22,24 +50,23 @@ export default function AdminArticles() {
 
 
   const fetchArticlesAndProducts = useCallback(async () => {
-    setLoading(true);
     setArticlesError(null);
     try {
-      const liveArticles = await getAllArticles();
-      setArticles(liveArticles);
-
-      // Also fetch products for the related product selector
       const { getSupabase } = await import('@/lib/supabase');
       const supabase = getSupabase();
-      const { data } = await supabase.from('products').select('*');
-      if (data) setProducts(data);
+      const [articlesResult, productsResult] = await Promise.all([
+        supabase.from('articles').select('*').order('created_at', { ascending: false }),
+        supabase.from('products').select('*'),
+      ]);
+      if (articlesResult.error) throw articlesResult.error;
+      if (productsResult.error) throw productsResult.error;
+      setArticles((articlesResult.data || []).map(mapArticleRow));
+      setProducts((productsResult.data || []) as Product[]);
     } catch (error) {
       console.error('Error loading articles and products:', error);
       setArticles([]);
       setProducts([]);
       setArticlesError('Articles and product references could not be loaded from Supabase.');
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -74,10 +101,11 @@ export default function AdminArticles() {
 
       // If this article is marked featured, unfeature all others first
       if (articleData.featured) {
-        await supabase
+        const { error } = await supabase
           .from('articles')
           .update({ is_featured: false })
           .neq('id', articleToEdit?.id || '00000000-0000-0000-0000-000000000000');
+        if (error) throw error;
       }
 
       const rowPayload = {
@@ -105,9 +133,11 @@ export default function AdminArticles() {
       };
 
       if (articleToEdit?.id) {
-        await supabase.from('articles').update(rowPayload).eq('id', articleToEdit.id);
+        const { error } = await supabase.from('articles').update(rowPayload).eq('id', articleToEdit.id);
+        if (error) throw error;
       } else {
-        await supabase.from('articles').insert([{ ...rowPayload, created_at: new Date().toISOString() }]);
+        const { error } = await supabase.from('articles').insert([{ ...rowPayload, created_at: new Date().toISOString() }]);
+        if (error) throw error;
       }
 
       await fetchArticlesAndProducts();
@@ -123,14 +153,13 @@ export default function AdminArticles() {
       const supabase = getSupabase();
 
       if (targetArticle.id) {
-        await supabase.from('articles').update({ is_featured: false }).neq('id', targetArticle.id);
-        await supabase.from('articles').update({ is_featured: !targetArticle.featured }).eq('id', targetArticle.id);
+        const { error: unfeatureError } = await supabase.from('articles').update({ is_featured: false }).neq('id', targetArticle.id);
+        if (unfeatureError) throw unfeatureError;
+        const { error: featureError } = await supabase.from('articles').update({ is_featured: !targetArticle.featured }).eq('id', targetArticle.id);
+        if (featureError) throw featureError;
         await fetchArticlesAndProducts();
       } else {
-        setArticles(articles.map(a => ({
-          ...a,
-          featured: a.slug === targetArticle.slug ? !a.featured : false,
-        })));
+        throw new Error('Cannot update a journal article without a database ID.');
       }
     } catch (error) {
       console.error('Error toggling featured article:', error);
@@ -144,10 +173,10 @@ export default function AdminArticles() {
     try {
       const { getSupabase } = await import('@/lib/supabase');
       const supabase = getSupabase();
-      if (targetArticle.id) {
-        await supabase.from('articles').delete().eq('id', targetArticle.id);
-      }
-      setArticles(articles.filter(a => a.slug !== targetArticle.slug));
+      if (!targetArticle.id) throw new Error('Cannot delete a journal article without a database ID.');
+      const { error } = await supabase.from('articles').delete().eq('id', targetArticle.id);
+      if (error) throw error;
+      await fetchArticlesAndProducts();
     } catch (error) {
       console.error('Error deleting article:', error);
       setArticlesError('The article could not be deleted from Supabase.');
