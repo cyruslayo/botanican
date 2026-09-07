@@ -100,3 +100,22 @@ create policy site_settings_select on public.site_settings
 drop policy if exists site_settings_admin_all on public.site_settings;
 create policy site_settings_admin_all on public.site_settings
   for all using (public.is_admin());
+
+-- Private receipt storage: anonymous upload only; admin reads only.
+alter table storage.objects enable row level security;
+drop policy if exists receipts_anon_upload on storage.objects;
+drop policy if exists receipts_admin_read on storage.objects;
+drop policy if exists receipts_read_restrictive on storage.objects;
+drop policy if exists receipts_insert_restrictive on storage.objects;
+create policy receipts_read_restrictive on storage.objects
+  as restrictive for select to public
+  using (bucket_id <> 'receipts' or public.is_admin());
+create policy receipts_insert_restrictive on storage.objects
+  as restrictive for insert to public
+  with check (bucket_id <> 'receipts' or name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$');
+create policy receipts_anon_upload on storage.objects
+  for insert to anon
+  with check (bucket_id = 'receipts' and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$');
+create policy receipts_admin_read on storage.objects
+  for select to authenticated
+  using (bucket_id = 'receipts' and public.is_admin());

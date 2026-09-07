@@ -97,6 +97,8 @@ alter table public.access_requests
 create index if not exists access_requests_status_idx on public.access_requests (status, created_at desc);
 create index if not exists access_requests_handle_idx on public.access_requests (instagram_handle);
 create index if not exists access_requests_phone_idx on public.access_requests (phone);
+create unique index if not exists access_requests_instagram_handle_lower_unique_idx
+  on public.access_requests (lower(instagram_handle));
 
 -- Articles table for The Botanical Gazette
 create table if not exists public.articles (
@@ -134,4 +136,3 @@ create table if not exists public.site_settings (
   value jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
-
