@@ -7,6 +7,23 @@ import { formatNaira } from '@/lib/utils';
 import { fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { useHydrated } from '@/lib/useHydrated';
 
+const ACCEPTED_RECEIPT_TYPES = ['image/jpeg', 'image/png', 'application/pdf'] as const;
+
+function hasUsablePaymentSettings(settings: SiteSettings): boolean {
+  const { bank } = settings;
+  const isHistoricalPlaceholder =
+    bank.bankName === 'Guaranty Trust Bank (GTB)' &&
+    bank.accountName === 'Botanical Wellness Ltd' &&
+    bank.accountNumber === '0123456789';
+
+  return Boolean(
+    bank.bankName.trim() &&
+    bank.accountName.trim() &&
+    bank.accountNumber.trim() &&
+    !isHistoricalPlaceholder
+  );
+}
+
 export default function Checkout() {
   const isHydrated = useHydrated();
   const rawItems = useStore(cartItems);
@@ -76,6 +93,10 @@ export default function Checkout() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      if (!ACCEPTED_RECEIPT_TYPES.includes(file.type as (typeof ACCEPTED_RECEIPT_TYPES)[number])) {
+        setError('Receipt must be a JPEG, PNG, or PDF file.');
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
         setError('File size must be less than 5MB');
         return;
@@ -87,12 +108,7 @@ export default function Checkout() {
   };
 
   const submitOrder = async () => {
-    const paymentConfigured = Boolean(
-      liveSettingsLoaded &&
-      siteSettings.bank.bankName.trim() &&
-      siteSettings.bank.accountName.trim() &&
-      siteSettings.bank.accountNumber.trim()
-    );
+    const paymentConfigured = liveSettingsLoaded && hasUsablePaymentSettings(siteSettings);
     if (!paymentConfigured) {
       setError('Payment instructions are temporarily unavailable.');
       return;
@@ -203,12 +219,7 @@ export default function Checkout() {
     );
   }
 
-  const paymentConfigured = Boolean(
-    liveSettingsLoaded &&
-    siteSettings.bank.bankName.trim() &&
-    siteSettings.bank.accountName.trim() &&
-    siteSettings.bank.accountNumber.trim()
-  );
+  const paymentConfigured = liveSettingsLoaded && hasUsablePaymentSettings(siteSettings);
   if (!paymentConfigured) {
     return (
       <main className="max-w-2xl mx-auto px-margin-mobile md:px-margin-desktop pt-32 pb-24 text-center">
@@ -377,7 +388,7 @@ export default function Checkout() {
                   name="receipt"
                   aria-label="Upload payment receipt"
                   type="file"
-                  accept="image/*,.pdf"
+                  accept="image/jpeg,image/png,application/pdf"
                   className="sr-only"
                   onChange={handleFileChange}
                 />

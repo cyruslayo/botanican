@@ -103,6 +103,26 @@ create index if not exists access_requests_phone_idx
   on public.access_requests (phone);
 
 do $$
+declare
+  duplicate_count bigint;
+begin
+  select count(*) into duplicate_count
+  from (
+    select lower(instagram_handle)
+    from public.access_requests
+    group by lower(instagram_handle)
+    having count(*) > 1
+  ) duplicates;
+  if duplicate_count > 0 then
+    raise exception 'Migration prerequisite failed: % normalized Instagram-handle duplicates exist', duplicate_count;
+  end if;
+end
+$$;
+
+create unique index if not exists access_requests_instagram_handle_lower_unique_idx
+  on public.access_requests (lower(instagram_handle));
+
+do $$
 begin
   if not exists (
     select 1
@@ -143,23 +163,22 @@ create table if not exists public.site_settings (
   updated_at timestamptz not null default now()
 );
 
-update public.site_settings
-set value = jsonb_set(
-  jsonb_set(
-    jsonb_set(value, '{bank,bankName}', '""'::jsonb, true),
-    '{bank,accountName}', '""'::jsonb, true
-  ),
-  '{bank,accountNumber}', '""'::jsonb, true
-),
-updated_at = now()
-where key = 'global'
-  and value #>> '{bank,bankName}' = 'Guaranty Trust Bank (GTB)'
-  and value #>> '{bank,accountName}' = 'Botanical Wellness Ltd'
-  and value #>> '{bank,accountNumber}' = '0123456789';
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('receipts', 'receipts', true, 5242880, array['image/jpeg', 'image/png', 'application/pdf']::text[])
+on conflict (id) do nothing;
 
-insert into storage.buckets (id, name, public)
-values ('receipts', 'receipts', false)
-on conflict (id) do update set public = false;
+update storage.buckets
+set file_size_limit = 5242880,
+    allowed_mime_types = array['image/jpeg', 'image/png', 'application/pdf']::text[]
+where id = 'receipts';
+
+drop policy if exists receipts_transition_upload on storage.objects;
+create policy receipts_transition_upload on storage.objects
+  for insert to anon
+  with check (
+    bucket_id = 'receipts'
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
 
 drop policy if exists receipts_anon_upload on storage.objects;
 create policy receipts_anon_upload on storage.objects
@@ -479,6 +498,14 @@ begin
   if p_receipt_url !~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$' then
     raise exception 'Receipt path is invalid' using errcode = '22023';
   end if;
+  if not exists (
+    select 1
+    from storage.objects
+    where bucket_id = 'receipts'
+      and name = p_receipt_url
+  ) then
+    raise exception 'Receipt object does not exist' using errcode = '22023';
+  end if;
 
   if lower(trim(coalesce(p_shipping_address ->> 'instagramHandle', ''))) <> normalized_handle
      or regexp_replace(coalesce(p_shipping_address ->> 'phone', ''), '[^0-9]', '', 'g') <> phone_digits then
@@ -600,7 +627,25 @@ alter table public.referral_codes enable row level security;
 alter table public.orders enable row level security;
 alter table public.site_settings enable row level security;
 
-drop policy if exists access_requests_insert on public.access_requests;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'access_requests'
+      and policyname = 'access_requests_insert'
+  ) then
+    create policy access_requests_insert on public.access_requests
+      for insert to anon, authenticated
+      with check (
+        status = 'pending'
+        and reviewed_at is null
+        and reviewed_by is null
+      );
+  end if;
+end
+$$;
 drop policy if exists access_requests_select on public.access_requests;
 create policy access_requests_select on public.access_requests
   for select to authenticated
@@ -631,7 +676,21 @@ create policy referral_codes_admin_delete on public.referral_codes
   for delete to authenticated
   using (public.is_admin());
 
-drop policy if exists orders_insert on public.orders;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'orders'
+      and policyname = 'orders_insert'
+  ) then
+    create policy orders_insert on public.orders
+      for insert
+      with check (true);
+  end if;
+end
+$$;
 
 drop policy if exists site_settings_select on public.site_settings;
 create policy site_settings_select on public.site_settings
@@ -646,10 +705,9 @@ create policy site_settings_admin_all on public.site_settings
 
 revoke all on public.referral_codes from anon, authenticated;
 grant select, insert, update, delete on public.referral_codes to authenticated;
-revoke all on public.access_requests from anon;
-revoke insert on public.access_requests from public, anon, authenticated;
+grant insert on public.access_requests to anon, authenticated;
 grant select, update on public.access_requests to authenticated;
-revoke all on public.orders from anon;
+grant insert on public.orders to anon, authenticated;
 grant select, update on public.orders to authenticated;
 grant select on public.site_settings to anon, authenticated;
 grant insert, update, delete on public.site_settings to authenticated;

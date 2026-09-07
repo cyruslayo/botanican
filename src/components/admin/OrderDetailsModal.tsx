@@ -26,7 +26,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
     const receiptPath = order?.receipt_url;
     if (!receiptPath) return () => { cancelled = true; };
 
-    if (!/^receipts\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(receiptPath)) {
+    if (!/^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(receiptPath)) {
       setReceiptError('Receipt could not be loaded.');
       return () => { cancelled = true; };
     }

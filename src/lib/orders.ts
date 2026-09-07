@@ -31,9 +31,17 @@ export async function uploadReceipt(file: File): Promise<string> {
   const extension = extensionMatch && ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf'].includes(extensionMatch[1].toLowerCase())
     ? `.${extensionMatch[1].toLowerCase()}`
     : '';
-  const randomId = typeof globalThis.crypto?.randomUUID === 'function'
-    ? globalThis.crypto.randomUUID()
-    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  const cryptoApi = globalThis.crypto;
+  let randomId: string;
+  if (typeof cryptoApi?.randomUUID === 'function') {
+    randomId = cryptoApi.randomUUID();
+  } else if (typeof cryptoApi?.getRandomValues === 'function') {
+    const randomBytes = new Uint8Array(16);
+    cryptoApi.getRandomValues(randomBytes);
+    randomId = Array.from(randomBytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  } else {
+    throw new Error('Secure receipt upload is unavailable in this browser.');
+  }
   const path = `receipts/${randomId}${extension}`;
   const { error } = await supabase.storage.from('receipts').upload(path, file);
 
