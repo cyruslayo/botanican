@@ -27,11 +27,18 @@ export async function createOrder(payload: {
 
 export async function uploadReceipt(file: File): Promise<string> {
   const supabase = getSupabase();
-  const path = `receipts/${Date.now()}_${file.name}`;
+  const extensionMatch = file.name.match(/\.([a-z0-9]{1,5})$/i);
+  const extension = extensionMatch && ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf'].includes(extensionMatch[1].toLowerCase())
+    ? `.${extensionMatch[1].toLowerCase()}`
+    : '';
+  const randomId = typeof globalThis.crypto?.randomUUID === 'function'
+    ? globalThis.crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  const path = `receipts/${randomId}${extension}`;
   const { error } = await supabase.storage.from('receipts').upload(path, file);
 
   if (error) throw error;
-
-  const { data } = supabase.storage.from('receipts').getPublicUrl(path);
-  return data.publicUrl;
+  // The upload can become orphaned if the subsequent order RPC fails. Cleanup
+  // is intentionally deferred to a separate cancellation/retention workflow.
+  return path;
 }

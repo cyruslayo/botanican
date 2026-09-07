@@ -143,6 +143,37 @@ create table if not exists public.site_settings (
   updated_at timestamptz not null default now()
 );
 
+update public.site_settings
+set value = jsonb_set(
+  jsonb_set(
+    jsonb_set(value, '{bank,bankName}', '""'::jsonb, true),
+    '{bank,accountName}', '""'::jsonb, true
+  ),
+  '{bank,accountNumber}', '""'::jsonb, true
+),
+updated_at = now()
+where key = 'global'
+  and value #>> '{bank,bankName}' = 'Guaranty Trust Bank (GTB)'
+  and value #>> '{bank,accountName}' = 'Botanical Wellness Ltd'
+  and value #>> '{bank,accountNumber}' = '0123456789';
+
+insert into storage.buckets (id, name, public)
+values ('receipts', 'receipts', false)
+on conflict (id) do update set public = false;
+
+drop policy if exists receipts_anon_upload on storage.objects;
+create policy receipts_anon_upload on storage.objects
+  for insert to anon
+  with check (
+    bucket_id = 'receipts'
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
+
+drop policy if exists receipts_admin_read on storage.objects;
+create policy receipts_admin_read on storage.objects
+  for select to authenticated
+  using (bucket_id = 'receipts' and public.is_admin());
+
 create or replace function public.validate_referral_code(p_code text)
 returns table (
   code text,
@@ -174,6 +205,7 @@ as $$
 declare
   normalized_handle text;
   normalized_code text;
+  phone_digits text;
   validated_code text;
   referring_handle text;
   created_request_id uuid;
@@ -184,9 +216,10 @@ begin
     else '@' || lower(trim(p_instagram_handle))
   end;
   normalized_code := lower(trim(coalesce(p_referral_code, '')));
+  phone_digits := regexp_replace(coalesce(p_phone, ''), '[^0-9]', '', 'g');
 
-  if normalized_handle = '' or length(trim(coalesce(p_phone, ''))) < 5 or normalized_code = '' then
-    raise exception 'Instagram handle, phone, and referral code are required' using errcode = '22023';
+  if normalized_handle = '' or length(phone_digits) < 7 or normalized_code = '' then
+    raise exception 'Instagram handle, valid phone, and referral code are required' using errcode = '22023';
   end if;
 
   select rc.code, rc.owner_handle into validated_code, referring_handle
@@ -442,6 +475,9 @@ begin
      or p_shipping_address is null
      or nullif(trim(coalesce(p_receipt_url, '')), '') is null then
     raise exception 'Order items, shipping address, and receipt are required' using errcode = '22023';
+  end if;
+  if p_receipt_url !~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$' then
+    raise exception 'Receipt path is invalid' using errcode = '22023';
   end if;
 
   if lower(trim(coalesce(p_shipping_address ->> 'instagramHandle', ''))) <> normalized_handle

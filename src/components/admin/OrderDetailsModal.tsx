@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { formatNaira } from '@/lib/utils';
 
@@ -14,6 +14,44 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState(order?.status || 'Processing');
   const [error, setError] = useState<string | null>(null);
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
+  const [receiptLoading, setReceiptLoading] = useState(false);
+  const [receiptError, setReceiptError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setReceiptUrl(null);
+    setReceiptError(null);
+
+    const receiptPath = order?.receipt_url;
+    if (!receiptPath) return () => { cancelled = true; };
+
+    if (!/^receipts\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(receiptPath)) {
+      setReceiptError('Receipt could not be loaded.');
+      return () => { cancelled = true; };
+    }
+
+    setReceiptLoading(true);
+    import('@/lib/supabase')
+      .then(({ getSupabase }) => getSupabase().storage.from('receipts').createSignedUrl(receiptPath, 300))
+      .then(({ data, error: signedUrlError }) => {
+        if (cancelled) return;
+        if (signedUrlError || !data?.signedUrl) {
+          setReceiptError('Receipt could not be loaded.');
+        } else {
+          setReceiptUrl(data.signedUrl);
+        }
+      })
+      .catch((signedUrlError) => {
+        console.error('Error creating receipt signed URL:', signedUrlError);
+        if (!cancelled) setReceiptError('Receipt could not be loaded.');
+      })
+      .finally(() => {
+        if (!cancelled) setReceiptLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [order?.id, order?.receipt_url]);
 
   if (!isOpen || !order) return null;
 
@@ -153,10 +191,18 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
             <div className="space-y-3 pt-4 border-t border-outline-variant/50">
               <p className="font-mono text-xs uppercase tracking-wider text-primary font-bold">Bank Payment Receipt</p>
               <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-3 flex flex-col items-center">
-                <img src={order.receipt_url} alt="Bank Transfer Receipt" className="max-w-full max-h-56 object-contain rounded-lg mb-2" />
-                <a href={order.receipt_url} target="_blank" rel="noreferrer" className="text-secondary font-mono text-xs font-bold hover:underline">
-                  View Full Resolution Receipt ↗
-                </a>
+                {receiptLoading ? (
+                  <p className="py-8 text-sm text-on-surface-variant">Loading receipt…</p>
+                ) : receiptUrl ? (
+                  <>
+                    <img src={receiptUrl} alt="Bank Transfer Receipt" className="max-w-full max-h-56 object-contain rounded-lg mb-2" />
+                    <a href={receiptUrl} target="_blank" rel="noreferrer" className="text-secondary font-mono text-xs font-bold hover:underline">
+                      View Full Resolution Receipt ↗
+                    </a>
+                  </>
+                ) : (
+                  <p className="py-8 text-sm text-error">{receiptError || 'Receipt could not be loaded.'}</p>
+                )}
               </div>
             </div>
           )}
