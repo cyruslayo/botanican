@@ -119,20 +119,26 @@ create policy receipts_read_restrictive on storage.objects
   );
 create policy receipts_insert_restrictive on storage.objects
   as restrictive for insert to public
-  with check (bucket_id <> 'receipts' or name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*
-);
+  with check (
+    bucket_id <> 'receipts'
+    or name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
 create policy receipts_checkout_upload on storage.objects
   for insert to anon, authenticated
-  with check (bucket_id = 'receipts' and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*
-);
+  with check (
+    bucket_id = 'receipts'
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
 create policy receipts_upload_returning_select on storage.objects
   for select to anon, authenticated
   using (
     bucket_id = 'receipts'
-    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*
-
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
     and storage.allow_only_operation('storage.object.upload')
   );
 create policy receipts_admin_read on storage.objects
   for select to authenticated
-  using (bucket_id = 'receipts' and public.is_admin());
+  using (
+    bucket_id = 'receipts'
+    and public.is_admin()
+  );
