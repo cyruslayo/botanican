@@ -102,7 +102,6 @@ create policy site_settings_admin_all on public.site_settings
   for all using (public.is_admin());
 
 -- Private receipt storage: anonymous upload only; admin reads only.
-alter table storage.objects enable row level security;
 drop policy if exists receipts_anon_upload on storage.objects;
 drop policy if exists receipts_admin_read on storage.objects;
 drop policy if exists receipts_read_restrictive on storage.objects;

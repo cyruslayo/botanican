@@ -36,11 +36,6 @@ drop table if exists public.access_requests;
 drop table if exists public.referral_codes;
 drop table if exists public.orders;
 
-delete from storage.objects where bucket_id = 'receipts';
-delete from storage.buckets where id = 'receipts';
-insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('receipts', 'receipts', false, 5242880, array['image/jpeg', 'image/png', 'application/pdf']::text[]);
-
 create table public.referral_codes (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
@@ -105,6 +100,29 @@ where key = 'global'
   and value #>> '{bank,bankName}' = 'Guaranty Trust Bank (GTB)'
   and value #>> '{bank,accountName}' = 'Botanical Wellness Ltd'
   and value #>> '{bank,accountNumber}' = '0123456789';
+
+do $$
+declare
+  bucket_public boolean;
+  bucket_file_size_limit bigint;
+  bucket_mime_types text[];
+begin
+  select b.public, b.file_size_limit, b.allowed_mime_types
+    into bucket_public, bucket_file_size_limit, bucket_mime_types
+  from storage.buckets b
+  where b.id = 'receipts';
+
+  if not found
+     or bucket_public is distinct from false
+     or bucket_file_size_limit is distinct from 5242880
+     or coalesce(cardinality(bucket_mime_types), 0) <> 3
+     or not ('image/jpeg' = any(bucket_mime_types))
+     or not ('image/png' = any(bucket_mime_types))
+     or not ('application/pdf' = any(bucket_mime_types)) then
+    raise exception 'Receipts bucket is missing or incorrectly configured.';
+  end if;
+end
+$$;
 
 create or replace function public.validate_referral_code(p_code text)
 returns table (code text, owner_handle text, is_active boolean)
@@ -478,7 +496,6 @@ grant select, update on public.orders to authenticated;
 grant select on public.site_settings to anon, authenticated;
 grant insert, update, delete on public.site_settings to authenticated;
 
-alter table storage.objects enable row level security;
 drop policy if exists receipts_transition_upload on storage.objects;
 drop policy if exists receipts_anon_upload on storage.objects;
 drop policy if exists receipts_admin_read on storage.objects;

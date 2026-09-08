@@ -28,7 +28,7 @@ export async function createOrder(payload: {
 export async function uploadReceipt(file: File): Promise<string> {
   const supabase = getSupabase();
   const extensionMatch = file.name.match(/\.([a-z0-9]{1,5})$/i);
-  const extension = extensionMatch && ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf'].includes(extensionMatch[1].toLowerCase())
+  const extension = extensionMatch && ['jpg', 'jpeg', 'png', 'pdf'].includes(extensionMatch[1].toLowerCase())
     ? `.${extensionMatch[1].toLowerCase()}`
     : '';
   const cryptoApi = globalThis.crypto;
