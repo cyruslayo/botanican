@@ -238,11 +238,14 @@ export default function ProductFormModal({
               <label className="font-label-md text-label-md text-on-surface-variant">Description</label>
               <textarea
                 name="description"
-                rows={3}
+                rows={8}
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+                className="w-full p-3 bg-surface border border-outline rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-y"
               />
+              <p className="font-body-sm text-[11px] text-on-surface-variant">
+                Use blank lines for paragraphs. Start bullet items with &quot;- &quot;.
+              </p>
             </div>
 
             <div className="space-y-2">
