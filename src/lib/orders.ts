@@ -1,5 +1,5 @@
 import { getSupabase } from './supabase';
-import type { OrderItem, ShippingAddress } from './types';
+import type { MemberOrder, OrderItem, ShippingAddress } from './types';
 
 const RECEIPT_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'application/pdf']);
 const TRANSIENT_NETWORK_ERROR = /load failed|failed to fetch|network request failed|network connection was lost/i;
@@ -57,6 +57,17 @@ export async function createOrder(payload: {
 
   if (!data) throw new Error('Order creation returned no order ID.');
   return data as string;
+}
+
+export async function getMemberOrders(instagramHandle: string, phone: string): Promise<MemberOrder[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase.rpc('get_member_orders', {
+    p_instagram_handle: instagramHandle,
+    p_phone: phone,
+  });
+
+  if (error) throw error;
+  return (data ?? []) as MemberOrder[];
 }
 
 export async function uploadReceipt(file: File): Promise<string> {

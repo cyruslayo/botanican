@@ -56,6 +56,14 @@ export interface Order {
   created_at: string;
 }
 
+export interface MemberOrder {
+  id: string;
+  items: OrderItem[];
+  total: number;
+  status: string;
+  created_at: string;
+}
+
 export interface Profile {
   id: string;
   email: string;

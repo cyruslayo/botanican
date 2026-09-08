@@ -180,9 +180,14 @@ export default function Checkout() {
             Thank you for your purchase. We have received your order and payment receipt.
             Our team in Abuja will verify the transfer and prepare your dispatch shortly.
           </p>
-          <a href="/" className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-lg hover:bg-primary/90 transition-colors">
-            Return to Store
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a href="/cart#order-history" className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-lg hover:bg-primary/90 transition-colors">
+              View Order Status
+            </a>
+            <a href="/" className="px-6 py-3 border border-outline text-primary rounded-full font-label-lg hover:bg-surface-container transition-colors">
+              Return to Store
+            </a>
+          </div>
         </div>
       </main>
     );

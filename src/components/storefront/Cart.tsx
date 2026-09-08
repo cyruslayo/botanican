@@ -4,6 +4,7 @@ import { cartItems, getCartLineKey, removeItem, updateQuantity, cartTotal, cartC
 import { formatNaira } from '@/lib/utils';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/FadeIn';
 import { useHydrated } from '@/lib/useHydrated';
+import OrderHistory from '@/components/storefront/OrderHistory';
 
 export default function Cart() {
   const isHydrated = useHydrated();
@@ -119,6 +120,8 @@ export default function Cart() {
           </div>
         </div>
       </div>
+
+      <OrderHistory />
     </main>
   );
 }
