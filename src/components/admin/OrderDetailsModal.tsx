@@ -55,6 +55,14 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
 
   if (!isOpen || !order) return null;
 
+  const shippingFee = Number(order.shipping_fee ?? 0);
+  const itemSubtotal = Array.isArray(order.items)
+    ? order.items.reduce(
+        (sum: number, item: any) => sum + Number(item.price || 0) * Number(item.quantity || 0),
+        0
+      )
+    : Math.max(Number(order.total || 0) - shippingFee, 0);
+
   const handleUpdateStatus = async () => {
     setError(null);
     setIsSaving(true);
@@ -180,9 +188,19 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSaved }: O
                   </div>
                 ))}
               </div>
-              <div className="flex justify-end items-center gap-2 pt-3 border-t border-outline-variant/40">
-                <span className="font-mono text-xs uppercase text-on-surface-variant font-bold">Grand Total:</span>
-                <span className="font-mono font-bold text-lg text-primary">{formatNaira(order.total)}</span>
+              <div className="space-y-1.5 pt-3 border-t border-outline-variant/40">
+                <div className="flex justify-between gap-4 font-mono text-xs text-on-surface-variant">
+                  <span className="uppercase font-bold">Subtotal</span>
+                  <span>{formatNaira(itemSubtotal)}</span>
+                </div>
+                <div className="flex justify-between gap-4 font-mono text-xs text-on-surface-variant">
+                  <span className="uppercase font-bold">Delivery</span>
+                  <span>{formatNaira(shippingFee)}</span>
+                </div>
+                <div className="flex justify-between items-center gap-4 pt-1">
+                  <span className="font-mono text-xs uppercase text-on-surface-variant font-bold">Grand Total</span>
+                  <span className="font-mono font-bold text-lg text-primary">{formatNaira(order.total)}</span>
+                </div>
               </div>
             </div>
           )}

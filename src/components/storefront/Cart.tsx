@@ -5,6 +5,7 @@ import { formatNaira } from '@/lib/utils';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/FadeIn';
 import { useHydrated } from '@/lib/useHydrated';
 import OrderHistory from '@/components/storefront/OrderHistory';
+import { FIXED_DELIVERY_FEE_NAIRA } from '@/lib/commerce';
 
 export default function Cart() {
   const isHydrated = useHydrated();
@@ -13,7 +14,9 @@ export default function Cart() {
   const rawCount = useStore(cartCount);
 
   const items = isHydrated ? rawItems : [];
-  const total = isHydrated ? rawTotal : 0;
+  const subtotal = isHydrated ? rawTotal : 0;
+  const deliveryFee = items.length > 0 ? FIXED_DELIVERY_FEE_NAIRA : 0;
+  const total = subtotal + deliveryFee;
   const count = isHydrated ? rawCount : 0;
 
   return (
@@ -83,11 +86,11 @@ export default function Cart() {
                 <div className="flex flex-col gap-stack-sm font-body-md text-body-md text-on-surface-variant mb-stack-lg">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="text-on-surface">{formatNaira(total)}</span>
+                    <span className="text-on-surface">{formatNaira(subtotal)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Shipping estimate</span>
-                    <span className="text-on-surface">Calculated at checkout</span>
+                    <span>Delivery</span>
+                    <span className="text-on-surface">{formatNaira(deliveryFee)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax estimate</span>

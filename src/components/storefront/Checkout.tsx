@@ -6,6 +6,7 @@ import { isApproved, isPending, accessState } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
 import { fetchLiveSiteSettings, SITE_SETTINGS_EVENT, type SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { useHydrated } from '@/lib/useHydrated';
+import { FIXED_DELIVERY_FEE_NAIRA } from '@/lib/commerce';
 
 const ACCEPTED_RECEIPT_TYPES = ['image/jpeg', 'image/png', 'application/pdf'] as const;
 
@@ -35,7 +36,9 @@ export default function Checkout() {
   const approved = isHydrated && rawApproved;
   const pending = isHydrated && rawPending;
   const items = isHydrated ? rawItems : [];
-  const total = isHydrated ? rawTotal : 0;
+  const subtotal = isHydrated ? rawTotal : 0;
+  const deliveryFee = items.length > 0 ? FIXED_DELIVERY_FEE_NAIRA : 0;
+  const total = subtotal + deliveryFee;
 
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
   const [liveSettingsLoaded, setLiveSettingsLoaded] = useState(false);
@@ -441,11 +444,11 @@ export default function Checkout() {
             <div className="border-t border-outline-variant pt-4 space-y-3 mb-6">
               <div className="flex justify-between font-body-md text-on-surface-variant">
                 <span>Subtotal</span>
-                <span>{formatNaira(total)}</span>
+                <span>{formatNaira(subtotal)}</span>
               </div>
               <div className="flex justify-between font-body-md text-on-surface-variant">
-                <span>Shipping</span>
-                <span>Calculated manually</span>
+                <span>Delivery</span>
+                <span>{formatNaira(deliveryFee)}</span>
               </div>
               <div className="flex justify-between font-headline-sm text-on-surface pt-2">
                 <span>Total</span>

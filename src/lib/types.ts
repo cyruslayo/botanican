@@ -50,6 +50,7 @@ export interface Order {
   user_id: string;
   items: OrderItem[];
   total: number;
+  shipping_fee?: number;
   status: string;
   shipping_address: ShippingAddress;
   receipt_url: string;
