@@ -5,6 +5,7 @@ import { addItem } from '@/store/cart';
 import { isApproved, isPending } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
 import type { Product } from '@/lib/types';
+import ProductDescription from '@/components/storefront/ProductDescription';
 
 export default function ProductDetailIsland({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
@@ -79,9 +80,7 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
                 {product.batch_code && <p>Current batch: {product.batch_code}</p>}
               </div>
             )}
-            <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-              {product.description || 'Product details are managed by the Botanica apothecary.'}
-            </p>
+            <ProductDescription description={product.description || 'Product details are managed by the Botanica apothecary.'} />
           </div>
 
           {approved ? (
