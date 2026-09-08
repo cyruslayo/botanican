@@ -137,11 +137,13 @@ export default function Checkout() {
     setIsSubmitting(true);
     setError(null);
 
+    let checkoutStage: 'receipt' | 'order' = 'receipt';
     try {
       // Lazily load Supabase only when the user actually submits an order.
       const { uploadReceipt, createOrder } = await import('@/lib/orders');
       const receiptUrl = await uploadReceipt(receiptFile);
 
+      checkoutStage = 'order';
       await createOrder({
         items,
         total,
@@ -157,8 +159,12 @@ export default function Checkout() {
       setSuccess(true);
       clearCart();
     } catch (err: any) {
-      console.error('Checkout error:', err);
-      setError('Failed to process order. Please try again. ' + err.message);
+      console.error(`Checkout ${checkoutStage} error:`, err);
+      setError(
+        checkoutStage === 'receipt'
+          ? 'We could not upload your receipt. Please try again.'
+          : 'We could not submit your order. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }

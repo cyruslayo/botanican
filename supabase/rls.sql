@@ -101,20 +101,44 @@ drop policy if exists site_settings_admin_all on public.site_settings;
 create policy site_settings_admin_all on public.site_settings
   for all using (public.is_admin());
 
--- Private receipt storage: anonymous upload only; admin reads only.
+-- Private receipt storage: checkout may upload, but only admins may read receipts later.
+-- Supabase Storage can SELECT the inserted metadata while completing an upload,
+-- so allow that SELECT only during the storage.object.upload operation.
 drop policy if exists receipts_anon_upload on storage.objects;
+drop policy if exists receipts_checkout_upload on storage.objects;
+drop policy if exists receipts_upload_returning_select on storage.objects;
 drop policy if exists receipts_admin_read on storage.objects;
 drop policy if exists receipts_read_restrictive on storage.objects;
 drop policy if exists receipts_insert_restrictive on storage.objects;
 create policy receipts_read_restrictive on storage.objects
   as restrictive for select to public
-  using (bucket_id <> 'receipts' or public.is_admin());
+  using (
+    bucket_id <> 'receipts'
+    or public.is_admin()
+    or storage.allow_only_operation('storage.object.upload')
+  );
 create policy receipts_insert_restrictive on storage.objects
   as restrictive for insert to public
-  with check (bucket_id <> 'receipts' or name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$');
-create policy receipts_anon_upload on storage.objects
-  for insert to anon
-  with check (bucket_id = 'receipts' and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$');
+  with check (
+    bucket_id <> 'receipts'
+    or name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
+create policy receipts_checkout_upload on storage.objects
+  for insert to anon, authenticated
+  with check (
+    bucket_id = 'receipts'
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+  );
+create policy receipts_upload_returning_select on storage.objects
+  for select to anon, authenticated
+  using (
+    bucket_id = 'receipts'
+    and name ~ '^receipts/[A-Za-z0-9][A-Za-z0-9._-]*$'
+    and storage.allow_only_operation('storage.object.upload')
+  );
 create policy receipts_admin_read on storage.objects
   for select to authenticated
-  using (bucket_id = 'receipts' and public.is_admin());
+  using (
+    bucket_id = 'receipts'
+    and public.is_admin()
+  );
