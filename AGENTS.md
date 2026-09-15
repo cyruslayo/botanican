@@ -1,6 +1,7 @@
 # Memory
 
 ## Project Overview
+
 Botanica (Botanical Essence) — a premium edibles & essential oils storefront.
 
 - Built with Astro 7 (`.astro` pages + React 19 islands hydrated via `client:load`), TypeScript (strict).
@@ -10,6 +11,7 @@ Botanica (Botanical Essence) — a premium edibles & essential oils storefront.
 - See `README.md` for AI Studio app details and `package.json` for scripts (pnpm).
 
 ## Code Style Guidelines
+
 - Keep TypeScript strict; use descriptive variable names; extract complex conditions into named booleans.
 - Mark interactive/browser-dependent React components with `'use client'`; Astro pages are server-rendered by default.
 - Prefer `@/` imports over relative imports.
@@ -20,6 +22,7 @@ Botanica (Botanical Essence) — a premium edibles & essential oils storefront.
 - Use `dvh` (not `vh`) for mobile containers; use `aspect-ratio` over fixed heights; use `clamp()` for fluid type/spacing.
 
 ## Architecture Notes
+
 - Routes live under `src/pages/`:
   - Storefront: `/`, `/oils`, `/edibles`, `/product/[slug]`, `/cart`.
   - Checkout: `/checkout`, `/checkout/shipping`, `/checkout/confirmation`.
@@ -38,11 +41,13 @@ Botanica (Botanical Essence) — a premium edibles & essential oils storefront.
 - Mobile bottom navs: `src/components/BottomNav.tsx` (storefront) and `src/components/admin/AdminBottomNav.tsx` (admin), both fixed with `pb-safe` (safe-area-inset).
 
 ## Data Model
+
 - `products`: `name`, `slug`, `description`, `price`, `inventory`, `category`, `image`, `is_active`, `created_at`, `updated_at` (snake_case Supabase columns).
 - `orders`: `user_id` (email used for guest checkout), `items[]`, `total`, `status`, `shipping_address`, `receipt_url`, `created_at`.
 - Admin users: `src/lib/auth.ts` (`isAdmin()`, `signInWithPassword`, `signOut`).
 
 ## Design System
+
 - Defined in `src/styles/global.css` under `@theme`.
 - Colors: `surface*`, `primary` (#18231a), `secondary`, `tertiary`, `error`, plus `on-*` and `*-container` variants.
 - Fonts: Bodoni Moda for display/headline, Plus Jakarta Sans for body/label.
@@ -52,8 +57,29 @@ Botanica (Botanical Essence) — a premium edibles & essential oils storefront.
 - Custom utilities: `botanical-shadow`, `hide-scrollbar`, `input-underline`, `pb-safe`, `touch-target`, `visually-hidden`, `skip-link`; global `:focus-visible` outline styles.
 
 ## Common Workflows
+
 - `pnpm dev` — start the local dev server.
 - `pnpm build` — production build.
 - `pnpm preview` — serve the production build.
 - `pnpm check` — Astro type check.
 - `pnpm clean` — clear `dist`/`.astro` caches.
+
+## Approved Storefront Redesign Guardrails
+
+Botanica is invite-only. Invite-only access is non-negotiable: visitors need a valid member invite code before applying for store access, and the public website must never expose a general invite code. Member-generated links such as `/invite/[code]` remain supported.
+
+Instagram is the main channel for education, storytelling, and ongoing content. The public landing page should create product interest and explain Botanica simply. The private store handles catalog browsing and purchasing; the journal remains available but secondary to the product journey. Public storefront and membership copy should target approximately a grade-six reading level.
+
+Keep the current Astro, React, Nanostores, Tailwind, and Supabase architecture. Do not add dependencies unless a later phase clearly requires them. Keep the current visual identity unless a later approved phase changes it. Prefer deleting complexity over adding new abstraction. Do not implement future phases without explicit instructions.
+
+Preserve the visual dropper calculator and visual usage guide. Do not delete the calculator during landing-page cleanup; it will later become part of a dedicated product usage guide. Keep required product safety information. Do not introduce medical claims or dosing prescriptions.
+
+### Intended product journey
+
+`Instagram → Public landing page → Valid invite → Access review → Private store → Product → Cart → Checkout`
+
+Member invite journey: `Member invite link → /invite/[code] → Access review → Private store`
+
+### Phase 0 scope guardrail
+
+Phase 0 records constraints only. Do not change `src/pages/index.astro`, landing page components, invite or membership behavior, Supabase policies, product visibility, navigation, store behavior, checkout, calculator behavior, or journal behavior. Do not delete, move, or refactor unrelated files; do not install packages.
