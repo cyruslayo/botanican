@@ -67,7 +67,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'Where can I learn how to use the dropper?',
     answer:
-      'The visual dropper guide on this homepage shows approximate reference levels. It is a visual aid, not a calibrated measurement or medical instruction.',
+      'Visit the visual dropper guide at /how-to-use to see approximate reference levels. It is a visual aid, not a calibrated measurement or medical instruction.',
   },
 ];
 

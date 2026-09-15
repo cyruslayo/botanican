@@ -93,7 +93,10 @@ export default function InteractiveDropperMath() {
           </div>
 
           {/* Interactive Reference Selectors */}
-          <div className="flex flex-col justify-between h-[230px] my-auto">
+          <div
+            role="group"
+            aria-label="Visual draw reference controls"
+            className="flex flex-col justify-between h-[230px] my-auto">
             {DRAW_OPTIONS.map((lvl) => {
               const active = drawId === lvl.id;
               return (
@@ -101,7 +104,8 @@ export default function InteractiveDropperMath() {
                   key={lvl.id}
                   type="button"
                   onClick={() => setDrawId(lvl.id)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
+                  aria-pressed={active}
+                  className={`flex min-h-11 items-center gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
                     active
                       ? 'bg-primary text-on-primary shadow-sm scale-105 font-bold'
                       : 'hover:bg-surface-container-high text-on-surface-variant'
@@ -153,7 +157,7 @@ export default function InteractiveDropperMath() {
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setBottleId(option.id)}
-                  className={`px-3 py-2 rounded-full font-label-sm text-xs font-bold tracking-wide transition-colors text-center active:scale-[0.98] ${
+                  className={`min-h-11 px-3 py-2 rounded-full font-label-sm text-xs font-bold tracking-wide transition-colors text-center active:scale-[0.98] ${
                     selected
                       ? 'bg-primary/10 text-primary border border-primary/40'
                       : 'border border-outline text-on-surface-variant hover:bg-surface-container hover:text-primary'
@@ -179,7 +183,7 @@ export default function InteractiveDropperMath() {
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setDrawId(lvl.id)}
-                  className={`px-3 py-2.5 rounded-xl font-label-sm text-xs font-bold tracking-wide transition-all text-center active:scale-[0.98] ${
+                  className={`min-h-11 px-3 py-2.5 rounded-xl font-label-sm text-xs font-bold tracking-wide transition-all text-center active:scale-[0.98] ${
                     selected
                       ? 'bg-secondary text-primary font-bold shadow-sm'
                       : 'border border-outline text-primary hover:bg-surface-container'

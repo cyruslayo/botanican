@@ -1,0 +1,153 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import DropperMath from '@/components/landing/DropperMath.astro';
+import LandingFooter from '@/components/landing/LandingFooter.astro';
+
+export const prerender = true;
+---
+
+<Layout
+  pathname="/how-to-use"
+  title="Botanica | Visual Dropper Guide"
+  description="A visual guide to Botanica's unmarked glass dropper and approximate chamber-height references."
+>
+  <main class="w-full">
+    <section id="guide-intro" class="w-full bg-surface">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
+        <div class="max-w-3xl space-y-stack-md">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+            Visual product guide
+          </span>
+          <h1 class="font-display-lg md:font-display-xl text-display-lg md:text-display-xl text-primary">
+            A simple way to read the dropper.
+          </h1>
+          <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-[42ch]">
+            Botanica uses an unmarked glass dropper. The visible liquid height can be compared with the visual references on this page.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="visual-reference" class="w-full bg-surface-container-low border-y border-outline-variant/30">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-20">
+        <div class="max-w-3xl space-y-6">
+          <div class="space-y-3">
+            <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+              What the visual reference means
+            </span>
+            <h2 class="font-headline-lg text-headline-lg text-primary">Height, not a marking.</h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+              Quarter, half, three-quarter, and full are approximate chamber-height references for the visible liquid. They are a way to compare what you see in the unmarked glass.
+            </p>
+          </div>
+
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-body-sm text-body-sm text-on-surface-variant">
+            <li class="rounded-xl border border-outline-variant/50 bg-surface p-5 leading-relaxed">
+              Not physical markings on the dropper.
+            </li>
+            <li class="rounded-xl border border-outline-variant/50 bg-surface p-5 leading-relaxed">
+              Not laboratory measurements.
+            </li>
+            <li class="rounded-xl border border-outline-variant/50 bg-surface p-5 leading-relaxed">
+              Not medical instructions.
+            </li>
+            <li class="rounded-xl border border-outline-variant/50 bg-surface p-5 leading-relaxed">
+              Not dosing recommendations.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <DropperMath />
+
+    <section id="reference-levels" class="w-full bg-surface">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-28">
+        <div class="max-w-2xl space-y-4 mb-12">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
+            Four reference positions
+          </span>
+          <h2 class="font-headline-lg text-headline-lg text-primary">Compare the visible chamber height.</h2>
+          <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            These descriptions help you recognize each visual position. They do not add markings to the glass or create a separate calculation.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <article class="space-y-3 border-t-2 border-secondary pt-5">
+            <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">01 · Quarter</span>
+            <h3 class="font-headline-md text-headline-md text-primary">¼ draw</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              The visible liquid reaches approximately one quarter of the chamber height.
+            </p>
+          </article>
+          <article class="space-y-3 border-t-2 border-secondary pt-5">
+            <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">02 · Half</span>
+            <h3 class="font-headline-md text-headline-md text-primary">½ draw</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              The visible liquid reaches approximately one half of the chamber height.
+            </p>
+          </article>
+          <article class="space-y-3 border-t-2 border-secondary pt-5">
+            <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">03 · Three-quarter</span>
+            <h3 class="font-headline-md text-headline-md text-primary">¾ draw</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              The visible liquid reaches approximately three quarters of the chamber height.
+            </p>
+          </article>
+          <article class="space-y-3 border-t-2 border-secondary pt-5">
+            <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">04 · Full</span>
+            <h3 class="font-headline-md text-headline-md text-primary">Full draw</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              The visible liquid reaches approximately the full chamber height.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety" class="w-full bg-surface-container-low border-y border-outline-variant/30">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-20">
+        <div class="max-w-3xl space-y-5">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">Keep the reference in context</span>
+          <h2 class="font-headline-lg text-headline-lg text-primary">A visual guide, not a prescription.</h2>
+          <ul class="space-y-3 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            <li>Visual levels are approximate, and the dropper is not calibrated with volume markings.</li>
+            <li>The calculator is a visual reference only, not a dosing recommendation.</li>
+            <li>For adults only. THC can impair judgment or coordination.</li>
+            <li>Do not drive or operate machinery while impaired.</li>
+            <li>Follow applicable local law.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="invite-access" class="w-full bg-surface">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-24">
+        <div class="max-w-2xl space-y-5">
+          <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">Member access</span>
+          <h2 class="font-headline-lg text-headline-lg text-primary">Already have a valid invite?</h2>
+          <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            Go to the invite page to begin your access review.
+          </p>
+          <a
+            href="/invite"
+            class="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-8 py-3.5 font-label-sm text-label-sm uppercase tracking-widest font-bold text-on-primary transition-opacity hover:opacity-90"
+          >
+            Go to member access
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <nav aria-label="Guide navigation" class="w-full border-t border-outline-variant/40 bg-surface">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8">
+        <a href="/" class="font-label-sm text-label-sm uppercase tracking-widest text-primary hover:text-secondary transition-colors">
+          Return to Botanica home
+        </a>
+      </div>
+    </nav>
+
+    <LandingFooter />
+  </main>
+</Layout>
