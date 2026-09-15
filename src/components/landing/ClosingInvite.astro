@@ -1,9 +1,7 @@
 ---
 /**
- * Bottom CTA - the single conversion goal of the page (invite application),
- * using the admin-configured reader invite code.
+ * Bottom CTA - the single conversion goal of the page (invite application).
  */
-import InviteCodeCard from './InviteCodeCard';
 ---
 
 <section id="invite" class="w-full bg-surface">
@@ -22,17 +20,15 @@ import InviteCodeCard from './InviteCodeCard';
         </h2>
 
         <p class="font-body-lg text-body-lg text-on-primary/80 leading-relaxed">
-          Botanica is for adults who prefer a discreet liquid format and a more deliberate approach to cannabis.
+          Botanica is invite-only. You need a valid invite from an existing member to apply.
         </p>
-
-        <InviteCodeCard client:load />
 
         <div class="pt-2">
           <a
             href="/invite"
             class="inline-block px-8 py-3.5 border border-white/30 text-on-primary font-label-sm text-label-sm uppercase tracking-widest rounded-full hover:bg-white/10 transition-colors"
           >
-            Check Existing Application
+            Enter Invite Code
           </a>
         </div>
       </div>
