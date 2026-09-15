@@ -1,8 +1,15 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useStore } from '@nanostores/react';
-import { isApproved, isPending, accessState, clearAccess, setApprovedAccess, setPendingAccess } from '@/store/access';
-import { checkAccess } from '@/lib/referrals';
+"use client";
+import { useEffect, useState } from "react";
+import { useStore } from "@nanostores/react";
+import {
+  isApproved,
+  isPending,
+  accessState,
+  clearAccess,
+  setApprovedAccess,
+  setPendingAccess,
+} from "@/store/access";
+import { checkAccess } from "@/lib/referrals";
 
 interface MemberGateProps {
   children: React.ReactNode;
@@ -13,7 +20,9 @@ export default function MemberGate({ children }: MemberGateProps) {
   const pending = useStore(isPending);
   const access = useStore(accessState);
   const [hydrated, setHydrated] = useState(false);
-  const [verification, setVerification] = useState<'checking' | 'verified' | 'error'>('checking');
+  const [verification, setVerification] = useState<
+    "checking" | "verified" | "error"
+  >("checking");
 
   useEffect(() => {
     setHydrated(true);
@@ -26,31 +35,35 @@ export default function MemberGate({ children }: MemberGateProps) {
     const phone = access.phone;
     if (!handle || !phone) {
       clearAccess();
-      setVerification('verified');
+      setVerification("verified");
       return;
     }
 
     let active = true;
-    setVerification('checking');
+    setVerification("checking");
     checkAccess(handle, phone)
       .then((result) => {
         if (!active) return;
-        if (result.status === 'approved') {
-          setApprovedAccess(result.instagramHandle || handle, phone, result.referralCode);
-          setVerification('verified');
+        if (result.status === "approved") {
+          setApprovedAccess(
+            result.instagramHandle || handle,
+            phone,
+            result.referralCode,
+          );
+          setVerification("verified");
           return;
         }
-        if (result.status === 'pending') {
+        if (result.status === "pending") {
           setPendingAccess(result.instagramHandle || handle, phone);
-          setVerification('verified');
+          setVerification("verified");
           return;
         }
         clearAccess();
-        setVerification('verified');
+        setVerification("verified");
       })
       .catch((error) => {
-        console.error('Error verifying member access:', error);
-        if (active) setVerification('error');
+        console.error("Error verifying member access:", error);
+        if (active) setVerification("error");
       });
 
     return () => {
@@ -58,29 +71,34 @@ export default function MemberGate({ children }: MemberGateProps) {
     };
   }, [hydrated, access.instagramHandle, access.phone]);
 
-  if (!hydrated || verification === 'checking') {
+  if (!hydrated || verification === "checking") {
     return (
       <div className="min-h-[70dvh] flex items-center justify-center pt-24">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           <span className="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">
-            Verifying Member Access...
+            Checking member access...
           </span>
         </div>
       </div>
     );
   }
 
-  if (verification === 'error') {
+  if (verification === "error") {
     return (
       <main className="min-h-[70dvh] flex items-center justify-center px-margin-mobile md:px-margin-desktop pt-24">
         <div className="max-w-xl w-full bg-surface-container-low rounded-2xl p-8 border border-error/30 botanical-shadow text-center">
-          <h1 className="font-headline-sm text-headline-sm text-primary mb-3">Unable to verify member access</h1>
+          <h1 className="font-headline-sm text-headline-sm text-primary mb-3">
+            Unable to check member access
+          </h1>
           <p className="font-body-md text-body-md text-on-surface-variant mb-6">
-            Membership verification is temporarily unavailable. Please try again when the connection is restored.
+            We cannot check your access right now. Please try again later.
           </p>
-          <a href="/invite" className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest">
-            Check Application Status
+          <a
+            href="/invite"
+            className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest"
+          >
+            Check request status
           </a>
         </div>
       </main>
@@ -94,7 +112,7 @@ export default function MemberGate({ children }: MemberGateProps) {
 
   // 2. Pending Member: Dedicated Application Under Review Screen
   if (pending) {
-    const handle = access.instagramHandle || 'your account';
+    const handle = access.instagramHandle || "your account";
     return (
       <main className="min-h-[75dvh] flex items-center justify-center px-margin-mobile md:px-margin-desktop py-stack-lg md:py-section-gap pt-24 md:pt-32">
         <div className="max-w-xl w-full bg-surface-container-low rounded-2xl p-6 sm:p-10 border border-secondary/30 botanical-shadow text-center animate-in fade-in zoom-in-95 duration-300">
@@ -119,26 +137,30 @@ export default function MemberGate({ children }: MemberGateProps) {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container/40 rounded-full mb-4">
             <span className="w-2 h-2 rounded-full bg-secondary animate-ping" />
             <span className="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary">
-              Application In Review
+              Request under review
             </span>
           </div>
 
           <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-3">
-            Membership Pending Review
+            Your request is under review
           </h1>
 
           <p className="font-body-md md:font-body-lg text-body-md md:text-body-lg text-on-surface-variant mb-6 max-w-md mx-auto leading-relaxed">
-            Your membership application for <strong className="text-primary font-mono">{handle}</strong> is currently being reviewed by our private apothecary team.
+            Your request for{" "}
+            <strong className="text-primary font-mono">{handle}</strong> is
+            under review.
           </p>
 
           <div className="bg-surface rounded-xl p-5 border border-outline-variant/60 text-left mb-8 max-w-md mx-auto font-body-sm text-body-sm text-on-surface-variant space-y-2.5">
             <div className="flex items-start gap-2.5">
               <span className="text-secondary font-bold">•</span>
-              <span>Our apothecary catalog and purchasing are strictly reserved for verified members.</span>
+              <span>The private store is for approved members.</span>
             </div>
             <div className="flex items-start gap-2.5">
               <span className="text-secondary font-bold">•</span>
-              <span>You will receive an automatic live alert and store unlocking as soon as your access is approved.</span>
+              <span>
+                The private store stays locked until your request is approved.
+              </span>
             </div>
           </div>
 
@@ -147,13 +169,13 @@ export default function MemberGate({ children }: MemberGateProps) {
               href="/invite"
               className="px-6 py-3.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-sm"
             >
-              Check Review Status &rarr;
+              Check request status &rarr;
             </a>
             <a
               href="/"
               className="px-6 py-3.5 border border-outline text-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors flex items-center justify-center"
             >
-              Back to Botanica Story
+              Back to Botanica
             </a>
           </div>
         </div>
@@ -184,7 +206,7 @@ export default function MemberGate({ children }: MemberGateProps) {
 
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full mb-4">
           <span className="font-label-sm text-xs font-bold uppercase tracking-widest text-on-surface-variant">
-            Private Apothecary
+            Private store
           </span>
         </div>
 
@@ -193,7 +215,8 @@ export default function MemberGate({ children }: MemberGateProps) {
         </h1>
 
         <p className="font-body-md md:font-body-lg text-body-md md:text-body-lg text-on-surface-variant mb-8 max-w-md mx-auto leading-relaxed">
-          Botanica operates as an exclusive, invite-only apothecary. Store inventory and checkout are accessible only to approved members.
+          Botanica is invite-only. The private store and checkout are for
+          approved members.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-3.5">
@@ -201,13 +224,13 @@ export default function MemberGate({ children }: MemberGateProps) {
             href="/"
             className="px-6 py-3.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-sm"
           >
-            Discover Botanica & Get Invite
+            Learn about Botanica
           </a>
           <a
             href="/invite"
             className="px-6 py-3.5 border border-outline text-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors flex items-center justify-center"
           >
-            Enter Invitation Code
+            Enter a valid invite code
           </a>
         </div>
       </div>

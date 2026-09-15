@@ -1,6 +1,6 @@
-'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { useStore } from '@nanostores/react';
+"use client";
+import { useState, useEffect, useCallback } from "react";
+import { useStore } from "@nanostores/react";
 import {
   isPending,
   isApproved,
@@ -10,10 +10,10 @@ import {
   setRejectedAccess,
   hasApprovalCelebration,
   dismissApprovalCelebration,
-} from '@/store/access';
-import { checkAccess, normalizeHandle } from '@/lib/referrals';
-import { getSupabase } from '@/lib/supabase';
-import { useHydrated } from '@/lib/useHydrated';
+} from "@/store/access";
+import { checkAccess, normalizeHandle } from "@/lib/referrals";
+import { getSupabase } from "@/lib/supabase";
+import { useHydrated } from "@/lib/useHydrated";
 
 export default function AccessStatusBanner() {
   const isHydrated = useHydrated();
@@ -22,7 +22,9 @@ export default function AccessStatusBanner() {
   const access = useStore(accessState);
   const celebration = useStore(hasApprovalCelebration);
   const [dismissed, setDismissed] = useState(false);
-  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     setDismissed(false);
@@ -37,15 +39,20 @@ export default function AccessStatusBanner() {
     try {
       const res = await checkAccess(handle, phone);
       setVerificationError(null);
-      if (res.status === 'approved' && access.status !== 'approved') {
+      if (res.status === "approved" && access.status !== "approved") {
         const approvedHandle = res.instagramHandle || normalizeHandle(handle);
         setApprovedAccess(approvedHandle, phone, res.referralCode, true);
-      } else if (res.status === 'rejected') {
-        setRejectedAccess(res.instagramHandle || normalizeHandle(handle), phone);
+      } else if (res.status === "rejected") {
+        setRejectedAccess(
+          res.instagramHandle || normalizeHandle(handle),
+          phone,
+        );
       }
     } catch (error) {
-      console.error('Error checking membership status:', error);
-      setVerificationError('Membership status is temporarily unavailable. We will keep checking.');
+      console.error("Error checking membership status:", error);
+      setVerificationError(
+        "Membership status is temporarily unavailable. We will keep checking.",
+      );
     }
   }, [access.instagramHandle, access.phone, access.status]);
 
@@ -72,17 +79,17 @@ export default function AccessStatusBanner() {
     };
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         revalidateStatus();
       }
     };
 
-    window.addEventListener('focus', handleFocus);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      window.removeEventListener('focus', handleFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [pending, revalidateStatus]);
 
@@ -97,25 +104,27 @@ export default function AccessStatusBanner() {
       const channel = supabase
         .channel(`access-sync-${cleanHandle}`)
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'access_requests',
+            event: "UPDATE",
+            schema: "public",
+            table: "access_requests",
             filter: `instagram_handle=eq.${cleanHandle}`,
           },
           (payload) => {
-            if (payload.new && payload.new.status === 'approved') {
+            if (payload.new && payload.new.status === "approved") {
               revalidateStatus();
             }
-          }
+          },
         )
         .subscribe();
 
       return () => {
         supabase.removeChannel(channel);
       };
-    } catch {}
+    } catch {
+      // Realtime updates are optional; polling remains active.
+    }
   }, [pending, access.instagramHandle, revalidateStatus]);
 
   if (!isHydrated || dismissed) return null;
@@ -124,7 +133,7 @@ export default function AccessStatusBanner() {
   if (celebration && approved) {
     return (
       <aside
-        aria-label="Membership Approved"
+        aria-label="Member access approved"
         className="bg-primary text-on-primary px-4 py-3.5 text-center relative z-50 border-b border-secondary/40 shadow-lg animate-in slide-in-from-top duration-300"
       >
         <div className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -134,10 +143,12 @@ export default function AccessStatusBanner() {
             </span>
             <div>
               <div className="font-label-sm text-label-sm font-bold uppercase tracking-widest text-secondary">
-                🎉 Membership Approved!
+                Member access approved
               </div>
               <div className="font-body-sm text-body-sm opacity-90">
-                Welcome to Botanica, <strong className="font-mono">{access.instagramHandle}</strong>. Your full store and apothecary access is unlocked.
+                Welcome to Botanica,{" "}
+                <strong className="font-mono">{access.instagramHandle}</strong>.
+                You can now enter the private store.
               </div>
             </div>
           </div>
@@ -147,7 +158,7 @@ export default function AccessStatusBanner() {
               onClick={() => dismissApprovalCelebration()}
               className="px-4 py-1.5 bg-secondary text-primary rounded-full font-label-sm text-label-sm uppercase tracking-wider font-bold hover:scale-105 transition-transform"
             >
-              Shop Collection &rarr;
+              Open the Store &rarr;
             </a>
             <button
               onClick={() => dismissApprovalCelebration()}
@@ -166,7 +177,7 @@ export default function AccessStatusBanner() {
 
   // View B: Pending Review Banner
   if (pending) {
-    const handle = access.instagramHandle || 'your account';
+    const handle = access.instagramHandle || "your account";
     return (
       <aside
         aria-label="Membership Status"
@@ -176,10 +187,14 @@ export default function AccessStatusBanner() {
           <div className="flex-1 flex items-center justify-center gap-2">
             <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
             <span>
-              Membership application for <strong className="font-mono">{handle}</strong> is under review. You will be notified the second it is approved.
+              Your request for <strong className="font-mono">{handle}</strong>{" "}
+              is under review. The private store stays locked until approval.
             </span>
-            <a href="/invite" className="font-bold underline underline-offset-2 ml-1 hover:opacity-80">
-              Details &rarr;
+            <a
+              href="/invite"
+              className="font-bold underline underline-offset-2 ml-1 hover:opacity-80"
+            >
+              Check status &rarr;
             </a>
           </div>
           <button
@@ -191,7 +206,9 @@ export default function AccessStatusBanner() {
           </button>
         </div>
         {verificationError && (
-          <p className="mt-1 text-xs text-on-secondary-container/80">{verificationError}</p>
+          <p className="mt-1 text-xs text-on-secondary-container/80">
+            {verificationError}
+          </p>
         )}
       </aside>
     );
@@ -206,14 +223,14 @@ export default function AccessStatusBanner() {
       >
         <div className="max-w-container-max mx-auto flex items-center justify-between">
           <span className="text-secondary tracking-widest uppercase text-[11px] font-bold font-mono">
-            Verified Member: {access.instagramHandle}
+            Member access approved: {access.instagramHandle}
           </span>
           <div className="flex items-center gap-4">
             <a
               href="/invite"
               className="text-on-surface-variant hover:text-primary transition-colors underline underline-offset-2"
             >
-              My Referral Code
+              My invite link
             </a>
             <button
               onClick={() => clearAccess()}

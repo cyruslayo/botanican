@@ -1,18 +1,19 @@
-'use client';
-import { useState } from 'react';
-import { BOTTLE_OPTIONS, BOTTLE_SIZE_ML, DRAW_OPTIONS } from '@/data/landing';
+"use client";
+import { useState } from "react";
+import { BOTTLE_OPTIONS, BOTTLE_SIZE_ML, DRAW_OPTIONS } from "@/data/landing";
 
 /** Format the calculated reference without unnecessary trailing zeros. */
 function formatReferenceMg(value: number): string {
-  return value.toFixed(3).replace(/\.?0+$/, '');
+  return value.toFixed(3).replace(/\.?0+$/, "");
 }
 
 export default function InteractiveDropperMath() {
-  const [bottleId, setBottleId] = useState('50');
-  const [drawId, setDrawId] = useState('half');
+  const [bottleId, setBottleId] = useState("50");
+  const [drawId, setDrawId] = useState("half");
 
   const selectedBottle =
-    BOTTLE_OPTIONS.find((option) => option.id === bottleId) ?? BOTTLE_OPTIONS[1];
+    BOTTLE_OPTIONS.find((option) => option.id === bottleId) ??
+    BOTTLE_OPTIONS[1];
   const selectedDraw =
     DRAW_OPTIONS.find((option) => option.id === drawId) ?? DRAW_OPTIONS[1];
 
@@ -31,7 +32,7 @@ export default function InteractiveDropperMath() {
               Glass Dropper
             </span>
             <span className="font-headline-sm text-primary font-bold">
-              Visual Reference
+              Visual guide
             </span>
           </div>
           <span className="font-mono text-xs px-3 py-1 rounded-full bg-surface-container-high text-primary font-bold">
@@ -40,17 +41,21 @@ export default function InteractiveDropperMath() {
         </div>
 
         <p className="font-body-sm text-on-surface-variant mb-6 text-sm">
-          Select a reference level to see the approximate liquid fill height inside the glass chamber.
+          Choose a reference level to see the approximate liquid level inside
+          the dropper.
         </p>
 
         {/* Pipette Graphic + Reference Selectors Container */}
         <div className="flex items-center justify-center sm:justify-start gap-8 w-full py-4">
           {/* Glass Pipette */}
-          <div className="relative flex flex-col items-center select-none" style={{ height: '320px', width: '60px' }}>
+          <div
+            className="relative flex flex-col items-center select-none"
+            style={{ height: "320px", width: "60px" }}
+          >
             {/* Rubber Bulb at top */}
             <div
               className="w-10 h-14 rounded-t-full bg-primary relative shadow-md transition-transform duration-200 active:scale-95"
-              title="Apothecary rubber bulb"
+              title="Dropper bulb"
             >
               <div className="absolute inset-x-2 bottom-1 h-3 rounded-sm bg-primary/80 border-t border-white/20"></div>
             </div>
@@ -80,14 +85,16 @@ export default function InteractiveDropperMath() {
             <div className="w-2.5 h-6 bg-gradient-to-b from-surface/90 to-surface/40 border-x border-b border-outline/70 rounded-b-md relative overflow-hidden">
               <div
                 className="absolute inset-x-0 bottom-0 bg-secondary/80 transition-all duration-500"
-                style={{ height: fillPercentage > 0 ? '100%' : '0%' }}
+                style={{ height: fillPercentage > 0 ? "100%" : "0%" }}
               ></div>
             </div>
 
             {/* Hanging Droplet indicator when filled */}
             <div
               className={`w-2 h-2.5 rounded-full bg-secondary transition-all duration-300 transform mt-0.5 ${
-                fillPercentage > 0 ? 'opacity-90 translate-y-0 scale-100' : 'opacity-0 -translate-y-1 scale-50'
+                fillPercentage > 0
+                  ? "opacity-90 translate-y-0 scale-100"
+                  : "opacity-0 -translate-y-1 scale-50"
               }`}
             ></div>
           </div>
@@ -95,8 +102,9 @@ export default function InteractiveDropperMath() {
           {/* Interactive Reference Selectors */}
           <div
             role="group"
-            aria-label="Visual draw reference controls"
-            className="flex flex-col justify-between h-[230px] my-auto">
+            aria-label="Visual level controls"
+            className="flex flex-col justify-between h-[230px] my-auto"
+          >
             {DRAW_OPTIONS.map((lvl) => {
               const active = drawId === lvl.id;
               return (
@@ -107,18 +115,24 @@ export default function InteractiveDropperMath() {
                   aria-pressed={active}
                   className={`flex min-h-11 items-center gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
                     active
-                      ? 'bg-primary text-on-primary shadow-sm scale-105 font-bold'
-                      : 'hover:bg-surface-container-high text-on-surface-variant'
+                      ? "bg-primary text-on-primary shadow-sm scale-105 font-bold"
+                      : "hover:bg-surface-container-high text-on-surface-variant"
                   }`}
                 >
                   <span
                     className={`w-2 h-2 rounded-full transition-colors ${
-                      active ? 'bg-secondary' : 'bg-outline-variant group-hover:bg-secondary'
+                      active
+                        ? "bg-secondary"
+                        : "bg-outline-variant group-hover:bg-secondary"
                     }`}
                   ></span>
                   <div>
-                    <span className="font-headline-sm text-xs block leading-tight">{lvl.label}</span>
-                    <span className="text-[11px] opacity-80 block leading-tight">Visual reference</span>
+                    <span className="font-headline-sm text-xs block leading-tight">
+                      {lvl.label}
+                    </span>
+                    <span className="text-[11px] opacity-80 block leading-tight">
+                      Visual reference
+                    </span>
                   </div>
                 </button>
               );
@@ -128,7 +142,7 @@ export default function InteractiveDropperMath() {
 
         <div className="w-full pt-4 mt-2 border-t border-outline-variant/40 flex items-center justify-between text-[11px] font-mono text-on-surface-variant">
           <span>Unmarked Glass Dropper</span>
-          <span className="text-secondary font-bold">Visual Reference</span>
+          <span className="text-secondary font-bold">Visual guide</span>
         </div>
       </div>
 
@@ -136,10 +150,10 @@ export default function InteractiveDropperMath() {
       <div className="lg:col-span-7 bg-surface rounded-2xl border border-outline-variant/60 botanical-shadow p-6 sm:p-8 space-y-6">
         <div>
           <span className="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold block">
-            Visual Reference Guide
+            Visual dropper guide
           </span>
           <h3 className="font-headline-md text-headline-md text-primary mt-1">
-            Visible fill height: {selectedDraw.label}
+            Visible liquid level: {selectedDraw.label}
           </h3>
         </div>
 
@@ -159,8 +173,8 @@ export default function InteractiveDropperMath() {
                   onClick={() => setBottleId(option.id)}
                   className={`min-h-11 px-3 py-2 rounded-full font-label-sm text-xs font-bold tracking-wide transition-colors text-center active:scale-[0.98] ${
                     selected
-                      ? 'bg-primary/10 text-primary border border-primary/40'
-                      : 'border border-outline text-on-surface-variant hover:bg-surface-container hover:text-primary'
+                      ? "bg-primary/10 text-primary border border-primary/40"
+                      : "border border-outline text-on-surface-variant hover:bg-surface-container hover:text-primary"
                   }`}
                 >
                   {option.totalMg} mg bottle
@@ -170,9 +184,13 @@ export default function InteractiveDropperMath() {
           </div>
         </div>
 
-        <div role="group" aria-label="Reference level selection" className="space-y-3">
+        <div
+          role="group"
+          aria-label="Reference level selection"
+          className="space-y-3"
+        >
           <span className="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-bold block">
-            Select Visual Reference State
+            Choose a reference level
           </span>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {DRAW_OPTIONS.map((lvl) => {
@@ -185,8 +203,8 @@ export default function InteractiveDropperMath() {
                   onClick={() => setDrawId(lvl.id)}
                   className={`min-h-11 px-3 py-2.5 rounded-xl font-label-sm text-xs font-bold tracking-wide transition-all text-center active:scale-[0.98] ${
                     selected
-                      ? 'bg-secondary text-primary font-bold shadow-sm'
-                      : 'border border-outline text-primary hover:bg-surface-container'
+                      ? "bg-secondary text-primary font-bold shadow-sm"
+                      : "border border-outline text-primary hover:bg-surface-container"
                   }`}
                 >
                   {lvl.label}
@@ -200,10 +218,10 @@ export default function InteractiveDropperMath() {
         <div className="pt-6 border-t border-outline-variant/40 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/30 space-y-3">
           <div className="flex items-baseline justify-between">
             <span className="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold block">
-              Calculated reference
+              Approximate reference
             </span>
             <span className="font-mono text-xs text-on-surface-variant">
-              Approximate visual draw
+              Approximate value
             </span>
           </div>
 
@@ -211,32 +229,40 @@ export default function InteractiveDropperMath() {
             {selectedDraw.label}
           </p>
 
-          <p className="font-display-md text-display-md text-primary" aria-live="polite">
+          <p
+            className="font-display-md text-display-md text-primary"
+            aria-live="polite"
+          >
             &asymp; {mgDisplay} mg THC
           </p>
 
           <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-            Based on the selected {selectedBottle.label} bottle.
+            Based on the selected bottle and visual level.
           </p>
 
           <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-            The liquid fills approximately{' '}
-            {selectedDraw.id === 'quarter'
-              ? 'one quarter'
-              : selectedDraw.id === 'half'
-                ? 'one half'
-                : selectedDraw.id === 'three-quarter'
-                  ? 'three quarters'
-                  : 'the full height'}{' '}
-            of the glass dropper chamber.
+            The liquid level is about{" "}
+            {selectedDraw.id === "quarter"
+              ? "one quarter"
+              : selectedDraw.id === "half"
+                ? "one half"
+                : selectedDraw.id === "three-quarter"
+                  ? "three quarters"
+                  : "the full height"}{" "}
+            inside the dropper.
           </p>
 
           <div className="pt-3 border-t border-outline-variant/30 space-y-1.5 text-xs text-on-surface-variant leading-relaxed">
             <p>
-              Milligram values are calculated from the selected bottle strength and approximate visual draw.
+              These numbers use the bottle strength and an approximate visual
+              level.
             </p>
             <p>
-              Visual levels are approximate. They are not calibrated volume markings.
+              The calculator does not tell you how much to take. It is not
+              medical advice.
+            </p>
+            <p>
+              Visual levels are approximate. They are not exact volume markings.
             </p>
           </div>
         </div>

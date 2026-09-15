@@ -1,17 +1,40 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useStore } from '@nanostores/react';
-import { accessState, setPendingAccess, setApprovedAccess, clearAccess } from '@/store/access';
-import { validateReferralCode, submitAccessRequest, checkAccess, normalizeHandle } from '@/lib/referrals';
-import type { PublicReferralCode } from '@/lib/referrals';
-import { useHydrated } from '@/lib/useHydrated';
+"use client";
+import { useState, useEffect } from "react";
+import { useStore } from "@nanostores/react";
+import {
+  accessState,
+  setPendingAccess,
+  setApprovedAccess,
+  clearAccess,
+} from "@/store/access";
+import {
+  validateReferralCode,
+  submitAccessRequest,
+  checkAccess,
+  normalizeHandle,
+} from "@/lib/referrals";
+import type { PublicReferralCode } from "@/lib/referrals";
+import { useHydrated } from "@/lib/useHydrated";
 
-export default function InviteRegistration({ initialCode = '' }: { initialCode?: string }) {
+export default function InviteRegistration({
+  initialCode = "",
+}: {
+  initialCode?: string;
+}) {
   const isHydrated = useHydrated();
   const rawAccess = useStore(accessState);
-  const access = isHydrated ? rawAccess : { status: 'unknown', instagramHandle: null, phone: null, referralCode: null };
+  const access = isHydrated
+    ? rawAccess
+    : {
+        status: "unknown",
+        instagramHandle: null,
+        phone: null,
+        referralCode: null,
+      };
   const [code, setCode] = useState(initialCode);
-  const [referralInfo, setReferralInfo] = useState<PublicReferralCode | null>(null);
+  const [referralInfo, setReferralInfo] = useState<PublicReferralCode | null>(
+    null,
+  );
   const [validating, setValidating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,12 +43,12 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
 
   // Streamlined form: Instagram handle & Phone only
   const [formData, setFormData] = useState({
-    instagramHandle: '',
-    phone: '',
+    instagramHandle: "",
+    phone: "",
   });
 
-  const [statusQuery, setStatusQuery] = useState('');
-  const [statusPhone, setStatusPhone] = useState('');
+  const [statusQuery, setStatusQuery] = useState("");
+  const [statusPhone, setStatusPhone] = useState("");
   const [checkingStatus, setCheckingStatus] = useState(false);
   const [statusResult, setStatusResult] = useState<string | null>(null);
 
@@ -45,10 +68,12 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
         setReferralInfo(result);
       } else {
         setReferralInfo(null);
-        setError('Invalid or inactive invitation code. Please check with the member who referred you.');
+        setError(
+          "That invite code is not valid or active. Ask the member who shared it to check the code.",
+        );
       }
     } catch {
-      setError('Unable to validate code. Please try again.');
+      setError("We could not check that invite code. Please try again.");
     } finally {
       setValidating(false);
     }
@@ -57,7 +82,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!referralInfo) {
-      setError('Please provide a valid referral code.');
+      setError("Please enter a valid invite code.");
       return;
     }
 
@@ -76,10 +101,14 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
         setPendingAccess(cleanHandle, formData.phone);
         setSuccess(true);
       } else {
-        setError(res.error || 'Failed to submit application.');
+        setError(
+          res.error || "We could not send your request. Please try again.",
+        );
       }
     } catch (err: any) {
-      setError(err?.message || 'Failed to submit application.');
+      setError(
+        err?.message || "We could not send your request. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -92,28 +121,36 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
     setStatusResult(null);
     try {
       const res = await checkAccess(statusQuery, statusPhone);
-      if (res.status === 'approved') {
+      if (res.status === "approved") {
         const handle = res.instagramHandle || normalizeHandle(statusQuery);
         setApprovedAccess(handle, statusPhone, res.referralCode);
-        setStatusResult(`Approved! Welcome back, ${handle}. Your store access is unlocked.`);
-      } else if (res.status === 'pending') {
+        setStatusResult(
+          `Member access approved. Welcome back, ${handle}. You can now open the private store.`,
+        );
+      } else if (res.status === "pending") {
         const handle = res.instagramHandle || normalizeHandle(statusQuery);
         setPendingAccess(handle, statusPhone);
-        setStatusResult(`Your application for ${handle} is currently under review by our store team.`);
-      } else if (res.status === 'rejected') {
-        setStatusResult('Your application was not approved. Please contact customer support for assistance.');
+        setStatusResult(
+          `Your request for ${handle} is under review. The private store stays locked until approval.`,
+        );
+      } else if (res.status === "rejected") {
+        setStatusResult(
+          "Your request was not approved. If you have a valid invite code, you may submit a new request.",
+        );
       } else {
-        setStatusResult('No application found for this Instagram handle or phone number.');
+        setStatusResult("We could not find a request with those details.");
       }
     } catch {
-      setStatusResult('Error checking status. Please try again.');
+      setStatusResult(
+        "We could not check your request right now. Please try again.",
+      );
     } finally {
       setCheckingStatus(false);
     }
   };
 
   const copyReferralLink = (codeStr: string) => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const url = `${window.location.origin}/invite/${codeStr}`;
       navigator.clipboard.writeText(url);
       setCopied(true);
@@ -122,16 +159,16 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
   };
 
   // 1. If currently an approved member
-  if (access.status === 'approved') {
+  if (access.status === "approved") {
     const myCode = access.referralCode;
-    const displayHandle = access.instagramHandle || '@member';
+    const displayHandle = access.instagramHandle || "@member";
     return (
       <div className="max-w-2xl mx-auto py-12 px-4">
         <div className="bg-surface-container-low rounded-2xl p-8 border border-secondary/30 botanical-shadow">
           <div className="flex items-center gap-3 mb-4">
             <span className="w-3 h-3 rounded-full bg-secondary"></span>
             <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-              Active Member Status
+              Member access active
             </span>
           </div>
 
@@ -139,30 +176,37 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
             Welcome, {displayHandle}
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant mb-8">
-            You have full verified access to the Botanica private apothecary and catalog.
+            Your member access is approved. You can now enter the private store.
           </p>
 
           <div className="bg-surface rounded-xl p-6 border border-outline-variant mb-6 space-y-4">
             <div className="flex justify-between items-center">
               <div>
                 <span className="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant block mb-1">
-                  Your Personal Invitation Code
+                  Your invite code
                 </span>
                 {myCode ? (
-                  <span className="font-headline-sm text-headline-sm text-primary font-mono">{myCode}</span>
+                  <span className="font-headline-sm text-headline-sm text-primary font-mono">
+                    {myCode}
+                  </span>
                 ) : (
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">Invitation code unavailable</span>
+                  <span className="font-body-sm text-body-sm text-on-surface-variant">
+                    Invite code unavailable
+                  </span>
                 )}
               </div>
-              {myCode && <button
-                onClick={() => copyReferralLink(myCode)}
-                className="px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2"
-              >
-                {copied ? 'Copied Link!' : 'Copy Invite Link'}
-              </button>}
+              {myCode && (
+                <button
+                  onClick={() => copyReferralLink(myCode)}
+                  className="px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2"
+                >
+                  {copied ? "Link copied" : "Copy invite link"}
+                </button>
+              )}
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Share your invite link so friends can apply for membership.
+              Share your invite link with someone you know. They can use it to
+              request access.
             </p>
           </div>
 
@@ -171,13 +215,13 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
               href="/oils"
               className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 transition-colors"
             >
-              Shop Collection &rarr;
+              Open the Store &rarr;
             </a>
             <button
               onClick={() => clearAccess()}
               className="font-label-sm text-label-sm text-on-surface-variant hover:text-error transition-colors"
             >
-              Sign Out of Membership
+              Sign out
             </button>
           </div>
         </div>
@@ -186,28 +230,44 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
   }
 
   // 2. If application is currently pending
-  if (success || access.status === 'pending') {
+  if (success || access.status === "pending") {
     const handle = access.instagramHandle || formData.instagramHandle;
     return (
       <div className="max-w-2xl mx-auto py-12 px-4">
         <div className="bg-surface-container-low rounded-2xl p-8 border border-secondary/30 botanical-shadow text-center">
           <div className="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mx-auto mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
           </div>
 
           <h1 className="font-headline-md text-headline-md text-primary mb-3">
-            Application Submitted
+            Request received
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant mb-6 max-w-md mx-auto">
-            Your application for <strong className="text-primary font-mono">{handle}</strong> is under review by our store team.
+            Your request for{" "}
+            <strong className="text-primary font-mono">{handle}</strong> is
+            under review. The private store stays locked until approval.
           </p>
 
           <div className="bg-surface rounded-xl p-5 border border-outline-variant text-left mb-8 max-w-md mx-auto font-body-sm text-body-sm text-on-surface-variant space-y-2">
-            <p>• You can continue to browse products and learn about our botanical formulas.</p>
-            <p>• Purchasing and checkout will unlock as soon as our team verifies your referral.</p>
+            <p>
+              • Botanica is reviewing your Instagram handle and phone number.
+            </p>
+            <p>
+              • You can enter the private store after your request is approved.
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -215,13 +275,13 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
               href="/"
               className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-102 transition-transform"
             >
-              Browse Products
+              Back to Botanica
             </a>
             <button
               onClick={() => clearAccess()}
               className="px-6 py-3 border border-outline text-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface transition-colors"
             >
-              Try Another Code
+              Use a different invite code
             </button>
           </div>
         </div>
@@ -234,13 +294,14 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
     <div className="max-w-2xl mx-auto py-12 px-4 space-y-12">
       <div className="text-center space-y-3">
         <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-          Exclusive Access
+          Member access
         </span>
         <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary">
-          Join the Botanica Circle
+          Request member access
         </h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
-          Botanica is an invite-only apothecary. Enter your invitation code or redeem an invite link to apply.
+          Botanica is invite-only. Enter a valid invite code from a current
+          member to start an access request.
         </p>
       </div>
 
@@ -248,7 +309,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
         {!referralInfo ? (
           <div className="space-y-6">
             <h2 className="font-headline-sm text-headline-sm text-primary">
-              Have an Invitation Code?
+              Have a valid invite code?
             </h2>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
@@ -257,8 +318,8 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="e.g. an active member code"
-                aria-label="Invitation Code"
+                placeholder="Enter your invite code"
+                aria-label="Invite code"
                 className="flex-1 p-3.5 bg-surface border border-outline rounded-xl font-body-lg text-body-lg text-primary placeholder:text-on-surface-variant/50 focus:border-primary focus:outline-none font-mono"
               />
               <button
@@ -267,7 +328,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
                 disabled={validating || !code.trim()}
                 className="px-6 py-3.5 bg-primary text-on-primary rounded-xl font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
               >
-                {validating ? 'Verifying...' : 'Verify Code'}
+                {validating ? "Checking..." : "Check code"}
               </button>
             </div>
             {error && (
@@ -281,17 +342,17 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
             <div className="flex items-center justify-between p-4 bg-secondary-container/40 border border-secondary/20 rounded-xl">
               <div>
                 <span className="font-label-sm text-label-sm text-secondary uppercase tracking-widest block">
-                  Invitation Verified
+                  Invite code valid
                 </span>
                 <span className="font-body-md text-body-md text-primary font-medium">
-                  Referred by: {referralInfo.owner_handle}
+                  Invite shared by: {referralInfo.owner_handle}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => {
                   setReferralInfo(null);
-                  setCode('');
+                  setCode("");
                 }}
                 className="text-xs text-on-surface-variant hover:text-primary underline"
               >
@@ -301,7 +362,10 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="instagramHandle" className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
+                <label
+                  htmlFor="instagramHandle"
+                  className="font-label-sm text-label-sm text-on-surface-variant block mb-1"
+                >
                   Instagram Handle *
                 </label>
                 <div className="relative">
@@ -310,18 +374,26 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
                     type="text"
                     required
                     value={formData.instagramHandle}
-                    onChange={(e) => setFormData({ ...formData, instagramHandle: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        instagramHandle: e.target.value,
+                      })
+                    }
                     className="w-full p-3.5 bg-surface border border-outline rounded-lg text-primary font-body-lg font-mono placeholder:text-on-surface-variant/40"
                     placeholder="@your_instagram"
                   />
                 </div>
                 <span className="text-xs text-on-surface-variant mt-1 block">
-                  Used to verify your identity and send your member updates.
+                  Botanica uses this handle to review your request.
                 </span>
               </div>
 
               <div>
-                <label htmlFor="phone" className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
+                <label
+                  htmlFor="phone"
+                  className="font-label-sm text-label-sm text-on-surface-variant block mb-1"
+                >
                   Phone Number *
                 </label>
                 <input
@@ -329,15 +401,22 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
                   type="tel"
                   required
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   className="w-full p-3.5 bg-surface border border-outline rounded-lg text-primary font-body-lg font-mono placeholder:text-on-surface-variant/40"
                   placeholder="+234 800 000 0000"
                 />
                 <span className="text-xs text-on-surface-variant mt-1 block">
-                  Used for order delivery verification and member support.
+                  Botanica uses this number for delivery and member support.
                 </span>
               </div>
             </div>
+
+            <p className="font-body-sm text-body-sm text-on-surface-variant">
+              Botanica reviews your request before private store access is
+              approved.
+            </p>
 
             {error && (
               <p className="font-body-sm text-body-sm text-error bg-error/10 p-3 rounded-lg">
@@ -350,7 +429,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
               disabled={submitting}
               className="w-full py-4 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 transition-colors disabled:opacity-50 shadow-md"
             >
-              {submitting ? 'Submitting Application...' : 'Request Membership Access'}
+              {submitting ? "Sending request..." : "Send access request"}
             </button>
           </form>
         )}
@@ -359,7 +438,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
       {/* Status Check via Instagram handle or phone */}
       <div className="bg-surface rounded-xl p-6 border border-outline-variant/40 space-y-4">
         <h3 className="font-headline-sm text-headline-sm text-primary">
-          Already applied? Check status
+          Already sent a request? Check status
         </h3>
         <form onSubmit={handleCheckStatus} className="space-y-3">
           <input
@@ -369,7 +448,7 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
             required
             value={statusQuery}
             onChange={(e) => setStatusQuery(e.target.value)}
-            placeholder="Enter your Instagram handle"
+            placeholder="Instagram handle used in your request"
             aria-label="Instagram handle to check status"
             className="flex-1 p-3 bg-surface-container-low border border-outline rounded-lg font-body-md text-primary font-mono placeholder:font-sans placeholder:text-on-surface-variant/50"
           />
@@ -380,18 +459,18 @@ export default function InviteRegistration({ initialCode = '' }: { initialCode?:
             required
             value={statusPhone}
             onChange={(e) => setStatusPhone(e.target.value)}
-            placeholder="Enter your phone number"
+            placeholder="Phone number used in your request"
             aria-label="Phone number to check status"
             className="w-full p-3 bg-surface-container-low border border-outline rounded-lg font-body-md text-primary font-mono placeholder:font-sans placeholder:text-on-surface-variant/50"
           />
           <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={checkingStatus}
-            className="px-5 py-3 border border-outline text-primary rounded-lg font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors disabled:opacity-50"
-          >
-            {checkingStatus ? 'Checking...' : 'Check Status'}
-          </button>
+            <button
+              type="submit"
+              disabled={checkingStatus}
+              className="px-5 py-3 border border-outline text-primary rounded-lg font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors disabled:opacity-50"
+            >
+              {checkingStatus ? "Checking..." : "Check status"}
+            </button>
           </div>
         </form>
         {statusResult && (

@@ -5,7 +5,11 @@ import InviteRegistration from '@/components/storefront/InviteRegistration';
 export const prerender = true;
 ---
 
-<Layout pathname="/invite" title="Members & Invitations | Botanical Essence">
+<Layout
+  pathname="/invite"
+  title="Member Access | Botanica"
+  description="Botanica is invite-only. Enter a valid member invite to request access; approved members can enter the private store."
+>
   <main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-section-gap">
     <InviteRegistration client:load />
   </main>

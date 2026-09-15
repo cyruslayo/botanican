@@ -7,7 +7,11 @@ export const prerender = false;
 const { code } = Astro.params;
 ---
 
-<Layout pathname={`/invite/${code || ''}`} title={`Invitation: ${code} | Botanical Essence`}>
+<Layout
+  pathname={`/invite/${code || ''}`}
+  title="Member Invite | Botanica"
+  description="Botanica is invite-only. Enter a valid member invite to request access; approved members can enter the private store."
+>
   <main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-section-gap">
     <InviteRegistration initialCode={code} client:load />
   </main>
