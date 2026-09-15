@@ -1,36 +1,51 @@
 ---
 /**
- * Bottom CTA - the single conversion goal of the page (invite application).
+ * Homepage explanation of invite-only access.
  */
 ---
 
 <section id="invite" class="w-full bg-surface">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-10 pb-20 md:pb-28">
     <div class="relative w-full bg-primary text-on-primary rounded-3xl p-8 sm:p-12 md:p-16 overflow-hidden botanical-shadow">
-      <div class="relative z-10 max-w-2xl mx-auto text-center space-y-6">
+      <div class="relative z-10 max-w-3xl mx-auto space-y-8">
         <div class="inline-flex items-center gap-2 px-4 py-1 bg-secondary/20 rounded-full border border-secondary/40">
           <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
           <span class="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold">
-            Members Only · Small-Batch Craft
+            Invite-only access
           </span>
         </div>
 
-        <h2 class="font-display-md text-display-md text-on-primary">
-          You have read the method. Decide if it fits.
-        </h2>
-
-        <p class="font-body-lg text-body-lg text-on-primary/80 leading-relaxed">
-          Botanica is invite-only. You need a valid invite from an existing member to apply.
-        </p>
-
-        <div class="pt-2">
-          <a
-            href="/invite"
-            class="inline-block px-8 py-3.5 border border-white/30 text-on-primary font-label-sm text-label-sm uppercase tracking-widest rounded-full hover:bg-white/10 transition-colors"
-          >
-            Enter Invite Code
-          </a>
+        <div class="max-w-2xl space-y-4">
+          <h2 class="font-display-md text-display-md text-on-primary">How invite access works</h2>
+          <p class="font-body-lg text-body-lg text-on-primary/80 leading-relaxed">
+            Botanica is a private store. A valid member invite starts a short access review.
+          </p>
         </div>
+
+        <ol class="grid grid-cols-1 md:grid-cols-3 gap-6 border-y border-white/20 py-6">
+          <li class="space-y-2">
+            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">01</span>
+            <h3 class="font-headline-sm text-on-primary">Receive a member invite</h3>
+            <p class="font-body-sm text-on-primary/70">A current member shares an invite with you.</p>
+          </li>
+          <li class="space-y-2">
+            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">02</span>
+            <h3 class="font-headline-sm text-on-primary">Apply with the valid code</h3>
+            <p class="font-body-sm text-on-primary/70">Enter the code you received at the invite page.</p>
+          </li>
+          <li class="space-y-2">
+            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">03</span>
+            <h3 class="font-headline-sm text-on-primary">Enter after approval</h3>
+            <p class="font-body-sm text-on-primary/70">Approved members can enter the private store.</p>
+          </li>
+        </ol>
+
+        <a
+          href="/invite"
+          class="inline-block px-8 py-3.5 border border-white/30 text-on-primary font-label-sm text-label-sm uppercase tracking-widest rounded-full hover:bg-white/10 transition-colors"
+        >
+          Use an invite code
+        </a>
       </div>
     </div>
   </div>

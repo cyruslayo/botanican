@@ -1,53 +1,32 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import MemberWelcome from '@/components/landing/MemberWelcome';
 import Hero from '@/components/landing/Hero.astro';
-import OnsetTimeline from '@/components/landing/OnsetTimeline.astro';
-import Mechanism from '@/components/landing/Mechanism.astro';
+import ProductOverview from '@/components/landing/ProductOverview.astro';
 import DropperMath from '@/components/landing/DropperMath.astro';
-import GoldenHour from '@/components/landing/GoldenHour.astro';
-import WhyItVaries from '@/components/landing/WhyItVaries.astro';
-import EveningRitual from '@/components/landing/EveningRitual.astro';
-import Identity from '@/components/landing/Identity.astro';
-import Faq from '@/components/landing/Faq.astro';
 import ClosingInvite from '@/components/landing/ClosingInvite.astro';
+import InstagramHandoff from '@/components/landing/InstagramHandoff.astro';
+import Faq from '@/components/landing/Faq.astro';
 import LandingFooter from '@/components/landing/LandingFooter.astro';
 import { buildFaqJsonLd } from '@/data/landing';
 
-import Masthead from '@/components/journal/Masthead.astro';
-import LeadStory from '@/components/journal/LeadStory.astro';
-import JournalGrid from '@/components/journal/JournalGrid.astro';
-import { getAllArticles, getFeaturedArticle } from '@/data/journal';
+export const prerender = true;
 
-export const prerender = false;
-
-const articles = await getAllArticles();
-const featuredArticle = getFeaturedArticle(articles);
 const faqJsonLd = buildFaqJsonLd();
 ---
 
 <Layout
   pathname="/"
-  title="Botanica | Cannabis Tinctures & Journal"
-  description="A content-first guide to cannabis tinctures, deliberate use, visual draw methods, strain education, and private member access."
+  title="Botanica | Invite-Only Cannabis Tincture"
+  description="Botanica is an invite-only brand for small-batch cannabis tinctures, visual dropper references, and private member access."
 >
-  <MemberWelcome client:load />
-  <Masthead />
-
   <div id="public-landing">
     <main class="w-full">
       <Hero />
-      <LeadStory article={featuredArticle} />
-      <Mechanism />
-      <OnsetTimeline />
+      <ProductOverview />
       <DropperMath />
-      <GoldenHour />
-      <WhyItVaries />
-      <EveningRitual />
-      <Identity />
-      <JournalGrid articles={articles} />
-      <Faq />
       <ClosingInvite />
+      <InstagramHandoff />
+      <Faq />
       <LandingFooter />
     </main>
   </div>

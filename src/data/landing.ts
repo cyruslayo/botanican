@@ -47,47 +47,27 @@ export interface FaqItem {
   answer: string;
 }
 
-/** Landing FAQ: 8 core questions covering tincture format, routines, and deliberate use. */
+/** Landing FAQ: four simple questions about the product and private access. */
 export const FAQ_ITEMS: FaqItem[] = [
   {
-    question: 'What is a cannabis tincture?',
+    question: 'What is Botanica?',
     answer:
-      'A cannabis tincture is a liquid cannabis extract carried in coconut MCT oil and dispensed with a dropper. It can be held under the tongue or swallowed.',
+      'Botanica is an invite-only brand offering small-batch cannabis tinctures in a dropper format. The public site explains the format; approved members enter the private store.',
   },
   {
-    question: 'How is this different from a gummy?',
+    question: 'How do invites work?',
     answer:
-      'A gummy comes as a fixed confectionery piece that is chewed and swallowed through digestion. A tincture is a liquid format that can be taken under the tongue or swallowed, and can be adjusted visually using the dropper.',
+      'A current member shares an invite. You apply with the valid code, and the Botanica team reviews your request before private store access is approved.',
   },
   {
-    question: 'What does a quarter or half draw mean?',
+    question: 'What do I do with my invite code?',
     answer:
-      'Because the current dropper is unmarked, a quarter or half draw refers to the visible fill height of liquid in the glass chamber relative to a full squeeze.',
+      'Go to the invite page, enter the valid code you received, and complete the short application. Do not share your code publicly.',
   },
   {
-    question: 'Why is the current dropper unmarked?',
+    question: 'Where can I learn how to use the dropper?',
     answer:
-      'Botanica currently uses clean, unmarked apothecary glass droppers. Visual reference levels offer a practical way to recognize a similar fill level without relying on printed measurement lines.',
-  },
-  {
-    question: 'Does holding it under the tongue change anything?',
-    answer:
-      'Yes. Holding the liquid against tissue beneath the tongue allows it to absorb through local oral tissue before swallowing, which can feel sooner than swallowing directly through digestion.',
-  },
-  {
-    question: 'Why can the same draw feel different on another day?',
-    answer:
-      'Differences in your administration route, recent meals, personal physiology, and frequency of use all influence how an experience develops from one day to the next.',
-  },
-  {
-    question: 'Can I use Botanica during work?',
-    answer:
-      'Botanica is not marketed for workplace performance. THC can impair attention and judgment. Follow workplace rules and local law.',
-  },
-  {
-    question: 'How should I compare one experience with another?',
-    answer:
-      'Keep the conditions steady. Use the same visual reference draw, the same administration route, and a similar evening setting so you have a consistent baseline for comparison.',
+      'The visual dropper guide on this homepage shows approximate reference levels. It is a visual aid, not a calibrated measurement or medical instruction.',
   },
 ];
 
