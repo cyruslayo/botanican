@@ -1,31 +1,25 @@
 'use client';
 import { useState } from 'react';
-import { useStore } from '@nanostores/react';
 import { addItem } from '@/store/cart';
-import { isApproved, isPending } from '@/store/access';
 import { formatNaira } from '@/lib/utils';
 import type { Product } from '@/lib/types';
 import ProductDescription from '@/components/storefront/ProductDescription';
 
 export default function ProductDetailIsland({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
-  const [openSection, setOpenSection] = useState<string | null>(null);
   const [addedNotice, setAddedNotice] = useState(false);
-  const approved = useStore(isApproved);
-  const pending = useStore(isPending);
-  const bottleStrength = product.strength_mg != null ? `${product.strength_mg} mg` : null;
-  const bottleSize = product.bottle_size_ml != null ? `${product.bottle_size_ml} ml` : null;
+  const bottleStrength = product.strength_mg == null ? null : `${product.strength_mg} mg`;
+  const bottleSize = product.bottle_size_ml == null ? null : `${product.bottle_size_ml} ml`;
   const variantParts = [
     bottleStrength && bottleSize ? `${bottleStrength} / ${bottleSize}` : null,
     product.strain_name || null,
     product.batch_code ? `Batch ${product.batch_code}` : null,
   ].filter(Boolean);
-
-  const toggleSection = (section: string) => {
-    setOpenSection(openSection === section ? null : section);
-  };
+  const isAvailable = product.inventory > 0;
 
   const handleAddToCart = () => {
+    if (!isAvailable) return;
+
     const success = addItem({
       id: product.id,
       name: product.name,
@@ -66,28 +60,33 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
         <div className="md:col-span-5 flex flex-col">
           <div className="mb-stack-lg">
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">{product.category}</span>
-              <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-              <span className="font-label-sm text-label-sm text-secondary font-medium">Invite-Only Access</span>
+              <span className="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">Tinctures</span>
             </div>
             <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-stack-sm">{product.name}</h1>
             <p className="font-body-lg text-body-lg text-secondary mb-stack-md">{formatNaira(product.price)}</p>
             {(bottleStrength || bottleSize || product.strain_name || product.batch_code) && (
               <div className="mb-stack-md space-y-1.5 font-label-sm text-label-sm text-on-surface-variant">
-                {bottleStrength && <p>Calculated bottle strength: {bottleStrength}</p>}
+                {bottleStrength && <p>Strength: {bottleStrength}</p>}
                 {bottleSize && <p>Bottle size: {bottleSize}</p>}
-                {product.strain_name && <p>Current strain: {product.strain_name}</p>}
-                {product.batch_code && <p>Current batch: {product.batch_code}</p>}
+                {product.strain_name && <p>Strain: {product.strain_name}</p>}
+                {product.batch_code && <p>Batch: {product.batch_code}</p>}
               </div>
             )}
-            <ProductDescription description={product.description || 'Product details are managed by the Botanica apothecary.'} />
+            <ProductDescription description={product.description} />
+            <p className="font-label-sm text-label-sm text-on-surface-variant mt-stack-md">{isAvailable ? 'Available' : 'Currently unavailable'}</p>
+            <a href="/how-to-use" className="inline-flex mt-stack-md font-label-sm text-label-sm text-primary underline underline-offset-4 hover:opacity-80 transition-opacity">
+              Read the visual dropper guide
+            </a>
+            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mt-stack-md">THC can impair judgment and coordination. Do not drive while impaired.</p>
           </div>
 
-          {approved ? (
-            <div className="space-y-3 mb-stack-lg">
+          <div className="space-y-3 mb-stack-lg">
+            {isAvailable ? (
               <div className="flex gap-stack-sm">
-                <div className="flex items-center border border-outline-variant rounded-full p-1 bg-surface">
+                <fieldset className="flex items-center border border-outline-variant rounded-full p-1 bg-surface">
+                  <legend className="visually-hidden">Quantity</legend>
                   <button
+                    type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     aria-label="Decrease quantity"
                     className="touch-target w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container"
@@ -96,84 +95,41 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
                   </button>
                   <span className="w-12 text-center font-label-lg text-label-lg text-on-surface" aria-live="polite">{quantity}</span>
                   <button
+                    type="button"
                     onClick={() => setQuantity(quantity + 1)}
                     aria-label="Increase quantity"
                     className="touch-target w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container"
                   >
                     <PlusIcon />
                   </button>
-                </div>
+                </fieldset>
                 <button
+                  type="button"
                   onClick={handleAddToCart}
                   className="flex-1 bg-primary text-on-primary rounded-full font-label-lg text-label-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/10 hover:shadow-xl hover:-translate-y-1 duration-300"
                 >
-                  <BagIcon /> Add to Cart
+                  <BagIcon /> Add to Bag
                 </button>
               </div>
-              {addedNotice && (
-                <p className="font-body-sm text-body-sm text-secondary flex items-center gap-1.5 animate-in fade-in">
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="w-full bg-surface-container-highest text-on-surface-variant rounded-full font-label-lg text-label-lg flex items-center justify-center gap-2 py-3.5 cursor-not-allowed"
+              >
+                <BagIcon /> Currently unavailable
+              </button>
+            )}
+            {addedNotice && (
+              <div role="status" aria-live="polite" aria-atomic="true" className="font-body-sm text-body-sm text-secondary flex flex-wrap items-center gap-1.5 animate-in fade-in">
+                <span className="flex items-center gap-1.5">
                   <CheckIcon /> Added to your bag.
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="bg-surface-container-low border border-secondary/20 rounded-xl p-5 mb-stack-lg botanical-shadow">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <LockIcon />
-                </div>
-                <div className="space-y-2 flex-1">
-                  <h4 className="font-label-md text-label-md text-primary font-bold">
-                    {pending ? 'Membership Under Review' : 'Members-Only Store'}
-                  </h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                    {pending
-                      ? 'Your access request is currently under review by our team. You will be able to purchase once verified.'
-                      : 'Botanica is an invite-only store. You need an approved referral invitation from an existing member to purchase.'}
-                  </p>
-                  {!pending && (
-                    <a
-                      href="/invite"
-                      className="inline-flex items-center gap-2 mt-1 font-label-sm text-label-sm text-primary uppercase tracking-widest font-bold underline underline-offset-4 hover:opacity-80 transition-opacity"
-                    >
-                      Redeem Referral Code / Request Access &rarr;
-                    </a>
-                  )}
-                </div>
+                </span>
+                <a href="/cart" className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity">
+                  View Bag
+                </a>
               </div>
-            </div>
-          )}
-
-          <div className="border-t border-outline-variant/50 pt-stack-md mt-auto">
-            <div className="border-b border-outline-variant/30">
-              <button
-                onClick={() => toggleSection('details')}
-                className="w-full py-4 flex justify-between items-center font-label-md text-label-md text-on-surface hover:text-primary transition-colors uppercase tracking-wider"
-              >
-                Product Details
-                <PlusIcon className={`w-4 h-4 transition-transform duration-300 ${openSection === 'details' ? 'rotate-45' : ''}`} />
-              </button>
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openSection === 'details' ? 'max-h-[500px] pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  Product information is managed by the Botanica apothecary.
-                </p>
-              </div>
-            </div>
-
-            <div className="border-b border-outline-variant/30">
-              <button
-                onClick={() => toggleSection('usage')}
-                className="w-full py-4 flex justify-between items-center font-label-md text-label-md text-on-surface hover:text-primary transition-colors uppercase tracking-wider"
-              >
-                Suggested Use
-                <PlusIcon className={`w-4 h-4 transition-transform duration-300 ${openSection === 'usage' ? 'rotate-45' : ''}`} />
-              </button>
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openSection === 'usage' ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  Use deliberately and allow adequate time before changing another variable. Do not drive or operate machinery after THC use.
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -183,7 +139,7 @@ export default function ProductDetailIsland({ product }: { product: Product }) {
 
 function PlusIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M5 12h14" />
       <path d="M12 5v14" />
     </svg>
@@ -192,7 +148,7 @@ function PlusIcon({ className = 'w-4 h-4' }: { className?: string }) {
 
 function MinusIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12h14" />
     </svg>
   );
@@ -200,7 +156,7 @@ function MinusIcon() {
 
 function BagIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
       <path d="M3 6h18" />
       <path d="M16 10a4 4 0 0 1-8 0" />
@@ -208,18 +164,9 @@ function BagIcon() {
   );
 }
 
-function LockIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  );
-}
-
 function CheckIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
   );
