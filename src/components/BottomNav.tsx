@@ -1,16 +1,22 @@
 'use client';
 import { useStore } from '@nanostores/react';
 import { cartCount } from '@/store/cart';
-import { isApproved } from '@/store/access';
+import { accessState } from '@/store/access';
 import { useHydrated } from '@/lib/useHydrated';
 
 export default function BottomNav({ pathname }: { pathname: string }) {
   const isHydrated = useHydrated();
   const rawCount = useStore(cartCount);
-  const rawApproved = useStore(isApproved);
+  const access = useStore(accessState);
 
-  const approved = isHydrated && rawApproved;
+  const status = isHydrated ? access.status : 'guest';
+  const approved = status === 'approved';
   const count = isHydrated ? rawCount : 0;
+  const homeActive = pathname === '/';
+  const guideActive = pathname === '/how-to-use';
+  const storeActive = pathname === '/oils' || pathname.startsWith('/product/');
+  const accessActive = pathname === '/invite' || pathname.startsWith('/invite/');
+  const accessLabel = status === 'pending' ? 'Status' : 'Access';
 
   if (pathname.startsWith('/checkout')) return null;
 
@@ -18,23 +24,23 @@ export default function BottomNav({ pathname }: { pathname: string }) {
   const inactive = 'text-on-surface-variant hover:bg-surface-container-high';
 
   return (
-    <nav className="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-low shadow-[0_-4px_30px_rgba(24,35,26,0.05)] border-t border-outline-variant/10 pb-safe">
+    <nav aria-label="Mobile navigation" className="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-low shadow-[0_-4px_30px_rgba(24,35,26,0.05)] border-t border-outline-variant/10 pb-safe">
       <div className="flex justify-around items-center px-4 py-3">
-        <a href="/" aria-current={pathname === '/' ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname === '/' ? active : inactive}`}>
+        <a href="/" aria-current={homeActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${homeActive ? active : inactive}`}>
           <HomeIcon />
           <span className="font-label-sm text-label-sm">Home</span>
         </a>
 
-        <a href="/journal" aria-current={pathname.startsWith('/journal') ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname.startsWith('/journal') ? active : inactive}`}>
+        <a href="/how-to-use" aria-current={guideActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${guideActive ? active : inactive}`}>
           <BookOpenIcon />
-          <span className="font-label-sm text-label-sm">Gazette</span>
+          <span className="font-label-sm text-label-sm">Guide</span>
         </a>
 
-        {approved && (
+        {approved ? (
           <>
-            <a href="/oils" aria-current={pathname === '/oils' ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname === '/oils' ? active : inactive}`}>
+            <a href="/oils" aria-current={storeActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${storeActive ? active : inactive}`}>
               <StoreIcon />
-              <span className="font-label-sm text-label-sm">Shop</span>
+              <span className="font-label-sm text-label-sm">Store</span>
             </a>
             <a href="/cart" aria-current={pathname === '/cart' ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname === '/cart' ? active : inactive}`}>
               <div className="relative">
@@ -48,12 +54,12 @@ export default function BottomNav({ pathname }: { pathname: string }) {
               <span className="font-label-sm text-label-sm">Bag</span>
             </a>
           </>
+        ) : (
+          <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${accessActive ? active : inactive}`}>
+            <UserIcon />
+            <span className="font-label-sm text-label-sm">{accessLabel}</span>
+          </a>
         )}
-
-        <a href="/invite" aria-current={pathname.startsWith('/invite') ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname.startsWith('/invite') ? active : inactive}`}>
-          <UserIcon />
-          <span className="font-label-sm text-label-sm">{approved ? 'My Code' : 'Invite'}</span>
-        </a>
       </div>
     </nav>
   );

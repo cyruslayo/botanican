@@ -1,21 +1,27 @@
 'use client';
 import { useStore } from '@nanostores/react';
 import { cartCount } from '@/store/cart';
-import { isApproved } from '@/store/access';
+import { accessState } from '@/store/access';
 import AccessStatusBanner from '@/components/storefront/AccessStatusBanner';
 import { useHydrated } from '@/lib/useHydrated';
 
 export default function Header({ pathname }: { pathname: string }) {
   const isHydrated = useHydrated();
   const rawCount = useStore(cartCount);
-  const rawApproved = useStore(isApproved);
+  const access = useStore(accessState);
 
-  const approved = isHydrated && rawApproved;
+  const status = isHydrated ? access.status : 'guest';
+  const approved = status === 'approved';
   const count = isHydrated ? rawCount : 0;
 
   const isCheckout = pathname.startsWith('/checkout');
   const isProduct = pathname.startsWith('/product');
   const isCart = pathname.startsWith('/cart');
+  const homeActive = pathname === '/';
+  const guideActive = pathname === '/how-to-use';
+  const storeActive = pathname === '/oils' || pathname.startsWith('/product/');
+  const accessActive = pathname === '/invite' || pathname.startsWith('/invite/');
+  const accessLabel = status === 'pending' ? 'Access Status' : 'Member Access';
 
   const showBackButton = isCheckout || isCart || isProduct;
 
@@ -43,7 +49,7 @@ export default function Header({ pathname }: { pathname: string }) {
         {isCheckout ? (
           <div className="w-11 md:w-8"></div>
         ) : approved ? (
-          <a href="/cart" aria-label={`Cart, ${count} items`} className="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:scale-105 transition-transform duration-300 active:opacity-80 transition-opacity relative">
+          <a href="/cart" aria-current={pathname === '/cart' ? 'page' : undefined} aria-label={`Cart, ${count} items`} className="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:scale-105 transition-transform duration-300 active:opacity-80 transition-opacity relative">
             <BagIcon />
             {count > 0 && (
               <span className="absolute top-2 right-2 bg-secondary text-on-secondary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
@@ -57,23 +63,22 @@ export default function Header({ pathname }: { pathname: string }) {
       </div>
 
       {!isCheckout && !isCart && !isProduct && (
-        <nav className="hidden md:flex justify-center gap-8 py-4 border-t border-outline-variant/20">
-          <a href="/" className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${pathname === '/' ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+        <nav aria-label="Primary navigation" className="hidden md:flex justify-center gap-8 py-4 border-t border-outline-variant/20">
+          <a href="/" aria-current={homeActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${homeActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
             Home
           </a>
-          {approved && (
-            <>
-              <a href="/oils" className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${pathname === '/oils' ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
-                Oils
-              </a>
-              <a href="/edibles" className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${pathname === '/edibles' ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
-                Edibles
-              </a>
-            </>
-          )}
-          <a href="/invite" className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${pathname.startsWith('/invite') ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
-            {approved ? 'My Referral' : 'Member Access'}
+          <a href="/how-to-use" aria-current={guideActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${guideActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+            Guide
           </a>
+          {approved ? (
+            <a href="/oils" aria-current={storeActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${storeActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+              Store
+            </a>
+          ) : (
+            <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${accessActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+              {accessLabel}
+            </a>
+          )}
         </nav>
       )}
     </header>
