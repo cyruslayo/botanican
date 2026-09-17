@@ -32,12 +32,12 @@ export default function ArticleCalloutBox({
         ? {
             enabled: true,
             type: "product",
-            badge: "Featured Botanical Formulation",
-            title: fallbackProductName || "Botanica Tincture",
+            badge: "Featured tincture",
+            title: fallbackProductName || "Botanica tincture",
             description:
-              "A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.",
+              "A Botanica tincture featured alongside this Journal entry.",
             productSlug: fallbackProductSlug,
-            ctaText: "View Apothecary Batch",
+            ctaText: "View product",
             ctaUrl: `/product/${fallbackProductSlug}`,
           }
         : null;
@@ -141,7 +141,7 @@ export default function ArticleCalloutBox({
     );
   }
 
-  // 3. PRODUCT / APOTHECARY STORE REFERENCE
+  // 3. PRODUCT STORE REFERENCE
   const displayTitle = activeCallout.title;
   const productUrl =
     activeCallout.ctaUrl || (targetSlug ? `/product/${targetSlug}` : "/oils");
@@ -159,7 +159,7 @@ export default function ArticleCalloutBox({
         <div className="space-y-1 text-left flex-1">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] uppercase tracking-widest text-secondary font-bold">
-              {activeCallout.badge || "Mentioned Apothecary Formulation"}
+              {activeCallout.badge || "Mentioned tincture"}
             </span>
           </div>
           <h4 className="font-headline-sm text-headline-sm text-primary">
@@ -167,7 +167,7 @@ export default function ArticleCalloutBox({
           </h4>
           <p className="font-body-sm text-xs text-on-surface-variant max-w-lg leading-relaxed">
             {activeCallout.description ||
-              "A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry."}
+              "A Botanica tincture featured alongside this Journal entry."}
           </p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function ArticleCalloutBox({
         href={productUrl}
         className="px-6 py-3 bg-primary text-on-primary font-label-sm text-xs uppercase tracking-widest font-bold rounded-full hover:opacity-90 active:scale-[0.98] transition-all whitespace-nowrap shrink-0 w-full sm:w-auto text-center flex items-center justify-center gap-2"
       >
-        <span>{activeCallout.ctaText || "View Apothecary Batch"}</span>
+        <span>{activeCallout.ctaText || "View product"}</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </a>
     </div>

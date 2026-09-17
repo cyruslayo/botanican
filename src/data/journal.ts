@@ -1,11 +1,12 @@
-import type { Article, ArticleCallout } from '@/lib/types';
+import type { Article, ArticleCallout } from "@/lib/types";
 export type { Article, ArticleCallout };
 
 export const ARTICLES: Article[] = [
   {
     slug: "what-is-a-cannabis-tincture",
     title: "What Is a Cannabis Tincture?",
-    subtitle: "An Introduction to the Liquid Format, the Dropper, and the Role of the Carrier Oil",
+    subtitle:
+      "An Introduction to the Liquid Format, the Dropper, and the Role of the Carrier Oil",
     category: "Format & Method",
     volume: "Vol. I",
     issue: "Issue 01",
@@ -16,9 +17,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: true,
-    excerpt: "Liquid cannabis dispensed with a dropper offers an adaptable alternative to solid formats. Botanica tinctures use coconut MCT oil as the carrier. Here is how the preparation is structured and how it is used.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
-    thesis: "A cannabis tincture is a liquid format dispensed with a dropper, providing an adaptable alternative to solid preparations through approximate visual reference.",
+    excerpt:
+      "Liquid cannabis dispensed with a dropper offers an adaptable alternative to solid formats. Botanica tinctures use coconut MCT oil as the carrier. Here is how the preparation is structured and how it is used.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
+    thesis:
+      "A cannabis tincture is a liquid format dispensed with a dropper, providing an adaptable alternative to solid preparations through approximate visual reference.",
     content: [
       "A cannabis tincture, within the Botanica collection, is a liquid preparation dispensed in small amounts using a dropper. While cannabis exists in several different forms, the liquid tincture provides an understated alternative to solid preparations. Instead of portioning a solid item, you work with a dark glass bottle fitted with a dropper assembly containing a liquid extract.",
       "Botanica tinctures use coconut MCT oil as the carrier. Disclosing the carrier plainly allows anyone using the bottle to understand the primary liquid medium: cannabis extract carried in coconut MCT oil. The oil serves as the liquid base that allows the extract to be drawn into and dispensed from the dropper.",
@@ -31,12 +35,13 @@ export const ARTICLES: Article[] = [
       "Botanica tinctures use coconut MCT oil as the carrier.",
       "The current Botanica dropper is unmarked and can be used as an approximate visual reference.",
       "Drops can be held under the tongue or swallowed directly.",
-    ]
+    ],
   },
   {
     slug: "from-edibles-to-drops",
     title: "From Edibles to Drops: What Actually Changes?",
-    subtitle: "Comparing Familiar Fixed Portions With the Flexibility of a Liquid Visual Draw",
+    subtitle:
+      "Comparing Familiar Fixed Portions With the Flexibility of a Liquid Visual Draw",
     category: "Format & Method",
     volume: "Vol. I",
     issue: "Issue 02",
@@ -47,9 +52,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Solid edibles provide a familiar fixed portion. Tinctures offer a different kind of control based on visible liquid volume. Understanding these format characteristics helps you choose what fits your routine.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
-    thesis: "Moving from a solid edible to a liquid tincture introduces a different kind of control from a familiar fixed edible portion, without either format being inherently superior.",
+    excerpt:
+      "Solid edibles provide a familiar fixed portion. Tinctures offer a different kind of control based on visible liquid volume. Understanding these format characteristics helps you choose what fits your routine.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
+    thesis:
+      "Moving from a solid edible to a liquid tincture introduces a different kind of control from a familiar fixed edible portion, without either format being inherently superior.",
     content: [
       "For many people, the first introduction to non-inhaled cannabis comes through solid edibles. Edibles are solid cannabis formats that often take the form of gummies, baked goods, or other confections. These preparations are familiar because they arrive as pre-divided units. You take a single piece or divide one in half, consume it like ordinary food, and proceed with your evening. The solid format provides a sense of certainty because each piece represents a pre-formed unit.",
       "Transitioning to a liquid tincture introduces a different kind of control from a familiar fixed edible portion. Instead of choosing between a whole piece or dividing a confection into irregular pieces, a tincture allows you to gauge liquid height directly in a glass tube. While a pre-formed edible is set in its manufactured shape, a liquid can be raised or lowered to approximate visual benchmarks -- a quarter, a half, or a full draw -- giving you room to make visual adjustments without physically cutting a piece of food.",
@@ -62,7 +70,7 @@ export const ARTICLES: Article[] = [
       "Tinctures offer a different kind of control from a familiar fixed edible portion via visible liquid volume.",
       "Liquid drops can be held under the tongue or swallowed directly.",
       "Neither format is universally superior; each serves distinct lifestyle preferences.",
-    ]
+    ],
   },
   {
     slug: "understanding-the-visual-draw",
@@ -78,9 +86,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "The current Botanica dropper is unmarked. By using quarter, half, three-quarter, and full fill heights as approximate visual references, you can establish a consistent baseline.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
-    thesis: "The current Botanica dropper is unmarked, meaning consistent personal routines rely on approximate visual references rather than calibrated lines.",
+    excerpt:
+      "The current Botanica dropper is unmarked. By using quarter, half, three-quarter, and full fill heights as approximate visual references, you can establish a consistent baseline.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
+    thesis:
+      "The current Botanica dropper is unmarked, meaning consistent personal routines rely on approximate visual references rather than calibrated lines.",
     content: [
       "When opening a bottle of Botanica tincture, one of the first physical details you notice is the pipette itself. The current Botanica dropper is unmarked. There are no printed graduation lines, no milliliter numbers etched into the glass, and no markings to indicate a measured stopping point. Because of this, using the dropper requires learning how to gauge liquid height by sight.",
       "Visual levels are approximate. They are not calibrated volume markings. Attempting to treat an unmarked apothecary pipette as an analytical measuring tool is not practical, because liquid drawn into a handheld glass tube can fluctuate from one draw to the next. What is useful for a personal routine is establishing a recognizable, similar visual reference that you can observe and repeat.",
@@ -93,12 +104,13 @@ export const ARTICLES: Article[] = [
       "Visual levels are approximate. They are not calibrated volume markings.",
       "Quarter, half, three-quarter, and full fill heights serve as approximate visual references.",
       "Consistency comes from returning to a similar visual reference over time.",
-    ]
+    ],
   },
   {
     slug: "25mg-vs-50mg-what-bottle-strength-means",
     title: "25 mg vs 50 mg: What Bottle Strength Means",
-    subtitle: "Translating Calculated Bottle Strength Into Approximate Draw References",
+    subtitle:
+      "Translating Calculated Bottle Strength Into Approximate Draw References",
     category: "Format & Method",
     volume: "Vol. I",
     issue: "Issue 04",
@@ -109,9 +121,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Bottle strength represents the calculated total content across a 10 ml volume. Understanding these numbers provides a calculated reference for approximate visual draws.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
-    thesis: "Stated bottle strength indicates calculated cannabinoid content across a 10 ml volume, providing an arithmetic reference rather than laboratory-verified dose measurements.",
+    excerpt:
+      "Bottle strength represents the calculated total content across a 10 ml volume. Understanding these numbers provides a calculated reference for approximate visual draws.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
+    thesis:
+      "Stated bottle strength indicates calculated cannabinoid content across a 10 ml volume, providing an arithmetic reference rather than laboratory-verified dose measurements.",
     content: [
       "When reading a tincture label, the prominent number displayed is the total milligram strength -- such as 25 mg or 50 mg. For someone new to liquid preparations, it is important to understand what this number represents. The stated strength does not describe what is contained in a single dropper draw. The Botanica calculation treats 25 mg or 50 mg as the calculated bottle-strength reference for the 10 ml bottle.",
       "Because the bottle contains 10 ml of liquid, understanding individual visual draws uses a simple arithmetic model. In this calculation model, a full visual draw of the dropper is used as an approximate 1 ml arithmetic reference. Dividing the total calculated reference of the bottle across ten theoretical 1 ml draws allows us to establish approximate calculated references for each fractional visual level.",
@@ -125,12 +140,13 @@ export const ARTICLES: Article[] = [
       "The arithmetic model uses a full visual draw as an approximate 1 ml reference.",
       "These values are calculated references, not laboratory-verified dose measurements.",
       "50 mg represents twice the calculated bottle-strength reference of 25 mg across the same 10 ml bottle size.",
-    ]
+    ],
   },
   {
     slug: "two-routes-different-timing",
     title: "Two Routes. Different Timing.",
-    subtitle: "The Qualitative Differences Between Holding Drops Under the Tongue and Swallowing",
+    subtitle:
+      "The Qualitative Differences Between Holding Drops Under the Tongue and Swallowing",
     category: "Format & Method",
     volume: "Vol. I",
     issue: "Issue 05",
@@ -141,9 +157,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Tinctures offer two primary routes: held under the tongue or swallowed directly. Each route unfolds with its own qualitative pace and timing.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
-    thesis: "Choosing between holding drops under the tongue and swallowing introduces natural, qualitative differences in experienced timing.",
+    excerpt:
+      "Tinctures offer two primary routes: held under the tongue or swallowed directly. Each route unfolds with its own qualitative pace and timing.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
+    thesis:
+      "Choosing between holding drops under the tongue and swallowing introduces natural, qualitative differences in experienced timing.",
     content: [
       "A distinct characteristic of liquid cannabis tinctures is that they offer more than one method of administration. When you dispense drops from the pipette, you have two primary routes available: you can hold the liquid under your tongue, or you can swallow it directly. While both methods utilize the same bottle of oil, they involve different administration routes and result in qualitative differences in timing.",
       "The first option is holding drops under the tongue before swallowing the remaining liquid. The area beneath the tongue allows the oil to rest in contact with oral tissue. Because of this contact, under-the-tongue use may feel noticeable sooner for some people. How quickly this occurs varies between individuals, but holding the drops generally represents a different experiential pace than swallowing them immediately.",
@@ -156,7 +175,7 @@ export const ARTICLES: Article[] = [
       "Under-the-tongue use may feel noticeable sooner for some people.",
       "Swallowed use passes through digestion and may take longer to feel.",
       "Timing varies naturally; neither route is universally preferred.",
-    ]
+    ],
   },
   {
     slug: "why-the-same-draw-can-feel-different",
@@ -172,9 +191,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "A similar visual draw does not guarantee an identical evening. Everyday context -- such as recent meals and personal familiarity -- influences how the experience develops.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
-    thesis: "Everyday personal factors -- such as recent food, route of use, and familiarity -- naturally influence how the experience develops from a similar visual draw.",
+    excerpt:
+      "A similar visual draw does not guarantee an identical evening. Everyday context -- such as recent meals and personal familiarity -- influences how the experience develops.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
+    thesis:
+      "Everyday personal factors -- such as recent food, route of use, and familiarity -- naturally influence how the experience develops from a similar visual draw.",
     content: [
       "A common occurrence when using a cannabis tincture is taking a similar visual draw from the same bottle on two separate occasions and finding that the experience feels different. On one occasion, a half draw may seem subtle and slow to develop. On another occasion, that same visual height might feel more pronounced. Several factors can contribute to a different experience.",
       "Everyday context shapes how an experience develops. Whether food was recent can be useful context when comparing experiences. Observing whether a meal was recent helps contextualize personal observations across different occasions.",
@@ -187,12 +209,13 @@ export const ARTICLES: Article[] = [
       "Whether food was recent can be useful context when comparing experiences.",
       "Differences in administration route influence experienced timing.",
       "A different experience does not, by itself, tell you which variable changed.",
-    ]
+    ],
   },
   {
     slug: "circadian-tincture-chronobiology",
     title: "Why Timing Matters More Than Chasing Strength",
-    subtitle: "Why Keeping Variables Stable Gives You a Clearer Basis for Comparison",
+    subtitle:
+      "Why Keeping Variables Stable Gives You a Clearer Basis for Comparison",
     category: "Culture & Routine",
     volume: "Vol. I",
     issue: "Issue 07",
@@ -203,9 +226,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "When an experience feels subtle, the instinct is often to seek a stronger bottle. Keeping the visual draw, route, and setting similar gives you a clearer basis for comparison.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
-    thesis: "Keeping the visual draw, route, and setting similar gives you a clearer basis for comparison than repeatedly increasing bottle strength.",
+    excerpt:
+      "When an experience feels subtle, the instinct is often to seek a stronger bottle. Keeping the visual draw, route, and setting similar gives you a clearer basis for comparison.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
+    thesis:
+      "Keeping the visual draw, route, and setting similar gives you a clearer basis for comparison than repeatedly increasing bottle strength.",
     content: [
       "When an initial experience with cannabis feels subtle, an immediate impulse is often to change bottle strength. In an environment where potency figures are prominently displayed, it is easy to assume that if an experience was understated, the answer must be to switch to a higher concentration. Yet changing strength repeatedly often makes comparison harder.",
       "A central principle of thoughtful observation is that keeping the visual draw, route, and setting similar gives you a clearer basis for comparison. When you alter the strength of your bottle or change the liquid volume from one session to the next, you introduce a new variable before you understand the previous one. This makes it difficult to determine whether an outcome was shaped by your evening context or by the shift in product strength.",
@@ -218,7 +244,7 @@ export const ARTICLES: Article[] = [
       "Keeping the visual draw, route, and setting similar gives you a clearer basis for comparison.",
       "A quieter setting makes comparison easier because fewer variables compete for attention.",
       "Adjust one personal variable at a time before deciding to change bottle strength.",
-    ]
+    ],
   },
   {
     slug: "give-it-time-why-patience-matters",
@@ -234,9 +260,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Adding more before you understand the first experience makes comparison harder. Giving the initial draw adequate time allows you to evaluate your baseline clearly.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
-    thesis: "Adding more before you understand the first experience makes comparison harder.",
+    excerpt:
+      "Adding more before you understand the first experience makes comparison harder. Giving the initial draw adequate time allows you to evaluate your baseline clearly.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
+    thesis:
+      "Adding more before you understand the first experience makes comparison harder.",
     content: [
       "Patience is an essential consideration when using liquid cannabis tinctures. Because tinctures develop gradually, there is often an interval after taking drops where very little seems to be happening. During this period, it is common to wonder whether the draw was sufficient and to consider taking an additional amount.",
       "Adding more before you understand the first experience makes comparison harder. When you take a visual draw and soon decide to take another, you combine two separate events. As the second draw begins to develop alongside the first, it becomes difficult to determine which draw produced the eventual feeling or how much liquid was responsible.",
@@ -249,7 +278,7 @@ export const ARTICLES: Article[] = [
       "Adding more before you understand the first experience makes comparison harder.",
       "Mid-session adjustments obscure which draw was responsible for the outcome.",
       "Give the experience adequate time before changing another variable in a later experience.",
-    ]
+    ],
   },
   {
     slug: "how-to-build-a-repeatable-cannabis-routine",
@@ -265,9 +294,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Establishing a repeatable routine is about creating a clearer basis for comparison. By keeping your visual draw, route, and setting familiar, you can better understand your preferences.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
-    thesis: "A repeatable routine is about keeping your chosen personal conditions consistent, creating a clearer basis for comparison without guaranteeing identical outcomes.",
+    excerpt:
+      "Establishing a repeatable routine is about creating a clearer basis for comparison. By keeping your visual draw, route, and setting familiar, you can better understand your preferences.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
+    thesis:
+      "A repeatable routine is about keeping your chosen personal conditions consistent, creating a clearer basis for comparison without guaranteeing identical outcomes.",
     content: [
       "Building a routine around cannabis is sometimes misunderstood as an attempt to guarantee identical outcomes every time. In practice, personal conditions and everyday contexts vary naturally. Establishing a repeatable routine is about repeatable conditions, not predictable effects. Keeping your personal habits consistent establishes a clearer comparison point over time.",
       "A foundational element of a consistent routine is your visual draw. Because the Botanica dropper is unmarked, consistency begins with selecting a chosen approximate visual reference and returning to that benchmark across sessions. Drawing liquid to a similar visual height in the glass tube provides a similar visual reference for comparison.",
@@ -280,12 +312,13 @@ export const ARTICLES: Article[] = [
       "Anchor your routine around a chosen approximate visual reference, route, and setting.",
       "Consistent conditions create a clearer comparison point across different sessions.",
       "Routines should remain flexible and supportive, without rigid rules or mandatory schedules.",
-    ]
+    ],
   },
   {
     slug: "how-to-compare-one-experience-with-another",
     title: "How to Compare One Experience With Another",
-    subtitle: "Simple Field Notes for Personal Reflection Without Clinical Scoring",
+    subtitle:
+      "Simple Field Notes for Personal Reflection Without Clinical Scoring",
     category: "Culture & Routine",
     volume: "Vol. I",
     issue: "Issue 10",
@@ -296,9 +329,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "You do not need clinical charts or complex scoring systems to evaluate your routine. A few brief notes on visual draw, route, and setting provide practical clarity.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
-    thesis: "Keeping brief, qualitative notes on visual draw, route, and setting helps you compare personal experiences without clinical scoring or dosage optimization.",
+    excerpt:
+      "You do not need clinical charts or complex scoring systems to evaluate your routine. A few brief notes on visual draw, route, and setting provide practical clarity.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
+    thesis:
+      "Keeping brief, qualitative notes on visual draw, route, and setting helps you compare personal experiences without clinical scoring or dosage optimization.",
     content: [
       "When exploring a tincture, keeping a brief personal record can provide helpful clarity. However, personal notes do not need to resemble clinical charts, complex symptom logs, or numerical rating systems. The purpose of field notes is simply to record qualitative observations that help you compare personal experiences over time.",
       "A practical field note can be recorded in a notebook in less than a minute. Rather than scoring sensations numerically or attempting to calculate physiological metrics, focus on five descriptive touchpoints:",
@@ -311,12 +347,13 @@ export const ARTICLES: Article[] = [
       "Record five basic touchpoints: visual draw, route, setting, recent food, and general impression.",
       "Avoid numerical ratings, scoring systems, or attempts to optimize a clinical dose.",
       "Qualitative notes help you identify personal preferences across different sessions.",
-    ]
+    ],
   },
   {
     slug: "cannabis-after-the-day-is-done",
     title: "Cannabis After the Day Is Done",
-    subtitle: "Establishing a Clear Cultural Boundary for Evening Personal Time",
+    subtitle:
+      "Establishing a Clear Cultural Boundary for Evening Personal Time",
     category: "Culture & Routine",
     volume: "Vol. I",
     issue: "Issue 11",
@@ -327,9 +364,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Botanica places cannabis after professional responsibilities and within private personal time. Setting this intentional boundary marks a clear transition into the evening.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
-    thesis: "Botanica places cannabis after professional responsibilities and within private personal time, establishing a deliberate boundary at the close of the day.",
+    excerpt:
+      "Botanica places cannabis after professional responsibilities and within private personal time. Setting this intentional boundary marks a clear transition into the evening.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBoSHUT8V8JvKKelG1Oc-mBK735DZvZGftkufgqbRYa9UpVmIu-DeKkjpp_B5C_VtWTTySsW3JxbPKsk0TR7l-kLLYVpOsUIsFkn-s317dsJ-j3zoqHsz3Imi0n_ArtGx_6T_J7bB6wKw-TqEAHtxnKbutmCXJHf02jvaRPX-CSlJkCW_c6plXN7OEj5zEOy7cuEXL8fUoElj-6UmS9sV762gaxVnq1Ar4RNov77DwrwD9XY-tqsj3-Yg",
+    thesis:
+      "Botanica places cannabis after professional responsibilities and within private personal time, establishing a deliberate boundary at the close of the day.",
     content: [
       "Discussions around cannabis often describe it as an accompaniment for daily activities and professional tasks. Botanica takes a distinct view. Botanica chooses to place cannabis after professional responsibilities and within private personal time. We consider cannabis most appropriate not as a tool for workplace performance, but as an intentional boundary marking the conclusion of the working day.",
       "Modern working life frequently blurs the line between professional obligations and personal time. With portable technology and ongoing communication, work tasks can easily spill into the evening. Introducing cannabis while still managing workplace responsibilities or addressing professional correspondence compromises your attention. Keeping cannabis outside working hours ensures that professional obligations receive your undivided focus.",
@@ -342,12 +382,13 @@ export const ARTICLES: Article[] = [
       "Cannabis is positioned as an evening boundary, not a tool for workplace performance.",
       "Conclude professional obligations and domestic duties before your evening routine.",
       "Always consume responsibly: do not drive or operate machinery after THC use.",
-    ]
+    ],
   },
   {
     slug: "tincture-or-edible-choosing-the-format-that-fits",
     title: "Tincture or Edible? Choosing the Format That Fits",
-    subtitle: "A Practical Framework for Comparing Liquid Drops and Familiar Fixed Portions",
+    subtitle:
+      "A Practical Framework for Comparing Liquid Drops and Familiar Fixed Portions",
     category: "Format & Method",
     volume: "Vol. I",
     issue: "Issue 12",
@@ -358,9 +399,12 @@ export const ARTICLES: Article[] = [
       role: "Apothecary Journal",
     },
     featured: false,
-    excerpt: "Choosing between a tincture and an edible depends on how you prefer to approach your routine. Comparing liquid flexibility with familiar fixed portions helps identify the format that fits.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
-    thesis: "Choosing between a liquid tincture and an edible comes down to personal preferences around visual flexibility, familiarity, and evening habits, with neither format being universally better.",
+    excerpt:
+      "Choosing between a tincture and an edible depends on how you prefer to approach your routine. Comparing liquid flexibility with familiar fixed portions helps identify the format that fits.",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB6KYoMlMURvm17nCxK41HXzRuKdBcC2Det8Yax_tc9aRW1bptic26i0aK8O7LE6jCZd13SHZ_BvCDU2kfS8waEloqtdu_1I1JEPY5AtaezQ6XTubWtsVUw0FTDJbPArCFcFyE5HuRXQe6sLcm9LHlhwMo6fLE_U1D10f_L_ZaPw6K5T69KAcFGL_Y_cxu0gPcJuhwR_cmZkeFNAIdse_MnJ_g5MdFRv6dbOjxvwyxiL3E3E9b1n3zthQ",
+    thesis:
+      "Choosing between a liquid tincture and an edible comes down to personal preferences around visual flexibility, familiarity, and evening habits, with neither format being universally better.",
     content: [
       "When considering cannabis preparations, deciding between a liquid tincture and a solid edible is a practical decision. Both formats offer smoke-free ways to use cannabis during private personal time, yet each has distinct physical characteristics. Choosing between them is not a matter of determining which format is universally superior, but identifying which medium fits your personal preferences.",
       "Liquid tinctures provide a format based on visible liquid volume and administration options. Botanica tinctures use coconut MCT oil as the carrier. The unmarked dropper allows you to gauge your draw by eye -- using quarter, half, three-quarter, or full levels -- and provides the option to hold drops under the tongue or swallow them directly depending on the timing you prefer.",
@@ -373,18 +417,18 @@ export const ARTICLES: Article[] = [
       "Tinctures offer liquid volume adjustment and dual administration routes.",
       "Edibles offer pre-divided portions in a familiar solid format.",
       "The useful choice is the format whose characteristics better match your personal preferences and responsible-use routine.",
-    ]
-  }
+    ],
+  },
 ];
 
 export async function getAllArticles(): Promise<Article[]> {
   try {
-    const { getSupabase } = await import('@/lib/supabase');
+    const { getSupabase } = await import("@/lib/supabase");
     const supabase = getSupabase();
     const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("articles")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (!error && data && data.length > 0) {
       return data.map((row: any) => ({
@@ -393,38 +437,45 @@ export async function getAllArticles(): Promise<Article[]> {
         title: row.title,
         subtitle: row.subtitle,
         category: row.category,
-        volume: row.volume || 'Vol. I',
-        issue: row.issue || 'Issue 01',
-        date: row.date || 'September 2026',
-        readTime: row.read_time || '5 min read',
+        volume: row.volume || "Vol. I",
+        issue: row.issue || "Issue 01",
+        date: row.date || "September 2026",
+        readTime: row.read_time || "5 min read",
         author: {
-          name: row.author_name || 'Botanica Editorial',
-          role: row.author_role || 'Apothecary Journal',
+          name: row.author_name || "Botanica Editorial",
+          role: row.author_role || "Apothecary Journal",
         },
         featured: Boolean(row.is_featured),
         excerpt: row.excerpt,
         image: row.image_url || ARTICLES[0].image,
-        thesis: row.thesis || '',
-        content: Array.isArray(row.content) ? row.content : [row.content || ''],
+        thesis: row.thesis || "",
+        content: Array.isArray(row.content) ? row.content : [row.content || ""],
         keyTakeaways: Array.isArray(row.key_takeaways) ? row.key_takeaways : [],
         relatedProductSlug: row.related_product_slug,
         relatedProductName: row.related_product_name,
-        callout: row.callout || (row.related_product_slug ? {
-          enabled: true,
-          type: 'product',
-          badge: 'Featured Botanical Formulation',
-          title: row.related_product_name || 'Apothecary Formulation',
-          description: 'A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.',
-          productSlug: row.related_product_slug,
-          ctaText: 'View Apothecary Batch',
-          ctaUrl: `/product/${row.related_product_slug}`
-        } : undefined),
-        status: row.status || 'published',
+        callout:
+          row.callout ||
+          (row.related_product_slug
+            ? {
+                enabled: true,
+                type: "product",
+                badge: "Featured product",
+                title: row.related_product_name || "Botanica product",
+                description:
+                  "A small-batch Botanica tincture carried in coconut MCT oil and featured alongside this journal entry.",
+                productSlug: row.related_product_slug,
+                ctaText: "View product",
+                ctaUrl: `/product/${row.related_product_slug}`,
+              }
+            : undefined),
+        status: row.status || "published",
         created_at: row.created_at,
         updated_at: row.updated_at,
       }));
     }
-  } catch {}
+  } catch {
+    // Fall back to bundled articles when live content is unavailable.
+  }
 
   return ARTICLES;
 }
@@ -433,7 +484,9 @@ export function getFeaturedArticle(articles: Article[] = ARTICLES): Article {
   return articles.find((a) => a.featured) || articles[0];
 }
 
-export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
+export async function getArticleBySlug(
+  slug: string,
+): Promise<Article | undefined> {
   const articles = await getAllArticles();
   return articles.find((article) => article.slug === slug);
 }

@@ -14,6 +14,7 @@ export default function BottomNav({ pathname }: { pathname: string }) {
   const count = isHydrated ? rawCount : 0;
   const homeActive = pathname === '/';
   const guideActive = pathname === '/how-to-use';
+  const journalActive = pathname === '/journal' || pathname.startsWith('/journal/');
   const storeActive = pathname === '/oils' || pathname.startsWith('/product/');
   const accessActive = pathname === '/invite' || pathname.startsWith('/invite/');
   const accessLabel = status === 'pending' ? 'Status' : 'Access';
@@ -31,16 +32,15 @@ export default function BottomNav({ pathname }: { pathname: string }) {
           <span className="font-label-sm text-label-sm">Home</span>
         </a>
 
-        <a href="/how-to-use" aria-current={guideActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${guideActive ? active : inactive}`}>
-          <BookOpenIcon />
-          <span className="font-label-sm text-label-sm">Guide</span>
-        </a>
-
         {approved ? (
           <>
             <a href="/oils" aria-current={storeActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${storeActive ? active : inactive}`}>
               <StoreIcon />
               <span className="font-label-sm text-label-sm">Store</span>
+            </a>
+            <a href="/journal" aria-current={journalActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${journalActive ? active : inactive}`}>
+              <BookOpenIcon />
+              <span className="font-label-sm text-label-sm">Journal</span>
             </a>
             <a href="/cart" aria-current={pathname === '/cart' ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${pathname === '/cart' ? active : inactive}`}>
               <div className="relative">
@@ -55,10 +55,20 @@ export default function BottomNav({ pathname }: { pathname: string }) {
             </a>
           </>
         ) : (
-          <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${accessActive ? active : inactive}`}>
-            <UserIcon />
-            <span className="font-label-sm text-label-sm">{accessLabel}</span>
-          </a>
+          <>
+            <a href="/journal" aria-current={journalActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${journalActive ? active : inactive}`}>
+              <BookOpenIcon />
+              <span className="font-label-sm text-label-sm">Journal</span>
+            </a>
+            <a href="/how-to-use" aria-current={guideActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${guideActive ? active : inactive}`}>
+              <BookOpenIcon />
+              <span className="font-label-sm text-label-sm">Guide</span>
+            </a>
+            <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`touch-target flex flex-col items-center justify-center p-3 rounded-full transition-colors ${accessActive ? active : inactive}`}>
+              <UserIcon />
+              <span className="font-label-sm text-label-sm">{accessLabel}</span>
+            </a>
+          </>
         )}
       </div>
     </nav>
@@ -82,7 +92,7 @@ function StoreIcon() {
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
       <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
       <path d="M2 7h20" />
-      <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
+      <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
     </svg>
   );
 }

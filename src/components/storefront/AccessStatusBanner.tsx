@@ -5,7 +5,6 @@ import {
   isPending,
   isApproved,
   accessState,
-  clearAccess,
   setApprovedAccess,
   setRejectedAccess,
   hasApprovalCelebration,
@@ -225,20 +224,6 @@ export default function AccessStatusBanner() {
           <span className="text-secondary tracking-widest uppercase text-[11px] font-bold font-mono">
             Member access approved: {access.instagramHandle}
           </span>
-          <div className="flex items-center gap-4">
-            <a
-              href="/invite"
-              className="text-on-surface-variant hover:text-primary transition-colors underline underline-offset-2"
-            >
-              My invite link
-            </a>
-            <button
-              onClick={() => clearAccess()}
-              className="text-on-surface-variant hover:text-error transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
         </div>
       </aside>
     );

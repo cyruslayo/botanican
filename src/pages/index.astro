@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/landing/Hero.astro';
 import ProductOverview from '@/components/landing/ProductOverview.astro';
+import MembershipBenefits from '@/components/landing/MembershipBenefits.astro';
 import DropperGuidePreview from '@/components/landing/DropperGuidePreview.astro';
 import ClosingInvite from '@/components/landing/ClosingInvite.astro';
 import InstagramHandoff from '@/components/landing/InstagramHandoff.astro';
@@ -16,16 +17,17 @@ const faqJsonLd = buildFaqJsonLd();
 
 <Layout
   pathname="/"
-  title="Botanica | Invite-Only Cannabis Tinctures"
-  description="Botanica makes small-batch cannabis tinctures. Learn about the visual dropper guide and request private store access with a valid invite."
+  title="Botanica | 25 mg & 50 mg Cannabis Tinctures"
+  description="Explore Botanica's 10 ml cannabis tinctures in 25 mg and 50 mg strengths, the visual dropper guide, and our invite-only member Store."
 >
   <div id="public-landing">
     <main class="w-full">
       <Hero />
       <ProductOverview />
+      <MembershipBenefits />
       <DropperGuidePreview />
-      <ClosingInvite />
       <InstagramHandoff />
+      <ClosingInvite />
       <Faq />
       <LandingFooter />
     </main>

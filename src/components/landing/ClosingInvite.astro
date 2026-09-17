@@ -1,52 +1,11 @@
 ---
-/**
- * Homepage explanation of invite-only access.
- */
+import MemberAccessCta from '@/components/storefront/MemberAccessCta';
 ---
 
 <section id="invite" class="w-full bg-surface">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-10 pb-20 md:pb-28">
-    <div class="relative w-full bg-primary text-on-primary rounded-3xl p-8 sm:p-12 md:p-16 overflow-hidden botanical-shadow">
-      <div class="relative z-10 max-w-3xl mx-auto space-y-8">
-        <div class="inline-flex items-center gap-2 px-4 py-1 bg-secondary/20 rounded-full border border-secondary/40">
-          <span class="w-1.5 h-1.5 rounded-full bg-secondary" aria-hidden="true"></span>
-          <span class="font-label-sm text-xs uppercase tracking-widest text-secondary font-bold">
-            Invite-only access
-          </span>
-        </div>
-
-        <div class="max-w-2xl space-y-4">
-          <h2 class="font-display-md text-display-md text-on-primary">How invite access works</h2>
-          <p class="font-body-lg text-body-lg text-on-primary/80 leading-relaxed">
-            Botanica is a private store. A valid member invite starts an access review.
-          </p>
-        </div>
-
-        <ol class="grid grid-cols-1 md:grid-cols-3 gap-6 border-y border-white/20 py-6">
-          <li class="space-y-2">
-            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">01</span>
-            <h3 class="font-headline-sm text-on-primary">Receive a member invite</h3>
-            <p class="font-body-sm text-on-primary/70">A current member shares an invite with you.</p>
-          </li>
-          <li class="space-y-2">
-            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">02</span>
-            <h3 class="font-headline-sm text-on-primary">Enter a valid invite code</h3>
-            <p class="font-body-sm text-on-primary/70">Enter the code, then share your Instagram handle and phone number.</p>
-          </li>
-          <li class="space-y-2">
-            <span class="font-label-sm text-secondary text-label-sm uppercase tracking-widest font-bold">03</span>
-            <h3 class="font-headline-sm text-on-primary">Wait for review and approval</h3>
-            <p class="font-body-sm text-on-primary/70">Botanica reviews your request. Approved members can enter the private store.</p>
-          </li>
-        </ol>
-
-        <a
-          href="/invite"
-          class="inline-block px-8 py-3.5 border border-white/30 text-on-primary font-label-sm text-label-sm uppercase tracking-widest rounded-full hover:bg-white/10 transition-colors"
-        >
-          Enter a valid invite code
-        </a>
-      </div>
+    <div class="relative w-full bg-primary text-on-primary rounded-3xl p-3 sm:p-5 md:p-8 overflow-hidden botanical-shadow">
+      <MemberAccessCta variant="closing" tone="primary" client:load />
     </div>
   </div>
 </section>

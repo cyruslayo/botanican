@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import Masthead from '@/components/journal/Masthead.astro';
+import MemberAccessCta from '@/components/storefront/MemberAccessCta';
 import ArticleShareBar from '@/components/journal/ArticleShareBar';
 import ArticleCalloutBox from '@/components/journal/ArticleCalloutBox';
 import { getArticleBySlug, type Article } from '@/data/journal';
@@ -15,13 +15,11 @@ if (!article || article.status === 'draft') {
 
 <Layout
   pathname={`/journal/${article.slug}`}
-  title={`${article.title} | The Botanical Gazette`}
+  title={`${article.title} | Botanica Journal`}
   description={article.excerpt}
   image={article.image}
   type="article"
 >
-  <Masthead />
-
   <article class="w-full py-12 md:py-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <div class="max-w-3xl mx-auto space-y-8">
       <nav aria-label="Breadcrumb">
@@ -29,7 +27,7 @@ if (!article || article.status === 'draft') {
           href="/journal"
           class="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors flex items-center gap-2"
         >
-          &larr; Back to Gazette Index
+          &larr; Back to Journal
         </a>
       </nav>
 
@@ -59,7 +57,7 @@ if (!article || article.status === 'draft') {
           </div>
           <div>
             <p class="font-body-sm text-body-sm font-bold text-primary">{article.author.name}</p>
-            <p class="font-body-sm text-xs text-on-surface-variant">{article.author.role}</p>
+            <p class="font-body-sm text-xs text-on-surface-variant">{article.author.role === 'Apothecary Journal' ? 'Botanica Editorial' : article.author.role}</p>
           </div>
         </div>
       </header>
@@ -75,7 +73,7 @@ if (!article || article.status === 'draft') {
 
       <div id="thesis" class="p-6 sm:p-8 rounded-xl bg-secondary-container/30 border border-secondary/20 target-glow-effect transition-shadow">
         <p class="font-mono text-[11px] uppercase tracking-widest text-secondary font-bold mb-2">
-          Central Monograph Thesis
+          Key idea
         </p>
         <p class="font-display-sm text-display-sm text-primary italic font-normal">
           &ldquo;{article.thesis}&rdquo;
@@ -92,7 +90,7 @@ if (!article || article.status === 'draft') {
 
       <div id="takeaways" class="mt-12 p-6 sm:p-8 rounded-2xl bg-surface-container-low border border-outline-variant/50 space-y-4 target-glow-effect transition-shadow">
         <h3 class="font-headline-sm text-headline-sm text-primary">
-          Key Takeaways
+          Key points
         </h3>
         <ul class="space-y-2.5">
           {article.keyTakeaways.map((takeaway) => (
@@ -120,16 +118,11 @@ if (!article || article.status === 'draft') {
           href="/journal"
           class="font-label-sm text-xs uppercase tracking-widest text-secondary hover:text-primary font-bold underline underline-offset-4"
         >
-          &larr; Return to Library
-        </a>
-
-        <a
-          href="/#invite"
-          class="font-label-sm text-xs uppercase tracking-widest text-primary hover:text-secondary font-bold underline underline-offset-4"
-        >
-          Apply for Membership &rarr;
+          &larr; Back to Journal
         </a>
       </footer>
+
+      <MemberAccessCta variant="article" client:load />
     </div>
   </article>
 </Layout>

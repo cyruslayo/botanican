@@ -1,6 +1,5 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import Masthead from '@/components/journal/Masthead.astro';
 import ArticleCard from '@/components/journal/ArticleCard.astro';
 import ApothecaryCallout from '@/components/journal/ApothecaryCallout';
 import { getAllArticles } from '@/data/journal';
@@ -12,21 +11,19 @@ const articles = await getAllArticles();
 
 <Layout
   pathname="/journal"
-  title="The Botanical Gazette | Editorial Journal & Archive"
-  description="The official publication of Botanica. Articles on tincture formats, visual draw methods, timing, routines, and deliberate cannabis use."
+  title="Journal | Botanica"
+  description="Simple guides and notes about Botanica, tinctures, the dropper and the products we make."
 >
-  <Masthead />
-
   <main class="w-full py-16 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto space-y-16">
     <div class="max-w-2xl space-y-4">
       <span class="font-label-sm text-xs font-bold uppercase tracking-widest text-secondary">
-        The Archive &bull; All Issues
+        Learn with Botanica
       </span>
       <h1 class="font-display-lg md:font-display-xl text-display-lg md:text-display-xl text-primary">
-        The Botanical Gazette
+        Journal
       </h1>
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        Editorial monographs on tincture formats, visual draw methods, timing, personal routines, format comparison, and deliberate cannabis use.
+        Simple guides and notes about Botanica, tinctures, the dropper and the products we make.
       </p>
     </div>
 

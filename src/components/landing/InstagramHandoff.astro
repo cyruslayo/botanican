@@ -1,16 +1,36 @@
 ---
+const instagramUrl = import.meta.env.PUBLIC_INSTAGRAM_URL;
 ---
 
-<section id="instagram" class="w-full bg-surface">
+<section id="education" class="w-full bg-surface">
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-20">
     <div class="max-w-2xl border-l-2 border-secondary pl-6 md:pl-8 space-y-4">
       <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">
-        Continue with Botanica
+        Learn with Botanica
       </span>
-      <h2 class="font-headline-lg text-headline-lg text-primary">Instagram is where we teach.</h2>
-      <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-        Follow Botanica on Instagram for simple product education and ongoing content. The homepage introduces the product. The private store is for approved members.
-      </p>
+      <h2 class="font-headline-lg text-headline-lg text-primary">Simple information, before and after you shop.</h2>
+      <div class="space-y-3 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+        <p>Read the Journal for straightforward guides about Botanica, tinctures and the dropper.</p>
+        <p>Follow Botanica on Instagram for new education, product notes and announcements.</p>
+      </div>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a
+          href="/journal"
+          class="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 py-3 font-label-sm text-label-sm uppercase tracking-widest font-bold text-on-primary transition-opacity hover:opacity-90"
+        >
+          Read the Journal
+        </a>
+        {instagramUrl && (
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            class="inline-flex min-h-11 items-center justify-center rounded-full border border-outline px-6 py-3 font-label-sm text-label-sm uppercase tracking-widest font-bold text-primary transition-colors hover:bg-surface-container"
+          >
+            Follow on Instagram
+          </a>
+        )}
+      </div>
     </div>
   </div>
 </section>

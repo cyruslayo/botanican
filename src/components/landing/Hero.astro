@@ -1,34 +1,31 @@
 ---
 import { HERO_IMAGE } from '@/data/landing';
+import MemberAccessCta from '@/components/storefront/MemberAccessCta';
 ---
 
 <section id="intro" class="w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center py-10 md:py-16">
     <div class="md:col-span-7 lg:col-span-6 space-y-stack-md load-in">
       <span class="inline-flex items-center gap-2 px-4 py-1 bg-secondary-container/60 rounded-full border border-secondary/30 font-label-sm text-xs uppercase tracking-widest text-secondary font-bold">
-        Invite-only · Small-batch cannabis tincture
+        INVITE-ONLY · SMALL-BATCH CANNABIS TINCTURES
       </span>
 
       <h1 class="font-display-lg md:font-display-xl text-display-lg md:text-display-xl text-primary">
-        Botanica, in a dropper.
+        Two tincture strengths. One simple dropper.
       </h1>
 
       <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-[36ch]">
-        Botanica makes small-batch cannabis tinctures in a dropper bottle. The public site explains the product. The private store is for approved members. A valid member invite is required to request access.
+        <span class="block">Botanica makes 10 ml cannabis tinctures in two strengths: 25 mg THC and 50 mg THC per bottle.</span>
+        <span class="block mt-3">Learn the format here. Approved members can open the private Store to see current prices, availability, batch details and member offers.</span>
       </p>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+        <MemberAccessCta variant="hero" client:load />
         <a
-          href="/invite"
-          class="px-8 py-3.5 bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-widest font-bold rounded-full text-center hover:opacity-90 active:scale-[0.98] transition-all"
+          href="#range"
+          class="inline-flex min-h-11 items-center justify-center rounded-full border border-outline px-8 py-3.5 font-label-sm text-label-sm uppercase tracking-widest text-primary text-center hover:bg-surface-container active:scale-[0.98] transition-colors"
         >
-          Enter a valid invite code
-        </a>
-        <a
-          href="#format"
-          class="px-8 py-3.5 border border-outline text-primary font-label-sm text-label-sm uppercase tracking-widest rounded-full text-center hover:bg-surface-container active:scale-[0.98] transition-colors"
-        >
-          See how it works
+          See the tinctures
         </a>
       </div>
     </div>

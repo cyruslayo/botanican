@@ -40,6 +40,8 @@ export default function InviteRegistration({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [manualInviteUrl, setManualInviteUrl] = useState<string | null>(null);
 
   // Streamlined form: Instagram handle & Phone only
   const [formData, setFormData] = useState({
@@ -82,7 +84,7 @@ export default function InviteRegistration({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!referralInfo) {
-      setError("Please enter a valid invite code.");
+      setError("Add a valid invite code to continue.");
       return;
     }
 
@@ -149,14 +151,74 @@ export default function InviteRegistration({
     }
   };
 
-  const copyReferralLink = (codeStr: string) => {
-    if (typeof window !== "undefined") {
-      const url = `${window.location.origin}/invite/${codeStr}`;
-      navigator.clipboard.writeText(url);
+  const getInviteUrl = (codeStr: string) =>
+    `${window.location.origin}/invite/${codeStr}`;
+
+  const showManualInviteFallback = (url: string) => {
+    setManualInviteUrl(url);
+    setShareMessage("Copy this invite link manually.");
+  };
+
+  const copyReferralLink = async (codeStr: string) => {
+    if (typeof window === "undefined") return;
+
+    const url = getInviteUrl(codeStr);
+    if (!navigator.clipboard) {
+      showManualInviteFallback(url);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setManualInviteUrl(null);
       setCopied(true);
+      setShareMessage("Invite link copied.");
       setTimeout(() => setCopied(false), 2000);
+    } catch {
+      showManualInviteFallback(url);
     }
   };
+
+  const shareInvite = async (codeStr: string) => {
+    if (typeof window === "undefined") return;
+
+    const url = getInviteUrl(codeStr);
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: "Botanica member invite",
+          text: "Use this private Botanica invite link to request access.",
+          url,
+        });
+        setManualInviteUrl(null);
+        setShareMessage("Invite link shared.");
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+      }
+    }
+
+    await copyReferralLink(codeStr);
+  };
+
+  if (!isHydrated) {
+    return (
+      <div
+        className="max-w-2xl mx-auto py-16 px-4 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        <h1 className="font-headline-md text-headline-md text-primary mb-3">
+          Member Access
+        </h1>
+        <p className="font-body-lg text-body-lg text-on-surface-variant">
+          Checking your access…
+        </p>
+      </div>
+    );
+  }
 
   // 1. If currently an approved member
   if (access.status === "approved") {
@@ -173,10 +235,14 @@ export default function InviteRegistration({
           </div>
 
           <h1 className="font-headline-md text-headline-md text-primary mb-2">
-            Welcome, {displayHandle}
+            Member access is active
           </h1>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-2">
+            Instagram handle:{" "}
+            <span className="font-mono text-primary">{displayHandle}</span>
+          </p>
           <p className="font-body-md text-body-md text-on-surface-variant mb-8">
-            Your member access is approved. You can now enter the private store.
+            Your private Store is ready.
           </p>
 
           <div className="bg-surface rounded-xl p-6 border border-outline-variant mb-6 space-y-4">
@@ -196,18 +262,55 @@ export default function InviteRegistration({
                 )}
               </div>
               {myCode && (
-                <button
-                  onClick={() => copyReferralLink(myCode)}
-                  className="px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2"
-                >
-                  {copied ? "Link copied" : "Copy invite link"}
-                </button>
+                <div className="flex flex-wrap justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => copyReferralLink(myCode)}
+                    aria-label="Copy invite link"
+                    className="px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2"
+                  >
+                    {copied ? "Link copied" : "Copy invite link"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => shareInvite(myCode)}
+                    className="px-5 py-2.5 border border-outline text-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors"
+                  >
+                    Share invite
+                  </button>
+                </div>
               )}
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Share your invite link with someone you know. They can use it to
-              request access.
+              Share this link privately with someone you know. They can use it
+              to request access.
             </p>
+            <p
+              className="font-body-sm text-body-sm text-secondary min-h-5"
+              role="status"
+              aria-live="polite"
+            >
+              {shareMessage}
+            </p>
+            {manualInviteUrl && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="manual-invite-link"
+                  className="font-label-sm text-label-sm text-primary block"
+                >
+                  Copy this invite link manually.
+                </label>
+                <input
+                  id="manual-invite-link"
+                  type="url"
+                  readOnly
+                  value={manualInviteUrl}
+                  aria-label="Invite link to copy manually"
+                  onFocus={(event) => event.currentTarget.select()}
+                  className="w-full min-h-11 rounded-lg border border-outline bg-surface px-3 py-2 font-body-sm text-primary"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t border-outline-variant/30">
@@ -215,7 +318,7 @@ export default function InviteRegistration({
               href="/oils"
               className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 transition-colors"
             >
-              Open the Store &rarr;
+              Open Store &rarr;
             </a>
             <button
               onClick={() => clearAccess()}
@@ -231,7 +334,6 @@ export default function InviteRegistration({
 
   // 2. If application is currently pending
   if (success || access.status === "pending") {
-    const handle = access.instagramHandle || formData.instagramHandle;
     return (
       <div className="max-w-2xl mx-auto py-12 px-4">
         <div className="bg-surface-container-low rounded-2xl p-8 border border-secondary/30 botanical-shadow text-center">
@@ -253,12 +355,10 @@ export default function InviteRegistration({
           </div>
 
           <h1 className="font-headline-md text-headline-md text-primary mb-3">
-            Request received
+            Request under review
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant mb-6 max-w-md mx-auto">
-            Your request for{" "}
-            <strong className="text-primary font-mono">{handle}</strong> is
-            under review. The private store stays locked until approval.
+            We are still reviewing your request. Store access is not active yet.
           </p>
 
           <div className="bg-surface rounded-xl p-5 border border-outline-variant text-left mb-8 max-w-md mx-auto font-body-sm text-body-sm text-on-surface-variant space-y-2">
@@ -300,7 +400,7 @@ export default function InviteRegistration({
           Request member access
         </h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
-          Botanica is invite-only. Enter a valid invite code from a current
+          Botanica is invite-only. Use a valid member invite from a current
           member to start an access request.
         </p>
       </div>

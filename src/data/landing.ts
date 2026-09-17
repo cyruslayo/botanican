@@ -47,27 +47,37 @@ export interface FaqItem {
   answer: string;
 }
 
-/** Landing FAQ: four simple questions about the product and private access. */
+/** Landing FAQ: current product facts, access, and the visual guide. */
 export const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "What is Botanica?",
+    question: "What does Botanica sell?",
     answer:
-      "Botanica makes small-batch cannabis tinctures in dropper bottles. The public site explains the product. Approved members can enter the private store.",
+      "Botanica currently offers 10 ml cannabis tinctures in two strengths: 25 mg THC and 50 mg THC per bottle.",
+  },
+  {
+    question: "What is the difference between the 25 mg and 50 mg bottles?",
+    answer:
+      "Both use the same 10 ml bottle and dropper format. The difference is the total amount of THC in the bottle: 25 mg or 50 mg.",
+  },
+  {
+    question: "What do I get with member access?",
+    answer:
+      "Approved members can enter the private Store to see current prices, availability, batch details, member offers and checkout.",
   },
   {
     question: "How do invites work?",
     answer:
-      "A current member shares an invite code. You enter the valid code and send your Instagram handle and phone number. Botanica reviews your request before approving store access.",
+      "A current member shares a Botanica invite with you. Use the valid invite and send your Instagram handle and phone number. Botanica reviews the request before Store access becomes active.",
   },
   {
-    question: "What do I do with my invite code?",
+    question: "Where can I learn how the dropper works?",
     answer:
-      "Enter the valid invite code on the invite page. Then send your Instagram handle and phone number. Do not share your code publicly.",
+      "Open the visual dropper guide to compare approximate quarter, half, three-quarter and full liquid levels. The guide and calculator are reference tools, not dosing recommendations or medical advice.",
   },
   {
-    question: "Where can I learn how to use the dropper?",
+    question: "I am already a member. Where do I manage my invite?",
     answer:
-      "Open the visual dropper guide to compare approximate liquid levels. The dropper is unmarked. The calculator is a visual reference, not a dosing recommendation or medical advice.",
+      "Open Account & Invites to see your member status, copy your invite link, open the Store or sign out.",
   },
 ];
 
