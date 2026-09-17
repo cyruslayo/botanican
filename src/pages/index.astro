@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/landing/Hero.astro';
 import ProductOverview from '@/components/landing/ProductOverview.astro';
+import PromotionLandingIsland from '@/components/landing/PromotionLandingIsland';
 import MembershipBenefits from '@/components/landing/MembershipBenefits.astro';
 import DropperGuidePreview from '@/components/landing/DropperGuidePreview.astro';
 import ClosingInvite from '@/components/landing/ClosingInvite.astro';
@@ -24,6 +25,7 @@ const faqJsonLd = buildFaqJsonLd();
     <main class="w-full">
       <Hero />
       <ProductOverview />
+      <PromotionLandingIsland client:load />
       <MembershipBenefits />
       <DropperGuidePreview />
       <InstagramHandoff />

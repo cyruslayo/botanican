@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import MemberGate from '@/components/storefront/MemberGate';
 import ProductCatalogIsland from '@/components/storefront/ProductCatalogIsland';
+import MemberPromotionSection from '@/components/storefront/MemberPromotionSection';
 
 export const prerender = false;
 ---
@@ -20,6 +21,7 @@ export const prerender = false;
         </p>
       </section>
 
+      <MemberPromotionSection client:load />
       <ProductCatalogIsland client:load category="Oils" />
     </main>
   </MemberGate>

@@ -103,6 +103,7 @@ export default function ProductDetailIsland({
     if (!isAvailable) return;
 
     const success = addItem({
+      line_type: "product",
       id: product.id,
       name: product.name,
       variant: variantParts.join(" • ") || product.category || "",

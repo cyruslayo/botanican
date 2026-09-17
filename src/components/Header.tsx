@@ -1,28 +1,30 @@
-'use client';
-import { useStore } from '@nanostores/react';
-import { cartCount } from '@/store/cart';
-import { accessState } from '@/store/access';
-import AccessStatusBanner from '@/components/storefront/AccessStatusBanner';
-import { useHydrated } from '@/lib/useHydrated';
+"use client";
+import { useStore } from "@nanostores/react";
+import { cartCount } from "@/store/cart";
+import { accessState } from "@/store/access";
+import AccessStatusBanner from "@/components/storefront/AccessStatusBanner";
+import { useHydrated } from "@/lib/useHydrated";
 
 export default function Header({ pathname }: { pathname: string }) {
   const isHydrated = useHydrated();
   const rawCount = useStore(cartCount);
   const access = useStore(accessState);
 
-  const status = isHydrated ? access.status : 'guest';
-  const approved = status === 'approved';
+  const status = isHydrated ? access.status : "guest";
+  const approved = status === "approved";
   const count = isHydrated ? rawCount : 0;
 
-  const isCheckout = pathname.startsWith('/checkout');
-  const isProduct = pathname.startsWith('/product');
-  const isCart = pathname.startsWith('/cart');
-  const homeActive = pathname === '/';
-  const guideActive = pathname === '/how-to-use';
-  const journalActive = pathname === '/journal' || pathname.startsWith('/journal/');
-  const storeActive = pathname === '/oils' || pathname.startsWith('/product/');
-  const accessActive = pathname === '/invite' || pathname.startsWith('/invite/');
-  const accessLabel = status === 'pending' ? 'Access Status' : 'Member Access';
+  const isCheckout = pathname.startsWith("/checkout");
+  const isProduct = pathname.startsWith("/product");
+  const isCart = pathname.startsWith("/cart");
+  const homeActive = pathname === "/";
+  const guideActive = pathname === "/how-to-use";
+  const journalActive =
+    pathname === "/journal" || pathname.startsWith("/journal/");
+  const storeActive = pathname === "/oils" || pathname.startsWith("/product/");
+  const accessActive =
+    pathname === "/invite" || pathname.startsWith("/invite/");
+  const accessLabel = status === "pending" ? "Access Status" : "Member Access";
 
   const showBackButton = isCheckout || isCart || isProduct;
 
@@ -43,18 +45,33 @@ export default function Header({ pathname }: { pathname: string }) {
           <div className="w-11 md:w-8"></div>
         )}
 
-        <a href="/" className="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg tracking-tighter text-primary text-center flex-1">
+        <a
+          href="/"
+          className="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg tracking-tighter text-primary text-center flex-1"
+        >
           BOTANICA
         </a>
 
         {isCheckout && <div className="w-11 md:w-8"></div>}
         {!isCheckout && approved && (
           <div className="flex items-center gap-1">
-            <a href="/invite" aria-current={accessActive ? 'page' : undefined} aria-label="Account & Invites" className="touch-target flex items-center justify-center gap-1.5 rounded-full px-2 text-primary hover:bg-surface-container md:hidden">
+            <a
+              href="/invite"
+              aria-current={accessActive ? "page" : undefined}
+              aria-label="Account & Invites"
+              className="touch-target flex items-center justify-center gap-1.5 rounded-full px-2 text-primary hover:bg-surface-container md:hidden"
+            >
               <AccountIcon />
-              <span className="font-label-sm text-[10px] uppercase tracking-wider">Account</span>
+              <span className="font-label-sm text-[10px] uppercase tracking-wider">
+                Account
+              </span>
             </a>
-            <a href="/cart" aria-current={pathname === '/cart' ? 'page' : undefined} aria-label={`Bag, ${count} items`} className="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:scale-105 transition-transform duration-300 active:opacity-80 transition-opacity relative">
+            <a
+              href="/cart"
+              aria-current={pathname === "/cart" ? "page" : undefined}
+              aria-label={`Bag, ${count} items`}
+              className="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:scale-105 transition-transform duration-300 active:opacity-80 transition-opacity relative"
+            >
               <BagIcon />
               {count > 0 && (
                 <span className="absolute top-2 right-2 bg-secondary text-on-secondary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
@@ -68,27 +85,54 @@ export default function Header({ pathname }: { pathname: string }) {
       </div>
 
       {!isCheckout && !isCart && !isProduct && (
-        <nav aria-label="Primary navigation" className="hidden md:flex justify-center gap-8 py-4 border-t border-outline-variant/20">
-          <a href="/" aria-current={homeActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${homeActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+        <nav
+          aria-label="Primary navigation"
+          className="hidden md:flex justify-center gap-8 py-4 border-t border-outline-variant/20"
+        >
+          <a
+            href="/"
+            aria-current={homeActive ? "page" : undefined}
+            className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${homeActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+          >
             Home
           </a>
           {approved && (
-            <a href="/oils" aria-current={storeActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${storeActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+            <a
+              href="/oils"
+              aria-current={storeActive ? "page" : undefined}
+              className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${storeActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+            >
               Store
             </a>
           )}
-          <a href="/journal" aria-current={journalActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${journalActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+          <a
+            href="/journal"
+            aria-current={journalActive ? "page" : undefined}
+            className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${journalActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+          >
             Journal
           </a>
-          <a href="/how-to-use" aria-current={guideActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${guideActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+          <a
+            href="/how-to-use"
+            aria-current={guideActive ? "page" : undefined}
+            className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${guideActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+          >
             Guide
           </a>
           {approved ? (
-            <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`border-l border-outline-variant/40 pl-8 font-label-sm text-label-sm uppercase tracking-widest transition-colors ${accessActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+            <a
+              href="/invite"
+              aria-current={accessActive ? "page" : undefined}
+              className={`border-l border-outline-variant/40 pl-8 font-label-sm text-label-sm uppercase tracking-widest transition-colors ${accessActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+            >
               Account &amp; Invites
             </a>
           ) : (
-            <a href="/invite" aria-current={accessActive ? 'page' : undefined} className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${accessActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary'}`}>
+            <a
+              href="/invite"
+              aria-current={accessActive ? "page" : undefined}
+              className={`font-label-sm text-label-sm uppercase tracking-widest transition-colors ${accessActive ? "text-primary border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"}`}
+            >
               {accessLabel}
             </a>
           )}
@@ -100,7 +144,18 @@ export default function Header({ pathname }: { pathname: string }) {
 
 function AccountIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
@@ -109,7 +164,18 @@ function AccountIcon() {
 
 function BagIcon() {
   return (
-    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
       <path d="M3 6h18" />
       <path d="M16 10a4 4 0 0 1-8 0" />
@@ -119,7 +185,18 @@ function BagIcon() {
 
 function ArrowLeft() {
   return (
-    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="m12 19-7-7 7-7" />
       <path d="M19 12H5" />
     </svg>

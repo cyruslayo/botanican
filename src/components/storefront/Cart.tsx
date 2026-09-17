@@ -1,11 +1,19 @@
-'use client';
-import { useStore } from '@nanostores/react';
-import { cartItems, getCartLineKey, removeItem, updateQuantity, cartTotal, cartCount } from '@/store/cart';
-import { formatNaira } from '@/lib/utils';
-import { FadeIn, StaggerContainer, StaggerItem } from '@/components/FadeIn';
-import { useHydrated } from '@/lib/useHydrated';
-import OrderHistory from '@/components/storefront/OrderHistory';
-import { FIXED_DELIVERY_FEE_NAIRA } from '@/lib/commerce';
+"use client";
+import { useStore } from "@nanostores/react";
+import {
+  cartItems,
+  getCartLineKey,
+  removeItem,
+  updateQuantity,
+  cartTotal,
+  cartCount,
+} from "@/store/cart";
+import { formatNaira } from "@/lib/utils";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/FadeIn";
+import { useHydrated } from "@/lib/useHydrated";
+import OrderHistory from "@/components/storefront/OrderHistory";
+import { FIXED_DELIVERY_FEE_NAIRA } from "@/lib/commerce";
+import { sumMoney } from "@/lib/money";
 
 export default function Cart() {
   const isHydrated = useHydrated();
@@ -16,7 +24,7 @@ export default function Cart() {
   const items = isHydrated ? rawItems : [];
   const subtotal = isHydrated ? rawTotal : 0;
   const deliveryFee = items.length > 0 ? FIXED_DELIVERY_FEE_NAIRA : 0;
-  const total = subtotal + deliveryFee;
+  const total = sumMoney(subtotal, deliveryFee);
   const count = isHydrated ? rawCount : 0;
 
   return (
@@ -25,47 +33,115 @@ export default function Cart() {
         <div className="lg:col-span-7 flex flex-col gap-stack-lg">
           <FadeIn>
             <div className="flex items-baseline justify-between mb-stack-sm border-b border-surface-variant pb-stack-sm">
-              <h2 className="font-headline-sm text-headline-sm text-on-surface">Your Bag ({count} items)</h2>
+              <h2 className="font-headline-sm text-headline-sm text-on-surface">
+                Your Bag ({count} items)
+              </h2>
             </div>
           </FadeIn>
 
           {items.length === 0 ? (
             <FadeIn delay={0.1}>
-              <p className="font-body-md text-on-surface-variant py-8">Your bag is empty.</p>
+              <p className="font-body-md text-on-surface-variant py-8">
+                Your bag is empty.
+              </p>
             </FadeIn>
           ) : (
             <StaggerContainer>
               {items.map((item) => (
-                <StaggerItem key={getCartLineKey(item)} className="flex gap-stack-md py-stack-md relative group">
+                <StaggerItem
+                  key={getCartLineKey(item)}
+                  className="flex gap-stack-md py-stack-md relative group"
+                >
                   <div className="w-24 md:w-32 aspect-[3/4] shrink-0 bg-surface-container rounded-lg overflow-hidden relative">
-                    <img src={item.image} alt={item.name} referrerPolicy="no-referrer" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
                   </div>
 
                   <div className="flex-1 flex flex-col justify-between py-1">
                     <div>
                       <div className="flex justify-between items-start">
-                        <h3 className="font-body-lg text-body-lg text-on-surface pr-4">{item.name}</h3>
-                        <button onClick={() => removeItem(getCartLineKey(item))} aria-label={`Remove ${item.name} from bag`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-error transition-colors p-1 -mt-1 -mr-1">
+                        <h3 className="font-body-lg text-body-lg text-on-surface pr-4">
+                          {item.name}
+                        </h3>
+                        <button
+                          onClick={() => removeItem(getCartLineKey(item))}
+                          aria-label={`Remove ${item.name} from bag`}
+                          className="touch-target flex items-center justify-center text-on-surface-variant hover:text-error transition-colors p-1 -mt-1 -mr-1"
+                        >
                           <XIcon />
                         </button>
                       </div>
-                      {(item.strength_mg != null || item.bottle_size_ml != null || item.strain_name || item.batch_code) && (
+                      {item.line_type === "promotion" ? (
                         <div className="font-label-sm text-label-sm text-on-surface-variant mt-1 space-y-0.5">
-                          {(item.strength_mg != null || item.bottle_size_ml != null) && <p>{item.strength_mg != null ? `${item.strength_mg} mg` : null}{item.strength_mg != null && item.bottle_size_ml != null ? ' / ' : null}{item.bottle_size_ml != null ? `${item.bottle_size_ml} ml` : null}</p>}
-                          {item.strain_name && <p>Strain: {item.strain_name}</p>}
-                          {item.batch_code && <p>Batch: {item.batch_code}</p>}
+                          <p>
+                            {item.components
+                              .map(
+                                (component) =>
+                                  `${component.quantity} × ${component.strength_mg != null ? `${component.strength_mg} mg` : component.name}`,
+                              )
+                              .join(" + ")}
+                          </p>
+                          <p>Quantity means complete bundles</p>
                         </div>
+                      ) : (
+                        (item.strength_mg != null ||
+                          item.bottle_size_ml != null ||
+                          item.strain_name ||
+                          item.batch_code) && (
+                          <div className="font-label-sm text-label-sm text-on-surface-variant mt-1 space-y-0.5">
+                            {(item.strength_mg != null ||
+                              item.bottle_size_ml != null) && (
+                              <p>
+                                {item.strength_mg == null
+                                  ? null
+                                  : `${item.strength_mg} mg`}
+                                {item.strength_mg != null &&
+                                item.bottle_size_ml != null
+                                  ? " / "
+                                  : null}
+                                {item.bottle_size_ml == null
+                                  ? null
+                                  : `${item.bottle_size_ml} ml`}
+                              </p>
+                            )}
+                            {item.strain_name && (
+                              <p>Strain: {item.strain_name}</p>
+                            )}
+                            {item.batch_code && <p>Batch: {item.batch_code}</p>}
+                          </div>
+                        )
                       )}
-                      <p className="font-headline-sm text-headline-sm text-on-surface mt-2">{formatNaira(item.price)}</p>
+                      <p className="font-headline-sm text-headline-sm text-on-surface mt-2">
+                        {formatNaira(item.price)}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-4 mt-4">
                       <div className="flex items-center border border-outline-variant rounded-full px-3 py-1">
-                        <button onClick={() => updateQuantity(getCartLineKey(item), -1)} aria-label={`Decrease quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
+                        <button
+                          onClick={() =>
+                            updateQuantity(getCartLineKey(item), -1)
+                          }
+                          aria-label={`Decrease quantity of ${item.name}`}
+                          className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1"
+                        >
                           <MinusIcon />
                         </button>
-                        <span className="font-body-md text-body-md text-on-surface w-8 text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(getCartLineKey(item), 1)} aria-label={`Increase quantity of ${item.name}`} className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1">
+                        <span className="font-body-md text-body-md text-on-surface w-8 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(getCartLineKey(item), 1)
+                          }
+                          aria-label={`Increase quantity of ${item.name}`}
+                          className="touch-target flex items-center justify-center text-on-surface-variant hover:text-primary p-1"
+                        >
                           <PlusIcon />
                         </button>
                       </div>
@@ -75,22 +151,27 @@ export default function Cart() {
               ))}
             </StaggerContainer>
           )}
-
         </div>
 
         <div className="lg:col-span-5 relative mt-section-gap lg:mt-0">
           <div className="sticky top-24">
             <FadeIn delay={0.1}>
               <div className="bg-surface-container-low rounded-xl p-stack-lg border border-surface-variant">
-                <h2 className="font-headline-sm text-headline-sm text-on-surface mb-stack-lg border-b border-outline-variant pb-stack-sm">Order Summary</h2>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface mb-stack-lg border-b border-outline-variant pb-stack-sm">
+                  Order Summary
+                </h2>
                 <div className="flex flex-col gap-stack-sm font-body-md text-body-md text-on-surface-variant mb-stack-lg">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="text-on-surface">{formatNaira(subtotal)}</span>
+                    <span className="text-on-surface">
+                      {formatNaira(subtotal)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Delivery</span>
-                    <span className="text-on-surface">{formatNaira(deliveryFee)}</span>
+                    <span className="text-on-surface">
+                      {formatNaira(deliveryFee)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax estimate</span>
@@ -98,16 +179,25 @@ export default function Cart() {
                   </div>
                 </div>
                 <div className="flex justify-between items-center mb-stack-lg border-t border-outline-variant pt-stack-md">
-                  <span className="font-headline-sm text-headline-sm text-on-surface">Total</span>
-                  <span className="font-headline-sm text-headline-sm text-on-surface">{formatNaira(total)}</span>
+                  <span className="font-headline-sm text-headline-sm text-on-surface">
+                    Total
+                  </span>
+                  <span className="font-headline-sm text-headline-sm text-on-surface">
+                    {formatNaira(total)}
+                  </span>
                 </div>
-                <a href="/checkout" className="w-full bg-primary text-on-primary py-4 rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-102 active:scale-98 transition-transform duration-300 flex items-center justify-center gap-2">
+                <a
+                  href="/checkout"
+                  className="w-full bg-primary text-on-primary py-4 rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:scale-102 active:scale-98 transition-transform duration-300 flex items-center justify-center gap-2"
+                >
                   Checkout
                   <ArrowRightIcon />
                 </a>
                 <div className="mt-stack-md flex items-center justify-center gap-2 text-on-surface-variant opacity-70">
                   <LockIcon />
-                  <span className="font-label-sm text-label-sm">Secure Checkout</span>
+                  <span className="font-label-sm text-label-sm">
+                    Secure Checkout
+                  </span>
                 </div>
               </div>
             </FadeIn>
@@ -122,7 +212,17 @@ export default function Cart() {
 
 function XIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
     </svg>
@@ -131,7 +231,17 @@ function XIcon() {
 
 function MinusIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M5 12h14" />
     </svg>
   );
@@ -139,7 +249,17 @@ function MinusIcon() {
 
 function PlusIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M5 12h14" />
       <path d="M12 5v14" />
     </svg>
@@ -148,7 +268,17 @@ function PlusIcon() {
 
 function ArrowRightIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M5 12h14" />
       <path d="m12 5 7 7-7 7" />
     </svg>
@@ -157,7 +287,17 @@ function ArrowRightIcon() {
 
 function LockIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>

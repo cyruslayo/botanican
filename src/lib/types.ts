@@ -34,7 +34,8 @@ export interface MemberProduct extends MemberCatalogProduct {
   description: string | null;
 }
 
-export interface OrderItem {
+export interface ProductOrderItem {
+  line_type?: "product";
   id: string;
   name: string;
   variant: string;
@@ -45,6 +46,79 @@ export interface OrderItem {
   bottle_size_ml?: number | null;
   strain_name?: string | null;
   batch_code?: string | null;
+}
+
+export interface PromotionComponentSnapshot {
+  product_id: string;
+  slug: string;
+  name: string;
+  quantity_per_bundle: number;
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+}
+
+export interface PromotionOrderItem {
+  line_type: "promotion";
+  id?: string;
+  name: string;
+  variant?: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  promotion_id: string;
+  promotion_slug: string;
+  promotion_name: string;
+  line_total?: number;
+  components: PromotionComponentSnapshot[];
+  strength_mg?: number | null;
+  bottle_size_ml?: number | null;
+  strain_name?: string | null;
+  batch_code?: string | null;
+}
+
+export type OrderItem = ProductOrderItem | PromotionOrderItem;
+
+export interface PromotionItemSummary {
+  product_id: string;
+  slug: string;
+  name: string;
+  quantity: number;
+  strength_mg: number | null;
+  bottle_size_ml: number | null;
+}
+
+export interface Promotion {
+  id: string;
+  name: string;
+  slug: string;
+  promotion_type: "fixed_bundle";
+  fixed_price: number;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  show_on_landing: boolean;
+  show_in_store: boolean;
+  public_badge: string | null;
+  public_headline: string | null;
+  public_description: string | null;
+  member_headline: string | null;
+  member_description: string | null;
+  created_at?: string;
+  updated_at?: string;
+  items: PromotionItemSummary[];
+}
+
+export interface PromotionMerchandising {
+  id: string;
+  slug: string;
+  name: string;
+  badge: string | null;
+  headline: string | null;
+  description: string | null;
+  fixed_price: number;
+  regular_total: number;
+  is_available: boolean;
+  items: PromotionItemSummary[];
 }
 
 export interface ShippingAddress {

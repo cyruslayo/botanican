@@ -1,0 +1,13 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminGate from '@/components/admin/AdminGate';
+import AdminPromotions from '@/components/admin/AdminPromotions';
+
+export const prerender = true;
+---
+
+<AdminLayout pathname="/admin/promotions" title="Promotions | Store Admin">
+  <AdminGate client:load>
+    <AdminPromotions client:load />
+  </AdminGate>
+</AdminLayout>
