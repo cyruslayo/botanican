@@ -10,6 +10,7 @@ interface Props {
   pathname: string;
   image?: string;
   type?: 'website' | 'article';
+  robots?: string;
 }
 
 const {
@@ -17,7 +18,8 @@ const {
   description = 'Private apothecary and botanical journal. Small-batch cannabis tinctures and deliberate routines.',
   pathname,
   image = 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA',
-  type = 'website'
+  type = 'website',
+  robots
 } = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.toString().replace(/\/$/, '') : (Astro.url.origin || 'https://botanica.essence');
@@ -37,6 +39,7 @@ const canonicalUrl = new URL(pathname, siteUrl).toString();
     
     <title>{title}</title>
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     
     <!-- Open Graph for Instagram, Facebook & WhatsApp -->
     <meta property="og:title" content={title} />

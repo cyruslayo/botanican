@@ -2,44 +2,20 @@
 import Layout from '@/layouts/Layout.astro';
 import ProductDetailIsland from '@/components/storefront/ProductDetailIsland';
 import MemberGate from '@/components/storefront/MemberGate';
-import { getProductBySlug } from '@/lib/products';
-import type { Product } from '@/lib/types';
 
-// Rendered on-demand so new products are available immediately.
 export const prerender = false;
 
 const { slug } = Astro.params;
-
-let product: Product | null = null;
-try {
-  product = await getProductBySlug(String(slug));
-} catch (error) {
-  console.warn(`Unable to load product for slug "${slug}":`, error);
-}
-
-const productPath = product ? `/product/${product.slug}` : `/product/${String(slug)}`;
-const pageTitle = product ? `${product.name} | Botanical Essence` : 'Product unavailable | Botanical Essence';
+const productSlug = String(slug);
 ---
 
 <Layout
-  pathname={productPath}
-  title={pageTitle}
-  description={product?.description}
-  image={product?.image}
+  pathname={`/product/${productSlug}`}
+  title="Private Store Product | Botanica"
+  description="Approved member product details from Botanica."
+  robots="noindex, nofollow"
 >
   <MemberGate client:load>
-    {product ? (
-      <ProductDetailIsland client:load product={product} />
-    ) : (
-      <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-section-gap pt-24 md:pt-32">
-        <div class="max-w-xl mx-auto text-center">
-          <h1 class="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-stack-sm">Product unavailable</h1>
-          <p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg">This product is not available right now.</p>
-          <a href="/oils" class="inline-flex items-center justify-center px-6 py-3.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 transition-colors">
-            Back to Store
-          </a>
-        </div>
-      </main>
-    )}
+    <ProductDetailIsland client:load slug={productSlug} />
   </MemberGate>
 </Layout>

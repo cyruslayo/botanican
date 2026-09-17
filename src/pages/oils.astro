@@ -1,23 +1,16 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import ProductCard from '@/components/storefront/ProductCard.astro';
 import MemberGate from '@/components/storefront/MemberGate';
-import { getProductsByCategory } from '@/lib/products';
-import type { Product } from '@/lib/types';
+import ProductCatalogIsland from '@/components/storefront/ProductCatalogIsland';
 
-// Catalog pages are rendered on-demand so new products appear immediately
-// after they are added in the admin panel.
 export const prerender = false;
-
-let products: Product[] = [];
-try {
-  products = await getProductsByCategory('Oils');
-} catch (error) {
-  console.warn('Falling back to empty oils collection:', error);
-}
 ---
 
-<Layout pathname="/oils" title="Store | Botanical Essence">
+<Layout
+  pathname="/oils"
+  title="Store | Botanical Essence"
+  robots="noindex, nofollow"
+>
   <MemberGate client:load>
     <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-section-gap pt-24 md:pt-32">
       <section class="py-section-gap text-center max-w-2xl mx-auto">
@@ -27,21 +20,7 @@ try {
         </p>
       </section>
 
-      {products.length === 0 ? (
-        <div class="col-span-full py-20 text-center">
-          <h2 class="font-headline-sm text-headline-sm text-primary mb-unit">No tinctures available right now</h2>
-          <p class="font-body-md text-body-md text-on-surface-variant">Please check back soon.</p>
-        </div>
-      ) : (
-        <>
-          <p class="font-body-md text-body-md text-on-surface-variant mb-8">{products.length} Tinctures</p>
-          <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-gutter items-start">
-            {products.map((product) => (
-              <ProductCard product={product} />
-            ))}
-          </div>
-        </>
-      )}
+      <ProductCatalogIsland client:load category="Oils" />
     </main>
   </MemberGate>
 </Layout>

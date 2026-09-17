@@ -16,6 +16,24 @@ export interface Product {
   batch_code?: string | null;
 }
 
+export interface MemberCatalogProduct {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string | null;
+  is_available: boolean;
+  strength_mg: number | null;
+  bottle_size_ml: number | null;
+  strain_name: string | null;
+  batch_code: string | null;
+}
+
+export interface MemberProduct extends MemberCatalogProduct {
+  description: string | null;
+}
+
 export interface OrderItem {
   id: string;
   name: string;
@@ -68,7 +86,7 @@ export interface MemberOrder {
 export interface Profile {
   id: string;
   email: string;
-  role: 'admin' | 'customer';
+  role: "admin" | "customer";
 }
 
 export interface ReferralCode {
@@ -87,7 +105,7 @@ export interface AccessRequest {
   phone: string;
   referral_code: string;
   referred_by: string; // Referring Instagram handle or code owner
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   email?: string;
   full_name?: string;
   user_id?: string;
@@ -98,7 +116,7 @@ export interface AccessRequest {
 
 export interface ArticleCallout {
   enabled?: boolean;
-  type: 'product' | 'deal' | 'announcement';
+  type: "product" | "deal" | "announcement";
   badge?: string;
   title: string;
   description: string;
@@ -114,12 +132,12 @@ export interface Article {
   title: string;
   subtitle: string;
   category:
-    | 'Monograph'
-    | 'Circadian Science'
-    | 'Extraction & Lab'
-    | 'Protocol & Ritual'
-    | 'Format & Method'
-    | 'Culture & Routine';
+    | "Monograph"
+    | "Circadian Science"
+    | "Extraction & Lab"
+    | "Protocol & Ritual"
+    | "Format & Method"
+    | "Culture & Routine";
   volume: string;
   issue: string;
   date: string;
@@ -137,7 +155,7 @@ export interface Article {
   relatedProductSlug?: string;
   relatedProductName?: string;
   callout?: ArticleCallout;
-  status?: 'draft' | 'published';
+  status?: "draft" | "published";
   created_at?: string;
   updated_at?: string;
 }
