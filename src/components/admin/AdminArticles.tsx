@@ -1,35 +1,49 @@
-'use client';
-import { useState, useEffect, useCallback } from 'react';
-import type { Article, Product } from '@/lib/types';
-import { getGazetteSettings, fetchLiveGazetteSettings, saveGazetteSettings, type GazetteSettings, DEFAULT_GAZETTE_SETTINGS } from '@/lib/gazetteSettings';
-import ArticleFormModal from './ArticleFormModal';
-import { Plus, ExternalLink, Edit2, Trash2, CheckCircle2, Sliders, Check } from 'lucide-react';
+"use client";
+import { useState, useEffect, useCallback } from "react";
+import type { Article, Product } from "@/lib/types";
+import {
+  getGazetteSettings,
+  fetchLiveGazetteSettings,
+  saveGazetteSettings,
+  type GazetteSettings,
+  DEFAULT_GAZETTE_SETTINGS,
+} from "@/lib/gazetteSettings";
+import ArticleFormModal from "./ArticleFormModal";
+import {
+  Plus,
+  ExternalLink,
+  Edit2,
+  Trash2,
+  CheckCircle2,
+  Sliders,
+  Check,
+} from "lucide-react";
 
 function mapArticleRow(row: any): Article {
   return {
     id: row.id,
     slug: row.slug,
     title: row.title,
-    subtitle: row.subtitle || '',
+    subtitle: row.subtitle || "",
     category: row.category,
-    volume: row.volume || 'Vol. I',
-    issue: row.issue || 'Issue 01',
-    date: row.date || '',
-    readTime: row.read_time || '5 min read',
+    volume: row.volume || "Vol. I",
+    issue: row.issue || "Issue 01",
+    date: row.date || "",
+    readTime: row.read_time || "5 min read",
     author: {
-      name: row.author_name || 'Botanica Editorial',
-      role: row.author_role || 'Apothecary Journal',
+      name: row.author_name || "Botanica Editorial",
+      role: row.author_role || "Botanica Editorial",
     },
     featured: Boolean(row.is_featured),
-    excerpt: row.excerpt || '',
-    image: row.image_url || '',
-    thesis: row.thesis || '',
+    excerpt: row.excerpt || "",
+    image: row.image_url || "",
+    thesis: row.thesis || "",
     content: Array.isArray(row.content) ? row.content : [],
     keyTakeaways: Array.isArray(row.key_takeaways) ? row.key_takeaways : [],
     relatedProductSlug: row.related_product_slug,
     relatedProductName: row.related_product_name,
     callout: row.callout || undefined,
-    status: row.status || 'published',
+    status: row.status || "published",
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
@@ -42,31 +56,37 @@ export default function AdminArticles() {
   const [articleToEdit, setArticleToEdit] = useState<Article | null>(null);
 
   // Masthead / Gazette Edition settings state
-  const [gazetteSettings, setGazetteSettings] = useState<GazetteSettings>(DEFAULT_GAZETTE_SETTINGS);
+  const [gazetteSettings, setGazetteSettings] = useState<GazetteSettings>(
+    DEFAULT_GAZETTE_SETTINGS,
+  );
   const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [settingsError, setSettingsError] = useState<string | null>(null);
   const [articlesError, setArticlesError] = useState<string | null>(null);
 
-
   const fetchArticlesAndProducts = useCallback(async () => {
     setArticlesError(null);
     try {
-      const { getSupabase } = await import('@/lib/supabase');
+      const { getSupabase } = await import("@/lib/supabase");
       const supabase = getSupabase();
       const [articlesResult, productsResult] = await Promise.all([
-        supabase.from('articles').select('*').order('created_at', { ascending: false }),
-        supabase.from('products').select('*'),
+        supabase
+          .from("articles")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        supabase.from("products").select("*"),
       ]);
       if (articlesResult.error) throw articlesResult.error;
       if (productsResult.error) throw productsResult.error;
       setArticles((articlesResult.data || []).map(mapArticleRow));
       setProducts((productsResult.data || []) as Product[]);
     } catch (error) {
-      console.error('Error loading articles and products:', error);
+      console.error("Error loading articles and products:", error);
       setArticles([]);
       setProducts([]);
-      setArticlesError('Articles and product references could not be loaded from Supabase.');
+      setArticlesError(
+        "Articles and product references could not be loaded from Supabase.",
+      );
     }
   }, []);
 
@@ -76,8 +96,10 @@ export default function AdminArticles() {
     fetchLiveGazetteSettings()
       .then(setGazetteSettings)
       .catch((error) => {
-        console.error('Error loading live Gazette settings:', error);
-        setSettingsError('Live Gazette settings could not be loaded from Supabase.');
+        console.error("Error loading live Gazette settings:", error);
+        setSettingsError(
+          "Live Gazette settings could not be loaded from Supabase.",
+        );
       });
   }, [fetchArticlesAndProducts]);
 
@@ -89,22 +111,25 @@ export default function AdminArticles() {
       setSettingsSaved(true);
       setTimeout(() => setSettingsSaved(false), 2500);
     } catch (error) {
-      console.error('Error saving Gazette settings:', error);
-      setSettingsError('Gazette settings could not be saved to Supabase.');
+      console.error("Error saving Gazette settings:", error);
+      setSettingsError("Gazette settings could not be saved to Supabase.");
     }
   };
 
   const handleSaveArticle = async (articleData: Partial<Article>) => {
     try {
-      const { getSupabase } = await import('@/lib/supabase');
+      const { getSupabase } = await import("@/lib/supabase");
       const supabase = getSupabase();
 
       // If this article is marked featured, unfeature all others first
       if (articleData.featured) {
         const { error } = await supabase
-          .from('articles')
+          .from("articles")
           .update({ is_featured: false })
-          .neq('id', articleToEdit?.id || '00000000-0000-0000-0000-000000000000');
+          .neq(
+            "id",
+            articleToEdit?.id || "00000000-0000-0000-0000-000000000000",
+          );
         if (error) throw error;
       }
 
@@ -133,53 +158,73 @@ export default function AdminArticles() {
       };
 
       if (articleToEdit?.id) {
-        const { error } = await supabase.from('articles').update(rowPayload).eq('id', articleToEdit.id);
+        const { error } = await supabase
+          .from("articles")
+          .update(rowPayload)
+          .eq("id", articleToEdit.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('articles').insert([{ ...rowPayload, created_at: new Date().toISOString() }]);
+        const { error } = await supabase
+          .from("articles")
+          .insert([{ ...rowPayload, created_at: new Date().toISOString() }]);
         if (error) throw error;
       }
 
       await fetchArticlesAndProducts();
     } catch (error) {
-      console.error('Error saving article:', error);
-      setArticlesError('The article could not be saved to Supabase.');
+      console.error("Error saving article:", error);
+      setArticlesError("The article could not be saved to Supabase.");
     }
   };
 
   const handleToggleFeatured = async (targetArticle: Article) => {
     try {
-      const { getSupabase } = await import('@/lib/supabase');
+      const { getSupabase } = await import("@/lib/supabase");
       const supabase = getSupabase();
 
       if (targetArticle.id) {
-        const { error: unfeatureError } = await supabase.from('articles').update({ is_featured: false }).neq('id', targetArticle.id);
+        const { error: unfeatureError } = await supabase
+          .from("articles")
+          .update({ is_featured: false })
+          .neq("id", targetArticle.id);
         if (unfeatureError) throw unfeatureError;
-        const { error: featureError } = await supabase.from('articles').update({ is_featured: !targetArticle.featured }).eq('id', targetArticle.id);
+        const { error: featureError } = await supabase
+          .from("articles")
+          .update({ is_featured: !targetArticle.featured })
+          .eq("id", targetArticle.id);
         if (featureError) throw featureError;
         await fetchArticlesAndProducts();
       } else {
-        throw new Error('Cannot update a journal article without a database ID.');
+        throw new Error(
+          "Cannot update a journal article without a database ID.",
+        );
       }
     } catch (error) {
-      console.error('Error toggling featured article:', error);
-      setArticlesError('The featured article change could not be saved.');
+      console.error("Error toggling featured article:", error);
+      setArticlesError("The featured article change could not be saved.");
     }
   };
 
   const handleDelete = async (targetArticle: Article) => {
-    if (!confirm(`Are you sure you want to remove "${targetArticle.title}"?`)) return;
+    if (!confirm(`Are you sure you want to remove "${targetArticle.title}"?`))
+      return;
 
     try {
-      const { getSupabase } = await import('@/lib/supabase');
+      const { getSupabase } = await import("@/lib/supabase");
       const supabase = getSupabase();
-      if (!targetArticle.id) throw new Error('Cannot delete a journal article without a database ID.');
-      const { error } = await supabase.from('articles').delete().eq('id', targetArticle.id);
+      if (!targetArticle.id)
+        throw new Error(
+          "Cannot delete a journal article without a database ID.",
+        );
+      const { error } = await supabase
+        .from("articles")
+        .delete()
+        .eq("id", targetArticle.id);
       if (error) throw error;
       await fetchArticlesAndProducts();
     } catch (error) {
-      console.error('Error deleting article:', error);
-      setArticlesError('The article could not be deleted from Supabase.');
+      console.error("Error deleting article:", error);
+      setArticlesError("The article could not be deleted from Supabase.");
     }
   };
 
@@ -194,7 +239,8 @@ export default function AdminArticles() {
             The Botanical Gazette Articles
           </h2>
           <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant">
-            Author and publish editorial monographs, format guides, and frontpage cover stories.
+            Author and publish editorial monographs, format guides, and
+            frontpage cover stories.
           </p>
         </div>
 
@@ -204,8 +250,8 @@ export default function AdminArticles() {
             onClick={() => setShowSettingsDrawer(!showSettingsDrawer)}
             className={`inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 border rounded-xl font-label-sm text-xs uppercase tracking-wider font-bold transition-all cursor-pointer ${
               showSettingsDrawer
-                ? 'bg-primary text-on-primary border-primary'
-                : 'border-outline-variant/70 text-primary hover:bg-surface-container-high'
+                ? "bg-primary text-on-primary border-primary"
+                : "border-outline-variant/70 text-primary hover:bg-surface-container-high"
             }`}
           >
             <Sliders className="w-4 h-4" /> <span>Masthead Settings</span>
@@ -224,7 +270,14 @@ export default function AdminArticles() {
         </div>
       </div>
 
-      {articlesError && <p role="alert" className="p-3 rounded-xl bg-error/10 border border-error/30 text-error text-sm">{articlesError}</p>}
+      {articlesError && (
+        <p
+          role="alert"
+          className="p-3 rounded-xl bg-error/10 border border-error/30 text-error text-sm"
+        >
+          {articlesError}
+        </p>
+      )}
 
       {showSettingsDrawer && (
         <div className="bg-surface rounded-2xl border border-secondary/30 p-6 sm:p-8 botanical-shadow space-y-6">
@@ -237,7 +290,9 @@ export default function AdminArticles() {
                 Masthead &amp; Volume Settings
               </h3>
               <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                Configure the Volume edition, seasonal circulation, harvest metadata, and accreditation/verification badge shown at the top of the landing page and journal.
+                Configure the Volume edition, seasonal circulation, harvest
+                metadata, and accreditation/verification badge shown at the top
+                of the landing page and journal.
               </p>
             </div>
             {settingsSaved && (
@@ -248,7 +303,14 @@ export default function AdminArticles() {
           </div>
 
           <form onSubmit={handleSaveGazetteSettings} className="space-y-4">
-            {settingsError && <p role="alert" className="text-sm text-error bg-error/10 rounded-xl p-3">{settingsError}</p>}
+            {settingsError && (
+              <p
+                role="alert"
+                className="text-sm text-error bg-error/10 rounded-xl p-3"
+              >
+                {settingsError}
+              </p>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">
@@ -257,7 +319,12 @@ export default function AdminArticles() {
                 <input
                   type="text"
                   value={gazetteSettings.publicationName}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, publicationName: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      publicationName: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -270,7 +337,12 @@ export default function AdminArticles() {
                   type="text"
                   placeholder="e.g. Vol. I"
                   value={gazetteSettings.volume}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, volume: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      volume: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -283,7 +355,12 @@ export default function AdminArticles() {
                   type="text"
                   placeholder="e.g. Autumn Edition"
                   value={gazetteSettings.edition}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, edition: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      edition: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -298,7 +375,12 @@ export default function AdminArticles() {
                   type="text"
                   placeholder="e.g. Private Circulation"
                   value={gazetteSettings.circulation}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, circulation: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      circulation: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -311,7 +393,12 @@ export default function AdminArticles() {
                   type="text"
                   placeholder="e.g. Botanical Harvest BT-2481"
                   value={gazetteSettings.harvestLabel}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, harvestLabel: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      harvestLabel: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -324,7 +411,12 @@ export default function AdminArticles() {
                   type="text"
                   placeholder="e.g. Small-Batch Botanical Edition"
                   value={gazetteSettings.qualityBadge}
-                  onChange={(e) => setGazetteSettings({ ...gazetteSettings, qualityBadge: e.target.value })}
+                  onChange={(e) =>
+                    setGazetteSettings({
+                      ...gazetteSettings,
+                      qualityBadge: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                 />
               </div>
@@ -374,11 +466,11 @@ export default function AdminArticles() {
                     onClick={() => handleToggleFeatured(article)}
                     className={`px-2 py-0.5 rounded-full font-mono text-[10px] font-bold ${
                       article.featured
-                        ? 'bg-secondary text-primary'
-                        : 'bg-surface-container text-on-surface-variant'
+                        ? "bg-secondary text-primary"
+                        : "bg-surface-container text-on-surface-variant"
                     }`}
                   >
-                    {article.featured ? '★ Cover' : 'Standard'}
+                    {article.featured ? "★ Cover" : "Standard"}
                   </button>
                 </div>
 
@@ -400,7 +492,10 @@ export default function AdminArticles() {
 
             <div className="flex items-center justify-between pt-2 border-t border-outline-variant/40">
               <div className="text-xs text-on-surface-variant">
-                By <span className="font-medium text-primary">{article.author.name}</span>
+                By{" "}
+                <span className="font-medium text-primary">
+                  {article.author.name}
+                </span>
               </div>
               <div className="flex items-center gap-1">
                 <button
@@ -434,17 +529,32 @@ export default function AdminArticles() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-outline-variant bg-surface-container-low/40">
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">Article / Headline</th>
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">Category</th>
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">Byline</th>
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant text-center">Lead Story</th>
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">Status</th>
-                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant text-right">Actions</th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">
+                  Article / Headline
+                </th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">
+                  Category
+                </th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">
+                  Byline
+                </th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant text-center">
+                  Lead Story
+                </th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant">
+                  Status
+                </th>
+                <th className="p-4 font-label-sm text-xs uppercase text-on-surface-variant text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/40 font-body-sm text-body-sm">
               {articles.map((article) => (
-                <tr key={article.slug} className="hover:bg-surface-container-low/60 transition-colors">
+                <tr
+                  key={article.slug}
+                  className="hover:bg-surface-container-low/60 transition-colors"
+                >
                   <td className="p-4 max-w-sm">
                     <div className="flex items-start gap-3">
                       <div className="w-12 h-12 rounded-lg bg-surface-container overflow-hidden shrink-0">
@@ -461,15 +571,23 @@ export default function AdminArticles() {
                           rel="noreferrer"
                           className="font-bold text-primary hover:text-secondary flex items-center gap-1.5 transition-colors line-clamp-1"
                         >
-                          {article.title} <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                          {article.title}{" "}
+                          <ExternalLink className="w-3.5 h-3.5 opacity-60" />
                         </a>
                         <p className="font-mono text-[11px] text-on-surface-variant mt-0.5 flex items-center gap-2">
-                          <span>{article.volume} &bull; {article.readTime}</span>
-                          {article.callout && article.callout.enabled !== false && (
-                            <span className="px-1.5 py-0.2 bg-secondary/15 text-secondary text-[9px] uppercase font-bold rounded">
-                              {article.callout.type === 'product' ? '🛍️ Product' : article.callout.type === 'deal' ? '🏷️ Deal' : '📢 Notice'}
-                            </span>
-                          )}
+                          <span>
+                            {article.volume} &bull; {article.readTime}
+                          </span>
+                          {article.callout &&
+                            article.callout.enabled !== false && (
+                              <span className="px-1.5 py-0.2 bg-secondary/15 text-secondary text-[9px] uppercase font-bold rounded">
+                                {article.callout.type === "product"
+                                  ? "🛍️ Product"
+                                  : article.callout.type === "deal"
+                                    ? "🏷️ Deal"
+                                    : "📢 Notice"}
+                              </span>
+                            )}
                         </p>
                       </div>
                     </div>
@@ -482,8 +600,12 @@ export default function AdminArticles() {
                   </td>
 
                   <td className="p-4">
-                    <p className="font-bold text-primary">{article.author.name}</p>
-                    <p className="text-[11px] text-on-surface-variant">{article.author.role}</p>
+                    <p className="font-bold text-primary">
+                      {article.author.name}
+                    </p>
+                    <p className="text-[11px] text-on-surface-variant">
+                      {article.author.role}
+                    </p>
                   </td>
 
                   <td className="p-4 text-center">
@@ -492,25 +614,25 @@ export default function AdminArticles() {
                       onClick={() => handleToggleFeatured(article)}
                       className={`px-3 py-1 rounded-full font-label-sm text-[11px] uppercase tracking-wider font-bold transition-all cursor-pointer ${
                         article.featured
-                          ? 'bg-secondary text-primary shadow-sm'
-                          : 'bg-surface-container hover:bg-secondary-container/60 text-on-surface-variant'
+                          ? "bg-secondary text-primary shadow-sm"
+                          : "bg-surface-container hover:bg-secondary-container/60 text-on-surface-variant"
                       }`}
                       title="Click to toggle Lead Cover Story status"
                     >
-                      {article.featured ? '★ Cover Story' : 'Standard'}
+                      {article.featured ? "★ Cover Story" : "Standard"}
                     </button>
                   </td>
 
                   <td className="p-4">
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono uppercase tracking-wider ${
-                        article.status === 'draft'
-                          ? 'bg-outline-variant/30 text-on-surface-variant'
-                          : 'bg-secondary-container/60 text-secondary font-bold'
+                        article.status === "draft"
+                          ? "bg-outline-variant/30 text-on-surface-variant"
+                          : "bg-secondary-container/60 text-secondary font-bold"
                       }`}
                     >
                       <CheckCircle2 className="w-3 h-3" />
-                      {article.status || 'published'}
+                      {article.status || "published"}
                     </span>
                   </td>
 

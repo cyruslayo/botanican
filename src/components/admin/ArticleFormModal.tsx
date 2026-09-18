@@ -1,7 +1,7 @@
-'use client';
-import { useState } from 'react';
-import type { Article } from '@/lib/types';
-import { X, Sparkles, AlertCircle } from 'lucide-react';
+"use client";
+import { useState } from "react";
+import type { Article } from "@/lib/types";
+import { X, Sparkles, AlertCircle } from "lucide-react";
 
 interface ArticleFormModalProps {
   isOpen: boolean;
@@ -20,68 +20,74 @@ export default function ArticleFormModal({
 }: ArticleFormModalProps) {
   const isEditing = Boolean(articleToEdit);
 
-  const [title, setTitle] = useState(articleToEdit?.title || '');
-  const [slug, setSlug] = useState(articleToEdit?.slug || '');
-  const [subtitle, setSubtitle] = useState(articleToEdit?.subtitle || '');
-  const [category, setCategory] = useState<Article['category']>(
-    articleToEdit?.category || 'Monograph'
+  const [title, setTitle] = useState(articleToEdit?.title || "");
+  const [slug, setSlug] = useState(articleToEdit?.slug || "");
+  const [subtitle, setSubtitle] = useState(articleToEdit?.subtitle || "");
+  const [category, setCategory] = useState<Article["category"]>(
+    articleToEdit?.category || "Monograph",
   );
-  const [volume, setVolume] = useState(articleToEdit?.volume || 'Vol. I');
-  const [issue, setIssue] = useState(articleToEdit?.issue || 'Issue 01');
-  const [date, setDate] = useState(articleToEdit?.date || 'September 2026');
-  const [readTime, setReadTime] = useState(articleToEdit?.readTime || '5 min read');
-  const [authorName, setAuthorName] = useState(articleToEdit?.author.name || 'Botanica Editorial');
+  const [volume, setVolume] = useState(articleToEdit?.volume || "Vol. I");
+  const [issue, setIssue] = useState(articleToEdit?.issue || "Issue 01");
+  const [date, setDate] = useState(articleToEdit?.date || "September 2026");
+  const [readTime, setReadTime] = useState(
+    articleToEdit?.readTime || "5 min read",
+  );
+  const [authorName, setAuthorName] = useState(
+    articleToEdit?.author.name || "Botanica Editorial",
+  );
   const [authorRole, setAuthorRole] = useState(
-    articleToEdit?.author.role || 'Apothecary Journal'
+    articleToEdit?.author.role || "Botanica Editorial",
   );
   const [image, setImage] = useState(
     articleToEdit?.image ||
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA'
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yy6GMbIqi-iQxCvqjcLUfqwsZwkrt1RwcRWsq9LWTMGM2sWHofVCipqrnFTdmiNqF0BxZgRzurPlmSZ0H1_qHIX2EgXTqNjfQcjcuK2s4Xx3yAuJ-_QBo1i06XVliNJMJBxYP_gbqKVPVCFSA6bkTv1oLOQxIQM0Zh-klcrUdkcId8u87rBkqu2lUURTMk0qQO_X5KlbGWgQSN8rdjfBuXHAz2pzalmlqS1j13ztnc0aRaHdnK8OxA",
   );
-  const [thesis, setThesis] = useState(articleToEdit?.thesis || '');
-  const [excerpt, setExcerpt] = useState(articleToEdit?.excerpt || '');
+  const [thesis, setThesis] = useState(articleToEdit?.thesis || "");
+  const [excerpt, setExcerpt] = useState(articleToEdit?.excerpt || "");
   const [contentString, setContentString] = useState(
-    articleToEdit?.content ? articleToEdit.content.join('\n\n') : ''
+    articleToEdit?.content ? articleToEdit.content.join("\n\n") : "",
   );
   const [takeawaysString, setTakeawaysString] = useState(
-    articleToEdit?.keyTakeaways ? articleToEdit.keyTakeaways.join('\n') : ''
+    articleToEdit?.keyTakeaways ? articleToEdit.keyTakeaways.join("\n") : "",
   );
   const [featured, setFeatured] = useState(articleToEdit?.featured || false);
-  const [status, setStatus] = useState<'draft' | 'published'>(
-    articleToEdit?.status || 'published'
+  const [status, setStatus] = useState<"draft" | "published">(
+    articleToEdit?.status || "published",
   );
   const [relatedProductSlug, setRelatedProductSlug] = useState(
-    articleToEdit?.relatedProductSlug || ''
+    articleToEdit?.relatedProductSlug || "",
   );
 
   // Callout, Offer, and Product reference configuration
   const initialCallout = articleToEdit?.callout;
   const [calloutEnabled, setCalloutEnabled] = useState(
-    initialCallout ? initialCallout.enabled !== false : Boolean(articleToEdit?.relatedProductSlug)
+    initialCallout
+      ? initialCallout.enabled !== false
+      : Boolean(articleToEdit?.relatedProductSlug),
   );
-  const [calloutType, setCalloutType] = useState<'product' | 'deal' | 'announcement'>(
-    initialCallout?.type || 'product'
-  );
+  const [calloutType, setCalloutType] = useState<
+    "product" | "deal" | "announcement"
+  >(initialCallout?.type || "product");
   const [calloutBadge, setCalloutBadge] = useState(
-    initialCallout?.badge || 'Mentioned Apothecary Formulation'
+    initialCallout?.badge || "Mentioned tincture",
   );
   const [calloutTitle, setCalloutTitle] = useState(
-    initialCallout?.title || articleToEdit?.relatedProductName || ''
+    initialCallout?.title || articleToEdit?.relatedProductName || "",
   );
   const [calloutDescription, setCalloutDescription] = useState(
-    initialCallout?.description || ''
+    initialCallout?.description || "",
   );
   const [calloutProductSlug, setCalloutProductSlug] = useState(
-    initialCallout?.productSlug || articleToEdit?.relatedProductSlug || ''
+    initialCallout?.productSlug || articleToEdit?.relatedProductSlug || "",
   );
   const [calloutDiscountCode, setCalloutDiscountCode] = useState(
-    initialCallout?.discountCode || ''
+    initialCallout?.discountCode || "",
   );
   const [calloutCtaText, setCalloutCtaText] = useState(
-    initialCallout?.ctaText || ''
+    initialCallout?.ctaText || "",
   );
   const [calloutCtaUrl, setCalloutCtaUrl] = useState(
-    initialCallout?.ctaUrl || ''
+    initialCallout?.ctaUrl || "",
   );
 
   const [saving, setSaving] = useState(false);
@@ -93,8 +99,8 @@ export default function ArticleFormModal({
       setSlug(
         val
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '')
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, ""),
       );
     }
   };
@@ -109,11 +115,11 @@ export default function ArticleFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError('Title is required');
+      setError("Title is required");
       return;
     }
     if (!slug.trim()) {
-      setError('Slug is required');
+      setError("Slug is required");
       return;
     }
 
@@ -121,21 +127,48 @@ export default function ArticleFormModal({
     setError(null);
 
     const chosenProductSlug = calloutProductSlug || relatedProductSlug;
-    const relatedProduct = existingProducts.find((p) => p.slug === chosenProductSlug);
+    const relatedProduct = existingProducts.find(
+      (p) => p.slug === chosenProductSlug,
+    );
 
     const calloutPayload = calloutEnabled
       ? {
           enabled: true,
           type: calloutType,
           badge: calloutBadge || undefined,
-          title: calloutTitle || (calloutType === 'product' && relatedProduct ? relatedProduct.name : 'Botanica Announcement'),
-          description: calloutDescription || '',
-          productSlug: calloutType === 'product' ? chosenProductSlug || undefined : undefined,
-          discountCode: calloutType === 'deal' ? calloutDiscountCode || undefined : undefined,
-          ctaText: calloutCtaText || (calloutType === 'product' ? 'View Apothecary Batch' : calloutType === 'deal' ? 'Redeem Offer' : 'Learn More'),
-          ctaUrl: calloutCtaUrl || (calloutType === 'product' && chosenProductSlug ? `/product/${chosenProductSlug}` : '/oils'),
+          title:
+            calloutTitle ||
+            (calloutType === "product" && relatedProduct
+              ? relatedProduct.name
+              : "Botanica Announcement"),
+          description: calloutDescription || "",
+          productSlug:
+            calloutType === "product"
+              ? chosenProductSlug || undefined
+              : undefined,
+          discountCode:
+            calloutType === "deal"
+              ? calloutDiscountCode || undefined
+              : undefined,
+          ctaText:
+            calloutCtaText ||
+            (calloutType === "product"
+              ? "View product"
+              : calloutType === "deal"
+                ? "Redeem Offer"
+                : "Learn More"),
+          ctaUrl:
+            calloutCtaUrl ||
+            (calloutType === "product" && chosenProductSlug
+              ? `/product/${chosenProductSlug}`
+              : "/oils"),
         }
-      : { enabled: false, type: 'product' as const, title: '', description: '' };
+      : {
+          enabled: false,
+          type: "product" as const,
+          title: "",
+          description: "",
+        };
 
     const articlePayload: Partial<Article> = {
       title,
@@ -154,11 +187,11 @@ export default function ArticleFormModal({
       thesis,
       excerpt,
       content: contentString
-        .split('\n\n')
+        .split("\n\n")
         .map((p) => p.trim())
         .filter(Boolean),
       keyTakeaways: takeawaysString
-        .split('\n')
+        .split("\n")
         .map((t) => t.trim())
         .filter(Boolean),
       featured,
@@ -172,7 +205,7 @@ export default function ArticleFormModal({
       await onSave(articlePayload);
       onClose();
     } catch (err: any) {
-      setError(err?.message || 'Failed to save article');
+      setError(err?.message || "Failed to save article");
     } finally {
       setSaving(false);
     }
@@ -189,7 +222,7 @@ export default function ArticleFormModal({
               Editorial Studio
             </span>
             <h2 className="font-headline-md text-base sm:text-headline-md text-primary mt-0.5 sm:mt-1">
-              {isEditing ? 'Edit Monograph' : 'Author New Publication Article'}
+              {isEditing ? "Edit Monograph" : "Author New Publication Article"}
             </h2>
           </div>
           <button
@@ -307,7 +340,8 @@ export default function ArticleFormModal({
 
           <div className="p-4 rounded-xl bg-secondary-container/20 border border-secondary/20 space-y-2">
             <label className="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4" /> Central Monograph Thesis (Pull Quote)
+              <Sparkles className="w-4 h-4" /> Central Monograph Thesis (Pull
+              Quote)
             </label>
             <textarea
               rows={2}
@@ -336,7 +370,9 @@ export default function ArticleFormModal({
               <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">
                 Article Body (Paragraphs separated by double line-breaks)
               </label>
-              <span className="font-mono text-xs text-on-surface-variant">{readTime}</span>
+              <span className="font-mono text-xs text-on-surface-variant">
+                {readTime}
+              </span>
             </div>
             <textarea
               rows={7}
@@ -427,46 +463,58 @@ export default function ArticleFormModal({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <button
                     type="button"
-                    onClick={() => setCalloutType('product')}
+                    onClick={() => setCalloutType("product")}
                     className={`p-3 rounded-xl border text-left transition-all ${
-                      calloutType === 'product'
-                        ? 'bg-secondary-container/60 border-secondary text-primary font-bold'
-                        : 'bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40'
+                      calloutType === "product"
+                        ? "bg-secondary-container/60 border-secondary text-primary font-bold"
+                        : "bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40"
                     }`}
                   >
-                    <span className="block font-mono text-[10px] uppercase tracking-wider">🛍️ Store Reference</span>
-                    <span className="text-xs font-semibold">Live Product Link</span>
+                    <span className="block font-mono text-[10px] uppercase tracking-wider">
+                      🛍️ Store Reference
+                    </span>
+                    <span className="text-xs font-semibold">
+                      Live Product Link
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setCalloutType('deal')}
+                    onClick={() => setCalloutType("deal")}
                     className={`p-3 rounded-xl border text-left transition-all ${
-                      calloutType === 'deal'
-                        ? 'bg-secondary-container/60 border-secondary text-primary font-bold'
-                        : 'bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40'
+                      calloutType === "deal"
+                        ? "bg-secondary-container/60 border-secondary text-primary font-bold"
+                        : "bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40"
                     }`}
                   >
-                    <span className="block font-mono text-[10px] uppercase tracking-wider">🏷️ Special Deal</span>
-                    <span className="text-xs font-semibold">Member Discount Code</span>
+                    <span className="block font-mono text-[10px] uppercase tracking-wider">
+                      🏷️ Special Deal
+                    </span>
+                    <span className="text-xs font-semibold">
+                      Member Discount Code
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setCalloutType('announcement')}
+                    onClick={() => setCalloutType("announcement")}
                     className={`p-3 rounded-xl border text-left transition-all ${
-                      calloutType === 'announcement'
-                        ? 'bg-secondary-container/60 border-secondary text-primary font-bold'
-                        : 'bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40'
+                      calloutType === "announcement"
+                        ? "bg-secondary-container/60 border-secondary text-primary font-bold"
+                        : "bg-surface border-outline/60 text-on-surface-variant hover:border-secondary/40"
                     }`}
                   >
-                    <span className="block font-mono text-[10px] uppercase tracking-wider">📢 Announcement</span>
-                    <span className="text-xs font-semibold">Botanical Advisory</span>
+                    <span className="block font-mono text-[10px] uppercase tracking-wider">
+                      📢 Announcement
+                    </span>
+                    <span className="text-xs font-semibold">
+                      Botanical Advisory
+                    </span>
                   </button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {calloutType === 'product' && (
+                  {calloutType === "product" && (
                     <div className="space-y-1.5 sm:col-span-2">
                       <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">
                         Select Catalog Product
@@ -477,8 +525,11 @@ export default function ArticleFormModal({
                           const val = e.target.value;
                           setCalloutProductSlug(val);
                           setRelatedProductSlug(val);
-                          const matched = existingProducts.find((p) => p.slug === val);
-                          if (matched && !calloutTitle) setCalloutTitle(matched.name);
+                          const matched = existingProducts.find(
+                            (p) => p.slug === val,
+                          );
+                          if (matched && !calloutTitle)
+                            setCalloutTitle(matched.name);
                         }}
                         className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                       >
@@ -518,7 +569,7 @@ export default function ArticleFormModal({
                     />
                   </div>
 
-                  {calloutType === 'deal' && (
+                  {calloutType === "deal" && (
                     <div className="space-y-1.5 sm:col-span-2">
                       <label className="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">
                         Discount / Invite Code (One-Click Copy)
@@ -541,7 +592,7 @@ export default function ArticleFormModal({
                       rows={2}
                       value={calloutDescription}
                       onChange={(e) => setCalloutDescription(e.target.value)}
-                      placeholder="Tell readers why this formulation or announcement matters..."
+                      placeholder="Tell readers why this product or announcement matters..."
                       className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                     />
                   </div>
@@ -554,7 +605,11 @@ export default function ArticleFormModal({
                       type="text"
                       value={calloutCtaText}
                       onChange={(e) => setCalloutCtaText(e.target.value)}
-                      placeholder={calloutType === 'product' ? 'View Apothecary Batch' : 'Redeem Offer'}
+                      placeholder={
+                        calloutType === "product"
+                          ? "View product"
+                          : "Redeem Offer"
+                      }
                       className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
                     />
                   </div>
@@ -567,7 +622,11 @@ export default function ArticleFormModal({
                       type="text"
                       value={calloutCtaUrl}
                       onChange={(e) => setCalloutCtaUrl(e.target.value)}
-                      placeholder={calloutProductSlug ? `/product/${calloutProductSlug}` : '/oils'}
+                      placeholder={
+                        calloutProductSlug
+                          ? `/product/${calloutProductSlug}`
+                          : "/oils"
+                      }
                       className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-mono text-xs text-primary focus:border-secondary focus:outline-none"
                     />
                   </div>
@@ -586,7 +645,9 @@ export default function ArticleFormModal({
                 onChange={(e) => setStatus(e.target.value as any)}
                 className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl font-body-sm text-primary focus:border-secondary focus:outline-none"
               >
-                <option value="published">Published &bull; Live in Gazette</option>
+                <option value="published">
+                  Published &bull; Live in Gazette
+                </option>
                 <option value="draft">Draft &bull; Internal Review</option>
               </select>
             </div>
@@ -619,7 +680,11 @@ export default function ArticleFormModal({
                 disabled={saving}
                 className="px-8 py-2.5 bg-primary text-on-primary font-label-sm text-xs uppercase tracking-wider font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all"
               >
-                {saving ? 'Saving...' : isEditing ? 'Update Monograph' : 'Publish to Gazette'}
+                {saving
+                  ? "Saving..."
+                  : isEditing
+                    ? "Update Monograph"
+                    : "Publish to Gazette"}
               </button>
             </div>
           </div>
