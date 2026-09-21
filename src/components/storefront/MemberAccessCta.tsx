@@ -36,8 +36,8 @@ const STATE_COPY = {
     href: "/invite",
   },
   rejected: {
-    heading: "Member Access",
-    body: "You need a valid member invite to request Store access.",
+    heading: "Request not approved",
+    body: "If you have a valid member invite, you can submit a new request.",
     action: "Use your invite",
     href: "/invite",
   },

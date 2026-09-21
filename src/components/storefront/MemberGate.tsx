@@ -4,10 +4,12 @@ import { useStore } from "@nanostores/react";
 import {
   isApproved,
   isPending,
+  isRejected,
   accessState,
   clearAccess,
   setApprovedAccess,
   setPendingAccess,
+  setRejectedAccess,
 } from "@/store/access";
 import { checkAccess } from "@/lib/referrals";
 
@@ -18,6 +20,7 @@ interface MemberGateProps {
 export default function MemberGate({ children }: MemberGateProps) {
   const approved = useStore(isApproved);
   const pending = useStore(isPending);
+  const rejected = useStore(isRejected);
   const access = useStore(accessState);
   const [hydrated, setHydrated] = useState(false);
   const [verification, setVerification] = useState<
@@ -58,11 +61,15 @@ export default function MemberGate({ children }: MemberGateProps) {
           setVerification("verified");
           return;
         }
+        if (result.status === "rejected") {
+          setRejectedAccess(result.instagramHandle || handle, phone);
+          setVerification("verified");
+          return;
+        }
         clearAccess();
         setVerification("verified");
       })
-      .catch((error) => {
-        console.error("Error verifying member access:", error);
+      .catch(() => {
         if (active) setVerification("error");
       });
 
@@ -118,6 +125,7 @@ export default function MemberGate({ children }: MemberGateProps) {
         <div className="max-w-xl w-full bg-surface-container-low rounded-2xl p-6 sm:p-10 border border-secondary/30 botanical-shadow text-center animate-in fade-in zoom-in-95 duration-300">
           <div className="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mx-auto mb-6">
             <svg
+              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               width="32"
               height="32"
@@ -184,11 +192,24 @@ export default function MemberGate({ children }: MemberGateProps) {
   }
 
   // 3. Guest / Rejected / Unverified: Gate screen
+  const rejectedCopy = rejected
+    ? {
+        label: "Access not approved",
+        heading: "Your request was not approved",
+        body: "If you have a valid member invite, you can submit a new request.",
+      }
+    : {
+        label: "Private store",
+        heading: "Members-Only Store",
+        body: "Botanica is invite-only. The private store and checkout are for approved members.",
+      };
+
   return (
     <main className="min-h-[75dvh] flex items-center justify-center px-margin-mobile md:px-margin-desktop py-stack-lg md:py-section-gap pt-24 md:pt-32">
       <div className="max-w-xl w-full bg-surface-container-low rounded-2xl p-6 sm:p-10 border border-outline-variant botanical-shadow text-center animate-in fade-in zoom-in-95 duration-300">
         <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
           <svg
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="30"
             height="30"
@@ -206,17 +227,16 @@ export default function MemberGate({ children }: MemberGateProps) {
 
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full mb-4">
           <span className="font-label-sm text-xs font-bold uppercase tracking-widest text-on-surface-variant">
-            Private store
+            {rejectedCopy.label}
           </span>
         </div>
 
         <h1 className="font-display-sm md:font-display-md text-display-sm md:text-display-md text-primary mb-3">
-          Members-Only Store
+          {rejectedCopy.heading}
         </h1>
 
         <p className="font-body-md md:font-body-lg text-body-md md:text-body-lg text-on-surface-variant mb-8 max-w-md mx-auto leading-relaxed">
-          Botanica is invite-only. The private store and checkout are for
-          approved members.
+          {rejectedCopy.body}
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-3.5">

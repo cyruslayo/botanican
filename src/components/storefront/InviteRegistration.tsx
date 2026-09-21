@@ -5,6 +5,7 @@ import {
   accessState,
   setPendingAccess,
   setApprovedAccess,
+  setRejectedAccess,
   clearAccess,
 } from "@/store/access";
 import {
@@ -136,6 +137,8 @@ export default function InviteRegistration({
           `Your request for ${handle} is under review. The private store stays locked until approval.`,
         );
       } else if (res.status === "rejected") {
+        const handle = res.instagramHandle || normalizeHandle(statusQuery);
+        setRejectedAccess(handle, statusPhone);
         setStatusResult(
           "Your request was not approved. If you have a valid invite code, you may submit a new request.",
         );
@@ -406,6 +409,16 @@ export default function InviteRegistration({
       </div>
 
       <div className="bg-surface-container-low rounded-2xl p-8 border border-outline-variant botanical-shadow">
+        {access.status === "rejected" && (
+          <p
+            className="mb-6 rounded-xl border border-error/30 bg-error/10 p-4 font-body-sm text-body-sm text-error"
+            role="status"
+            aria-live="polite"
+          >
+            Your previous request was not approved. If you have a valid invite,
+            you can submit a new request.
+          </p>
+        )}
         {!referralInfo ? (
           <div className="space-y-6">
             <h2 className="font-headline-sm text-headline-sm text-primary">

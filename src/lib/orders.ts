@@ -43,11 +43,16 @@ function secureRandomId(): string {
   throw new Error("Secure receipt upload is unavailable in this browser.");
 }
 
+export function createOrderIdempotencyKey(): string {
+  return `botanica-${secureRandomId()}`;
+}
+
 export async function createOrder(payload: {
   items: CartLine[];
   total: number;
   shippingAddress: ShippingAddress;
   receiptUrl: string;
+  idempotencyKey: string;
 }) {
   const supabase = getSupabase();
   const orderIntent = payload.items.map((item) =>
@@ -67,6 +72,7 @@ export async function createOrder(payload: {
     p_total: payload.total,
     p_shipping_address: payload.shippingAddress,
     p_receipt_url: payload.receiptUrl,
+    p_idempotency_key: payload.idempotencyKey,
   });
 
   if (error) {

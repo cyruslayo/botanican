@@ -7,6 +7,11 @@ interface Props {
 
 const { article } = Astro.props;
 const authorRole = article.author.role === 'Apothecary Journal' ? 'Botanica Editorial' : article.author.role;
+const categoryLabel = article.category === 'Monograph'
+  ? 'Journal entry'
+  : article.category === 'Protocol & Ritual'
+    ? 'Guide'
+    : article.category;
 ---
 
 <article class="flex flex-col bg-surface rounded-xl border border-outline-variant/40 overflow-hidden hover:border-secondary/60 transition-colors group">
@@ -22,7 +27,7 @@ const authorRole = article.author.role === 'Apothecary Journal' ? 'Botanica Edit
       height="400"
     />
     <span class="absolute top-3 left-3 px-2.5 py-1 bg-surface/90 backdrop-blur-md rounded-full font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-      {article.category}
+      {categoryLabel}
     </span>
   </div>
 

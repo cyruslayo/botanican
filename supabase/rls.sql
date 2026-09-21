@@ -23,11 +23,16 @@ create policy profiles_select_own on public.profiles
 
 drop policy if exists profiles_update_own on public.profiles;
 create policy profiles_update_own on public.profiles
-  for update using (auth.uid() = id or public.is_admin());
+  for update
+  using (auth.uid() = id or public.is_admin())
+  with check (public.is_admin() or (auth.uid() = id and role = 'customer'));
 
 -- Products: authenticated admin read/write only. Customer catalog access
 -- uses the protected member catalog RPCs instead of a table policy.
+drop policy if exists products_select on public.products;
 drop policy if exists products_admin_select on public.products;
+revoke all privileges on table public.products from public, anon, authenticated;
+grant select, insert, update, delete on table public.products to authenticated;
 create policy products_admin_select on public.products
   for select using (public.is_admin());
 

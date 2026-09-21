@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
-import { accessState, clearAccess, isApproved } from "@/store/access";
+import { accessState, isApproved } from "@/store/access";
 import {
   getMemberCatalog,
   isMemberCatalogAuthorizationError,
 } from "@/lib/products";
 import { useHydrated } from "@/lib/useHydrated";
+import { refreshMemberAccess } from "@/lib/memberAccess";
 import { formatNaira } from "@/lib/utils";
 import type { MemberCatalogProduct } from "@/lib/types";
 
@@ -50,13 +51,20 @@ export default function ProductCatalogIsland({
         setProducts(result);
         setCatalogState(result.length > 0 ? "loaded" : "empty");
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         if (!active) return;
 
         setProducts([]);
         if (isMemberCatalogAuthorizationError(error)) {
-          clearAccess();
-          setCatalogState("idle");
+          const refreshedStatus = await refreshMemberAccess(handle, phone);
+          if (!active) return;
+          setCatalogState(
+            refreshedStatus === "pending" ||
+              refreshedStatus === "rejected" ||
+              refreshedStatus === "guest"
+              ? "idle"
+              : "error",
+          );
           return;
         }
 

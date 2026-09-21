@@ -11,6 +11,7 @@ import {
   DEFAULT_SITE_SETTINGS,
 } from "@/lib/siteSettings";
 import { useHydrated } from "@/lib/useHydrated";
+import { refreshMemberAccess } from "@/lib/memberAccess";
 import { FIXED_DELIVERY_FEE_NAIRA } from "@/lib/commerce";
 import { multiplyMoney, sumMoney } from "@/lib/money";
 
@@ -25,6 +26,7 @@ const PROMOTION_CHECKOUT_ERROR_CODES = new Set([
   "P7A03",
   "P7A04",
   "P7A05",
+  "P7A06",
   "P7A07",
   "P7A08",
   "P7A09",
@@ -34,6 +36,11 @@ function isUnavailablePromotionError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
   const code = (error as { code?: unknown }).code;
   return typeof code === "string" && PROMOTION_CHECKOUT_ERROR_CODES.has(code);
+}
+
+function isMemberAuthorizationError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  return (error as { code?: unknown }).code === "42501";
 }
 
 function getOrderSubmissionError(error: unknown): string {
@@ -68,6 +75,7 @@ export default function Checkout() {
 
   const approved = isHydrated && rawApproved;
   const pending = isHydrated && rawPending;
+  const rejected = isHydrated && access.status === "rejected";
   const items = isHydrated ? rawItems : [];
   const subtotal = isHydrated ? rawTotal : 0;
   const deliveryFee = items.length > 0 ? FIXED_DELIVERY_FEE_NAIRA : 0;
@@ -124,6 +132,9 @@ export default function Checkout() {
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderIdempotencyKey, setOrderIdempotencyKey] = useState<string | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -191,7 +202,13 @@ export default function Checkout() {
     let checkoutStage: "receipt" | "order" = "receipt";
     try {
       // Lazily load Supabase only when the user actually submits an order.
-      const { uploadReceipt, createOrder } = await import("@/lib/orders");
+      const { uploadReceipt, createOrder, createOrderIdempotencyKey } =
+        await import("@/lib/orders");
+      const currentOrderIdempotencyKey =
+        orderIdempotencyKey ?? createOrderIdempotencyKey();
+      if (!orderIdempotencyKey) {
+        setOrderIdempotencyKey(currentOrderIdempotencyKey);
+      }
       const receiptUrl = await uploadReceipt(receiptFile);
 
       checkoutStage = "order";
@@ -205,12 +222,29 @@ export default function Checkout() {
             : `@${formData.instagramHandle.trim().toLowerCase()}`,
         },
         receiptUrl,
+        idempotencyKey: currentOrderIdempotencyKey,
       });
 
       setSuccess(true);
       clearCart();
     } catch (err: any) {
       console.error(`Checkout ${checkoutStage} error:`, err);
+      if (checkoutStage === "order" && isMemberAuthorizationError(err)) {
+        const refreshedStatus = await refreshMemberAccess(
+          formData.instagramHandle,
+          formData.phone,
+        );
+        if (
+          refreshedStatus === "pending" ||
+          refreshedStatus === "rejected" ||
+          refreshedStatus === "guest"
+        ) {
+          setError(
+            "Your member access changed. Please review your access status before trying again.",
+          );
+          return;
+        }
+      }
       setError(
         checkoutStage === "receipt"
           ? "We could not upload your receipt. Please try again."
@@ -254,6 +288,23 @@ export default function Checkout() {
   }
 
   if (!approved) {
+    let accessTitle = "Members-Only Checkout";
+    let accessMessage =
+      "Botanica is invite-only. You must be invited by an approved member to place orders.";
+    let accessAction = "Enter Referral Code";
+
+    if (pending) {
+      accessTitle = "Membership Pending Approval";
+      accessMessage =
+        "Your membership application is currently in the review queue. Once approved by our team, your checkout will be unlocked.";
+      accessAction = "Check Application Status";
+    } else if (rejected) {
+      accessTitle = "Your request was not approved";
+      accessMessage =
+        "If you have a valid member invite, you can submit a new request before checkout.";
+      accessAction = "Use your invite";
+    }
+
     return (
       <main className="max-w-2xl mx-auto px-margin-mobile md:px-margin-desktop pt-32 pb-24 text-center">
         <div className="bg-surface-container-low rounded-2xl p-8 botanical-shadow border border-secondary/20 flex flex-col items-center">
@@ -275,19 +326,17 @@ export default function Checkout() {
             </svg>
           </div>
           <h1 className="font-headline-md text-headline-md text-primary mb-3">
-            {pending ? "Membership Pending Approval" : "Members-Only Checkout"}
+            {accessTitle}
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-md">
-            {pending
-              ? "Your membership application is currently in the review queue. Once approved by our team, your checkout will be unlocked."
-              : "Botanica is an invite-only apothecary. You must be invited by an approved member to place orders."}
+            {accessMessage}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="/invite"
               className="px-6 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/90 transition-colors"
             >
-              {pending ? "Check Application Status" : "Enter Referral Code"}
+              {accessAction}
             </a>
             <a
               href="/"
@@ -638,7 +687,11 @@ export default function Checkout() {
             </div>
 
             {error && (
-              <div className="p-4 mb-4 bg-error/10 text-error rounded-lg font-body-sm flex gap-2 items-start">
+              <div
+                className="p-4 mb-4 bg-error/10 text-error rounded-lg font-body-sm flex gap-2 items-start"
+                role="alert"
+                aria-live="assertive"
+              >
                 <AlertIcon />
                 <p>{error}</p>
               </div>

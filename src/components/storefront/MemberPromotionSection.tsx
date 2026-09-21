@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { addPromotion } from "@/store/cart";
-import { accessState, clearAccess, isApproved } from "@/store/access";
+import { accessState, isApproved } from "@/store/access";
 import { useHydrated } from "@/lib/useHydrated";
+import { refreshMemberAccess } from "@/lib/memberAccess";
 import {
   getMemberPromotions,
   isMemberPromotionAuthorizationError,
@@ -20,18 +21,23 @@ export default function MemberPromotionSection() {
   const [addedId, setAddedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!hydrated || !approved || !access.instagramHandle || !access.phone) {
+    const handle = access.instagramHandle;
+    const phone = access.phone;
+    if (!hydrated || !approved || !handle || !phone) {
       setPromotions([]);
       return;
     }
     let active = true;
-    getMemberPromotions(access.instagramHandle, access.phone)
+    getMemberPromotions(handle, phone)
       .then((result) => {
         if (active) setPromotions(result);
       })
-      .catch((error) => {
+      .catch(async (error) => {
         if (!active) return;
-        if (isMemberPromotionAuthorizationError(error)) clearAccess();
+        if (isMemberPromotionAuthorizationError(error)) {
+          await refreshMemberAccess(handle, phone);
+          if (!active) return;
+        }
         setPromotions([]);
       });
     return () => {
