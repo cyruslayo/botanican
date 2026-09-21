@@ -25,12 +25,8 @@ drop policy if exists profiles_update_own on public.profiles;
 create policy profiles_update_own on public.profiles
   for update using (auth.uid() = id or public.is_admin());
 
--- Products: public read of active products, admin read of everything,
--- admin write.
-drop policy if exists products_select on public.products;
-create policy products_select on public.products
-  for select using (is_active = true);
-
+-- Products: authenticated admin read/write only. Customer catalog access
+-- uses the protected member catalog RPCs instead of a table policy.
 drop policy if exists products_admin_select on public.products;
 create policy products_admin_select on public.products
   for select using (public.is_admin());
