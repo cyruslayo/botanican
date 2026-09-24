@@ -1,16 +1,21 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import ProductFormModal from '@/components/admin/ProductFormModal';
+import { getSupabase } from '@/lib/supabase';
 import { formatNaira } from '@/lib/utils';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshStatus, setRefreshStatus] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [productToDelete, setProductToDelete] = useState<any | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<any | null>(null);
+  const isFetchingRef = useRef(false);
+  const refreshQueuedRef = useRef(false);
+  const manualRefreshQueuedRef = useRef(false);
 
   async function handleDeleteConfirm() {
     if (!productToDelete) return;
@@ -36,29 +41,104 @@ export default function AdminProducts() {
     new Set(products.map((p) => p.category).filter(Boolean))
   );
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const fetchProducts = useCallback(async (mode: 'initial' | 'silent' | 'manual' = 'silent') => {
+    if (mode === 'manual') setRefreshStatus('Refreshing…');
+    if (isFetchingRef.current) {
+      refreshQueuedRef.current = true;
+      if (mode === 'manual') manualRefreshQueuedRef.current = true;
+      return;
+    }
+
+    isFetchingRef.current = true;
+    let nextMode: 'initial' | 'silent' | 'manual' | null = mode;
     try {
-      const { getSupabase } = await import('@/lib/supabase');
-      const supabase = getSupabase();
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setProducts(data ?? []);
-    } catch (error) {
-      console.error('Error fetching products: ', error);
-      setProducts([]);
-      setError('Products could not be loaded.');
+      while (nextMode) {
+        const currentMode = nextMode;
+        refreshQueuedRef.current = false;
+        if (currentMode === 'initial') setLoading(true);
+        if (currentMode === 'initial') setError(null);
+
+        try {
+          const { getSupabase } = await import('@/lib/supabase');
+          const { data, error } = await getSupabase()
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          setProducts(data ?? []);
+          setError(null);
+          if (currentMode === 'manual') setRefreshStatus('Inventory updated');
+        } catch (fetchError) {
+          console.error('Error fetching products: ', fetchError);
+          if (currentMode === 'initial') {
+            setProducts([]);
+            setError('Products could not be loaded.');
+          } else if (currentMode === 'manual') {
+            setRefreshStatus('Inventory could not be refreshed. Try again.');
+          }
+        } finally {
+          if (currentMode === 'initial') setLoading(false);
+        }
+
+        nextMode = manualRefreshQueuedRef.current
+          ? 'manual'
+          : refreshQueuedRef.current
+            ? 'silent'
+            : null;
+        manualRefreshQueuedRef.current = false;
+      }
     } finally {
-      setLoading(false);
+      isFetchingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    void fetchProducts('initial');
+  }, [fetchProducts]);
+
+  useEffect(() => {
+    const supabase = getSupabase();
+    const channel = supabase
+      .channel('admin-products-inventory')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        () => void fetchProducts('silent'),
+      )
+      .subscribe((status, subscribeError) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.warn('Product inventory realtime refresh is unavailable.', subscribeError);
+        }
+      });
+
+    let pollingTimer: ReturnType<typeof setInterval> | undefined;
+    const updatePolling = () => {
+      if (pollingTimer) clearInterval(pollingTimer);
+      pollingTimer = undefined;
+      if (document.visibilityState === 'visible') {
+        pollingTimer = setInterval(() => {
+          void fetchProducts('silent');
+        }, 15_000);
+      }
+    };
+    const handleFocus = () => {
+      if (document.visibilityState === 'visible') void fetchProducts('silent');
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') void fetchProducts('silent');
+      updatePolling();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    updatePolling();
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (pollingTimer) clearInterval(pollingTimer);
+      void supabase.removeChannel(channel);
+    };
   }, [fetchProducts]);
 
   const handleAddClick = () => {
@@ -91,14 +171,28 @@ export default function AdminProducts() {
             Manage your apothecary catalog, formulations, and stock levels.
           </p>
         </div>
-        <button
-          onClick={handleAddClick}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-label-sm text-xs uppercase tracking-wider font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-xs w-full sm:w-auto shrink-0 cursor-pointer"
-        >
-          <PlusIcon />
-          <span>Add Product</span>
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+          <button
+            type="button"
+            onClick={() => void fetchProducts('manual')}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-container-high text-primary rounded-xl font-label-sm text-xs font-bold hover:bg-surface-container transition-colors w-full sm:w-auto cursor-pointer"
+          >
+            <RefreshIcon />
+            <span>Refresh inventory</span>
+          </button>
+          <button
+            onClick={handleAddClick}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-label-sm text-xs uppercase tracking-wider font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-xs w-full sm:w-auto cursor-pointer"
+          >
+            <PlusIcon />
+            <span>Add Product</span>
+          </button>
+        </div>
       </div>
+
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {refreshStatus}
+      </p>
 
       {error && !loading && (
         <div className="p-8 text-center text-on-surface-variant bg-surface rounded-2xl border border-error/30">
@@ -345,11 +439,21 @@ export default function AdminProducts() {
           isOpen={isFormModalOpen}
           onClose={() => setIsFormModalOpen(false)}
           product={productToEdit}
-          onSaved={fetchProducts}
+          onSaved={() => void fetchProducts('silent')}
           existingCategories={existingCategories}
         />
       )}
     </div>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 7v5h-5" />
+      <path d="M4 17v-5h5" />
+      <path d="M5.6 9a7 7 0 0 1 11.55-2.6L20 12M4 12l2.85 5.6A7 7 0 0 0 18.4 15" />
+    </svg>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import { formatNaira } from "@/lib/utils";
 import { sumMoney } from "@/lib/money";
@@ -14,10 +14,17 @@ interface DashboardOrder {
   created_at: string;
 }
 
+interface DashboardProduct {
+  id: string;
+  inventory: number | string | null;
+}
+
 interface DashboardMetrics {
   orderValue: number;
   totalOrders: number;
   activeProducts: number;
+  unitsInStock: number;
+  lowStockProducts: number;
   pendingApplications: number;
   recentOrders: DashboardOrder[];
 }
@@ -26,6 +33,8 @@ const EMPTY_METRICS: DashboardMetrics = {
   orderValue: 0,
   totalOrders: 0,
   activeProducts: 0,
+  unitsInStock: 0,
+  lowStockProducts: 0,
   pendingApplications: 0,
   recentOrders: [],
 };
@@ -34,51 +43,108 @@ export default function AdminDashboard() {
   const [metrics, setMetrics] = useState(EMPTY_METRICS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isLoadingRef = useRef(false);
+  const refreshQueuedRef = useRef(false);
 
-  const loadDashboard = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const loadDashboard = useCallback(async (mode: "initial" | "silent" = "silent") => {
+    if (isLoadingRef.current) {
+      refreshQueuedRef.current = true;
+      return;
+    }
+
+    isLoadingRef.current = true;
+    let nextMode: "initial" | "silent" | null = mode;
     try {
-      const supabase = getSupabase();
-      const [ordersResult, productsResult, applicationsResult] =
-        await Promise.all([
-          supabase
-            .from("orders")
-            .select("id,total,status,user_id,shipping_address,created_at")
-            .order("created_at", { ascending: false }),
-          supabase.from("products").select("id").eq("is_active", true),
-          supabase
-            .from("access_requests")
-            .select("id", { count: "exact", head: true })
-            .eq("status", "pending"),
-        ]);
+      while (nextMode) {
+        const currentMode = nextMode;
+        refreshQueuedRef.current = false;
+        if (currentMode === "initial") {
+          setLoading(true);
+          setError(null);
+        }
 
-      if (ordersResult.error) throw ordersResult.error;
-      if (productsResult.error) throw productsResult.error;
-      if (applicationsResult.error) throw applicationsResult.error;
+        try {
+          const supabase = getSupabase();
+          const [ordersResult, productsResult, applicationsResult] =
+            await Promise.all([
+              supabase
+                .from("orders")
+                .select("id,total,status,user_id,shipping_address,created_at")
+                .order("created_at", { ascending: false }),
+              supabase
+                .from("products")
+                .select("id,inventory")
+                .eq("is_active", true),
+              supabase
+                .from("access_requests")
+                .select("id", { count: "exact", head: true })
+                .eq("status", "pending"),
+            ]);
 
-      const orders = (ordersResult.data || []) as DashboardOrder[];
-      const liveOrders = orders.filter(
-        (order) => order.status.toLowerCase() !== "cancelled",
-      );
-      setMetrics({
-        orderValue: sumMoney(...liveOrders.map((order) => order.total || 0)),
-        totalOrders: orders.length,
-        activeProducts: productsResult.data?.length || 0,
-        pendingApplications: applicationsResult.count || 0,
-        recentOrders: liveOrders.slice(0, 5),
-      });
-    } catch (loadError) {
-      console.error("Error loading admin dashboard:", loadError);
-      setMetrics(EMPTY_METRICS);
-      setError("Dashboard data could not be loaded from Supabase.");
+          if (ordersResult.error) throw ordersResult.error;
+          if (productsResult.error) throw productsResult.error;
+          if (applicationsResult.error) throw applicationsResult.error;
+
+          const orders = (ordersResult.data || []) as DashboardOrder[];
+          const products = (productsResult.data || []) as DashboardProduct[];
+          const liveOrders = orders.filter(
+            (order) => order.status.toLowerCase() !== "cancelled",
+          );
+          const inventoryValues = products.map((product) => {
+            const inventory = Number(product.inventory);
+            return Number.isFinite(inventory) ? inventory : 0;
+          });
+
+          setMetrics({
+            orderValue: sumMoney(...liveOrders.map((order) => order.total || 0)),
+            totalOrders: orders.length,
+            activeProducts: products.length,
+            unitsInStock: inventoryValues.reduce(
+              (total, inventory) => total + Math.max(0, inventory),
+              0,
+            ),
+            lowStockProducts: inventoryValues.filter(
+              (inventory) => inventory >= 1 && inventory <= 3,
+            ).length,
+            pendingApplications: applicationsResult.count || 0,
+            recentOrders: liveOrders.slice(0, 5),
+          });
+          setError(null);
+        } catch (loadError) {
+          console.error("Error loading admin dashboard:", loadError);
+          if (currentMode === "initial") {
+            setMetrics(EMPTY_METRICS);
+            setError("Dashboard data could not be loaded from Supabase.");
+          }
+        } finally {
+          if (currentMode === "initial") setLoading(false);
+        }
+
+        nextMode = refreshQueuedRef.current ? "silent" : null;
+      }
     } finally {
-      setLoading(false);
+      isLoadingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    loadDashboard();
+    void loadDashboard("initial");
+  }, [loadDashboard]);
+
+  useEffect(() => {
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void loadDashboard("silent");
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") void loadDashboard("silent");
+    };
+
+    window.addEventListener("focus", refreshIfVisible);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("focus", refreshIfVisible);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [loadDashboard]);
 
   const metricCards = [
@@ -96,6 +162,16 @@ export default function AdminDashboard() {
       label: "Active Products",
       value: metrics.activeProducts.toString(),
       icon: "📦",
+    },
+    {
+      label: "Units In Stock",
+      value: metrics.unitsInStock.toString(),
+      icon: "🧺",
+    },
+    {
+      label: "Low Stock Products",
+      value: metrics.lowStockProducts.toString(),
+      icon: "⚠️",
     },
     {
       label: "Pending Applications",
@@ -117,7 +193,7 @@ export default function AdminDashboard() {
         </div>
         <button
           type="button"
-          onClick={loadDashboard}
+          onClick={() => void loadDashboard("silent")}
           className="text-xs font-mono text-primary underline underline-offset-4 w-fit"
         >
           Refresh data
