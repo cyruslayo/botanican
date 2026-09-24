@@ -130,9 +130,12 @@ export default function ProductCatalogIsland({
 
 function ProductCard({ product }: { product: MemberCatalogProduct }) {
   const productUrl = `/product/${product.slug}`;
-  const availability = product.is_available
-    ? "Available"
-    : "Currently unavailable";
+  const availability =
+    product.stock_status === "available"
+      ? "Available"
+      : product.stock_status === "low_stock"
+        ? "Only a few left"
+        : "Currently unavailable";
   const productDetails = [
     product.strength_mg == null ? null : `${product.strength_mg} mg`,
     product.bottle_size_ml == null ? null : `${product.bottle_size_ml} ml`,

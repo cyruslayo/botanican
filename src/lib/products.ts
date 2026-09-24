@@ -23,7 +23,7 @@ export async function getMemberCatalog(
   phone: string,
   category: string,
 ): Promise<MemberCatalogProduct[]> {
-  const { data, error } = await getSupabase().rpc("get_member_catalog", {
+  const { data, error } = await getSupabase().rpc("get_member_catalog_v2", {
     p_instagram_handle: instagramHandle,
     p_phone: phone,
     p_category: category,
@@ -37,7 +37,7 @@ export async function getMemberProduct(
   phone: string,
   slug: string,
 ): Promise<MemberProduct | null> {
-  const { data, error } = await getSupabase().rpc("get_member_product", {
+  const { data, error } = await getSupabase().rpc("get_member_product_v2", {
     p_instagram_handle: instagramHandle,
     p_phone: phone,
     p_slug: slug,

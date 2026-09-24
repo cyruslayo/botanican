@@ -105,7 +105,13 @@ export default function ProductDetailIsland({
     product.strain_name || null,
     product.batch_code ? `Batch ${product.batch_code}` : null,
   ].filter(Boolean);
-  const isAvailable = product.is_available;
+  const isAvailable = product.stock_status !== "unavailable";
+  const stockMessage =
+    product.stock_status === "available"
+      ? "Available"
+      : product.stock_status === "low_stock"
+        ? "Only a few left"
+        : "Currently unavailable";
 
   const handleAddToCart = () => {
     if (!isAvailable) return;
@@ -176,7 +182,7 @@ export default function ProductDetailIsland({
             )}
             <ProductDescription description={product.description} />
             <p className="font-label-sm text-label-sm text-on-surface-variant mt-stack-md">
-              {isAvailable ? "Available" : "Currently unavailable"}
+              {stockMessage}
             </p>
             <a
               href="/how-to-use"

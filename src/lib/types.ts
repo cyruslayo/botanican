@@ -16,6 +16,8 @@ export interface Product {
   batch_code?: string | null;
 }
 
+export type StockStatus = "available" | "low_stock" | "unavailable";
+
 export interface MemberCatalogProduct {
   id: string;
   slug: string;
@@ -24,6 +26,7 @@ export interface MemberCatalogProduct {
   category: string;
   image: string | null;
   is_available: boolean;
+  stock_status: StockStatus;
   strength_mg: number | null;
   bottle_size_ml: number | null;
   strain_name: string | null;
